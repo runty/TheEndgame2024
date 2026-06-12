@@ -27,9 +27,12 @@ For an excellent build guide, check out this fantastic resource from KeebSupply.
 
 There are now two versions of the PCB:
 1.	COPPER Version:
-In this version, all design elements are on the copper and mask layers. I used this version to create my prototypes. However, this version has longer loading times, and the Gerber files currently don’t work with JLCPCB. (I’d greatly appreciate any help with troubleshooting this issue.)
+In this version, all design elements are on the copper and mask layers. I used this version to create my prototypes. Use `TheENDGAME2024_COPPER_JLCPCB.zip` for JLCPCB uploads, and preview it carefully before ordering because this version has heavier copper/mask artwork.
 2.	SILKSCREEN Version:
-This version is untested. All design elements have been moved to the silkscreen layer, making it much more performant on less powerful PCs. The Gerber files display correctly on JLCPCB but have not yet been tested.
+All design elements have been moved to the silkscreen layer, making it much more performant on less powerful PCs and friendlier to upload parsers. Use `TheENDGAME2024_SILKSCREEN_JLCPCB.zip` for JLCPCB uploads; this is the recommended upload archive to try first.
+
+The non-`_JLCPCB.zip` Gerber archives keep the full plotted KiCad layer set for reference or other fabs. The `_JLCPCB.zip` archives contain only the production layers and use a positive drill/plot origin.
+
 Please always test the files yourself to rule out potential errors. Thank you!
 
 - 36x Choc v1 Hotswap Sockets    [buy here](https://www.aliexpress.com/item/1005004916925259.html?) 
@@ -39,12 +42,6 @@ Please always test the files yourself to rule out potential errors. Thank you!
 or get the better looking thingy, highly recommended
 
 - | 01 | 0xCB Gemini             [buy here](https://keeb.supply/products/0xcb-gemini) |
-
-The PCB switch footprints have enlarged center holes for Kailh Choc V2 switch bodies while keeping the same Choc hotswap sockets and original Choc/MBK key spacing.
-
-For JLCPCB uploads, use the `_JLCPCB.zip` Gerber archives. They contain only the production layers and use a positive drill/plot origin.
-
-
 
 ## PARTS LIST FDM CASE ##
 
@@ -64,6 +61,8 @@ You’ll need 4 grommets if you’re aiming for a bit of flex or bounce, but you
 Switches
 
 I highly recommend the Choc v1 Silent switches, such as [Nocturnal](https://keeb.supply/products/nocturnal-low-profile-switches) or [Twilights](https://keeb.supply/products/twilight-low-profile-switches). If you prefer heavier springs and a bit of tactile feedback but don’t need silence, [Sunset](https://keeb.supply/products/sunset-low-profile-switches) switches are an excellent choice. As for the rest of the Choc v1 lineup, I wouldn’t bother—they’re not worth considering.
+
+The PCB supports Choc v1 switches and has enlarged center holes for Kailh Choc v2 switch bodies while keeping the same Choc hotswap sockets. It still uses original Choc/MBK key spacing, so verify Choc v2 keycap clearance before ordering.
 
 Keycaps
 
@@ -125,4 +124,3 @@ Just a heads-up: I can’t help with technical issues or soldering nightmares be
 
     "The worst thing that can happen is someone calling me a keyboard designer."
     -OLDMAN6955
-
