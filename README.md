@@ -40,6 +40,10 @@ or get the better looking thingy, highly recommended
 
 - | 01 | 0xCB Gemini             [buy here](https://keeb.supply/products/0xcb-gemini) |
 
+The PCB switch footprints have enlarged center holes for Kailh Choc V2 switch bodies while keeping the same Choc hotswap sockets and original Choc/MBK key spacing.
+
+For JLCPCB uploads, use the `_JLCPCB.zip` Gerber archives. They contain only the production layers and use a positive drill/plot origin.
+
 
 
 ## PARTS LIST FDM CASE ##
