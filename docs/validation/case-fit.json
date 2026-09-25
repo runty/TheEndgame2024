@@ -1,0 +1,182 @@
+[
+  {
+    "ref": "SW20",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.6000066571996998
+  },
+  {
+    "ref": "SW30",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.6000033131349887
+  },
+  {
+    "ref": "SW23",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.5999971506537778
+  },
+  {
+    "ref": "SW11",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.5999980417991826
+  },
+  {
+    "ref": "SW7",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 14.78076374055565
+  },
+  {
+    "ref": "SW29",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 15.125959290941598
+  },
+  {
+    "ref": "SW34",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.6000022081803706
+  },
+  {
+    "ref": "SW21",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 2.099990747759408
+  },
+  {
+    "ref": "SW27",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.599998959158079
+  },
+  {
+    "ref": "SW31",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.5999951906590042
+  },
+  {
+    "ref": "SW35",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 2.1000030000000294
+  },
+  {
+    "ref": "SW17",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 2.10005386417142
+  },
+  {
+    "ref": "SW5",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.599996791817814
+  },
+  {
+    "ref": "SW19",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.5999944995716526
+  },
+  {
+    "ref": "SW4",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.599996791818647
+  },
+  {
+    "ref": "SW24",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.599994882563609
+  },
+  {
+    "ref": "SW13",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 15.00042958296335
+  },
+  {
+    "ref": "SW26",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.6000056959078255
+  },
+  {
+    "ref": "SW16",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.599955575986398
+  },
+  {
+    "ref": "SW3",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 2.100001999999776
+  },
+  {
+    "ref": "SW10",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 15.125959296833601
+  },
+  {
+    "ref": "SW22",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.599994299371825
+  },
+  {
+    "ref": "SW36",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.59999879181969
+  },
+  {
+    "ref": "SW2",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.599996208181281
+  },
+  {
+    "ref": "SW37",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.5999967918188807
+  },
+  {
+    "ref": "SW33",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.6000041243622107
+  },
+  {
+    "ref": "SW32",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 14.780728634585754
+  },
+  {
+    "ref": "SW14",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.5999709080437303
+  },
+  {
+    "ref": "SW9",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.6000001869320166
+  },
+  {
+    "ref": "SW6",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.599995501242294
+  },
+  {
+    "ref": "SW18",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.6000309066562297
+  },
+  {
+    "ref": "SW28",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.6000005889048383
+  },
+  {
+    "ref": "SW8",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.5999755968118066
+  },
+  {
+    "ref": "SW12",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.6000033692115452
+  },
+  {
+    "ref": "SW15",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 1.5999946096428308
+  },
+  {
+    "ref": "SW25",
+    "intersection_mm3": 0.0,
+    "clearance_mm": 15.000440977465058
+  }
+]

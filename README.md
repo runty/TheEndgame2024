@@ -1,3 +1,13 @@
+## Choc V1/V2 fork
+
+This fork adds **Kailh Choc V2 (PG1353) hot-swap support alongside Choc V1** while preserving the original Endgame PCB mounting geometry and 1.6 mm thickness for the existing case.
+
+See [the compatibility and manufacturing notes](docs/choc-v1-v2.md) for the exact switch drawing, case-fit check, keycap spacing limits, and assembly changes. The conversion uses hot-swap sockets; the original optional direct-solder pattern is no longer supported.
+
+[Download the JLCPCB manufacturing ZIP](001%20PCB/GERBER/CHOC%20V1%20V2/TheEndgame2024_Choc_V1_V2_JLCPCB.zip). Order a **2-layer, 1.6 mm FR-4** board. The new revision passes KiCad DRC and CAD case-fit checks, but has not been physically prototyped.
+
+The original project description follows.
+
 <img src="https://github.com/OldMan6955/TheEndgame2024/blob/main/004%20IMAGES/TheEndgameBillboard.jpg" alt="TheEndgameBillboard">
 
 

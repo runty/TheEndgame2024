@@ -2878,7 +2878,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 156.21 35.56 0)
 			(effects
 				(font
@@ -2952,7 +2952,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1.5u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1.5u"
 			(at 142.24 90.17 0)
 			(effects
 				(font
@@ -3026,7 +3026,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 226.06 35.56 0)
 			(effects
 				(font
@@ -3176,7 +3176,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 184.15 72.39 0)
 			(effects
 				(font
@@ -3478,7 +3478,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 198.12 72.39 0)
 			(effects
 				(font
@@ -3628,7 +3628,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 156.21 53.34 0)
 			(effects
 				(font
@@ -3702,7 +3702,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 198.12 35.56 0)
 			(effects
 				(font
@@ -3776,7 +3776,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 170.18 53.34 0)
 			(effects
 				(font
@@ -3926,7 +3926,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 254 35.56 0)
 			(effects
 				(font
@@ -4000,7 +4000,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1.5u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1.5u"
 			(at 198.12 90.17 0)
 			(effects
 				(font
@@ -4150,7 +4150,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 184.15 90.17 0)
 			(effects
 				(font
@@ -4300,7 +4300,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 254 72.39 0)
 			(effects
 				(font
@@ -4754,7 +4754,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 170.18 72.39 0)
 			(effects
 				(font
@@ -4904,7 +4904,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 240.03 35.56 0)
 			(effects
 				(font
@@ -4978,7 +4978,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 184.15 35.56 0)
 			(effects
 				(font
@@ -5128,7 +5128,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 142.24 35.56 0)
 			(effects
 				(font
@@ -5278,7 +5278,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1.5u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1.5u"
 			(at 212.09 90.17 0)
 			(effects
 				(font
@@ -5352,7 +5352,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 212.09 53.34 0)
 			(effects
 				(font
@@ -5502,7 +5502,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 240.03 72.39 0)
 			(effects
 				(font
@@ -5652,7 +5652,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1.5u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1.5u"
 			(at 267.97 90.17 0)
 			(effects
 				(font
@@ -5802,7 +5802,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 198.12 53.34 0)
 			(effects
 				(font
@@ -5876,7 +5876,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 184.15 53.34 0)
 			(effects
 				(font
@@ -6309,7 +6309,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 226.06 72.39 0)
 			(effects
 				(font
@@ -6763,7 +6763,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 240.03 53.34 0)
 			(effects
 				(font
@@ -6837,7 +6837,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 156.21 72.39 0)
 			(effects
 				(font
@@ -6987,7 +6987,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 267.97 72.39 0)
 			(effects
 				(font
@@ -7061,7 +7061,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 212.09 35.56 0)
 			(effects
 				(font
@@ -7211,7 +7211,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 254 53.34 0)
 			(effects
 				(font
@@ -7361,7 +7361,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 212.09 72.39 0)
 			(effects
 				(font
@@ -7581,7 +7581,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 170.18 35.56 0)
 			(effects
 				(font
@@ -7655,7 +7655,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 226.06 53.34 0)
 			(effects
 				(font
@@ -7805,7 +7805,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 267.97 35.56 0)
 			(effects
 				(font
@@ -7879,7 +7879,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 142.24 53.34 0)
 			(effects
 				(font
@@ -8181,7 +8181,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 267.97 53.34 0)
 			(effects
 				(font
@@ -8255,7 +8255,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 142.24 72.39 0)
 			(effects
 				(font
@@ -8329,7 +8329,7 @@
 				)
 			)
 		)
-		(property "Footprint" "TheEndgame2024:SW_choc_v1_HSxSolder_1u_filets_MBK_blk fixxed flipped solder pads"
+		(property "Footprint" "TheEndgame2024:SW_choc_v1_v2_HS_1u"
 			(at 226.06 90.17 0)
 			(effects
 				(font

@@ -1,0 +1,24 @@
+{
+  "archive": "TheEndgame2024_Choc_V1_V2_JLCPCB.zip",
+  "archive_sha256": "831ba1e0f7d0113924f874fcf552d8a535a29de4d8fa1130c73fb7a2ccc39326",
+  "source_sha256": "911439221017d0e935c0abc51aca454ef5ffa11e5b309e6ae5831052dc4c1a04",
+  "parser": "Gerbonara 1.6.3",
+  "graphic_layers": 7,
+  "pth_holes": 181,
+  "npth_holes_and_slots": 144,
+  "switch_positions_registered_to_source": 36,
+  "center_holes_5mm": 36,
+  "v1_locating_holes_1_7mm": 72,
+  "v2_slots_1_5_by_2mm": 36,
+  "position_tolerance_mm": 0.002,
+  "gerber_outline_bounds_including_stroke_mm": [
+    [
+      40.424969,
+      -158.74367030576087
+    ],
+    [
+      259.575001,
+      -62.48759899999821
+    ]
+  ]
+}

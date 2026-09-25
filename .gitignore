@@ -1,0 +1,9 @@
+.DS_Store
+__pycache__/
+*.pyc
+*-backups/
+~*.lck
+# The manufacturing ZIP is committed; loose export files are reproducible.
+001 PCB/GERBER/CHOC V1 V2/gerbers/
+001 PCB/GERBER/CHOC V1 V2/*-preview.svg
+001 PCB/GERBER/CHOC V1 V2/*-routing-detail.png
