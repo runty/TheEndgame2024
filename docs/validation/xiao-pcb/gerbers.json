@@ -1,0 +1,39 @@
+{
+  "archive": "TheEndgame2024_XIAO_Choc_V1_V2_JLCPCB.zip",
+  "archive_sha256": "21442495bcce91add5d830b43f0e740c89e97c63afcf3fc9f35ef46fb2c5e6da",
+  "source_sha256": "faab04b12631ca6e7c235818bbe9152f59c97dac17132a148048fe9f2802838b",
+  "graphic_layers": 7,
+  "plated_drills": 215,
+  "nonplated_drills_and_slots": 148,
+  "all_drills_registered_to_source": true,
+  "registration_tolerance_mm": 0.002,
+  "closed_outline_contours": 3,
+  "outline_contour_bounds_mm": [
+    [
+      40.499969,
+      -158.66867030576088,
+      259.500001,
+      -62.562598999998215
+    ],
+    [
+      139.0,
+      -144.0,
+      161.0,
+      -116.0
+    ],
+    [
+      143.7,
+      -74.85,
+      147.4,
+      -70.7
+    ]
+  ],
+  "board_dimensions_mm": [
+    219.000032,
+    96.10607130576267
+  ],
+  "switch_center_holes_5mm": 36,
+  "v1_locators_1_7mm": 72,
+  "v2_slots_1_5_by_2mm": 36,
+  "parser": "Gerbonara 1.6.3"
+}

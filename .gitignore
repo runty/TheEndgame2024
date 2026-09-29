@@ -7,3 +7,6 @@ __pycache__/
 001 PCB/GERBER/CHOC V1 V2/gerbers/
 001 PCB/GERBER/CHOC V1 V2/*-preview.svg
 001 PCB/GERBER/CHOC V1 V2/*-routing-detail.png
+001 PCB/GERBER/XIAO WIRELESS/gerbers/
+001 PCB/GERBER/XIAO WIRELESS/*-preview.svg
+001 PCB/KICAD/XIAO WIRELESS/*.kicad_prl

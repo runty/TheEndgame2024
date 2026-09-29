@@ -1,0 +1,9 @@
+if SHIELD_ENDGAME
+
+config ZMK_KEYBOARD_NAME
+    default "The Endgame"
+
+config SPI
+    default y
+
+endif

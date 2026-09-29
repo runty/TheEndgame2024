@@ -1,5 +1,7 @@
 # XIAO nRF52840 battery fit study (2026-09-28)
 
+Historical study: the [implemented wireless prototype](../xiao-wireless.md) supersedes these provisional assembly details. The final design removes BZ2, moves the battery pads and relief holes 0.5 mm toward the opening, rounds its corners, and provides a separate revised case and tray. Use the current [case notes](../xiao-case.md) and [electrical notes](../xiao-electrical.md) for assembly.
+
 This is a measured **candidate for the next PCB and case revision**, not a fabricated layout or a physical battery fit. The source PCB and STEP case remain unchanged. Coordinates below use the KiCad board system in millimetres; the registered case coordinates are `(board X − 150, 140 − board Y, Z)`, with the board bottom at `Z=0` and top at `Z=1.6`. The XIAO nRF52840 is intended for the existing top-centre controller region; its new footprint, USB cutout, charger, and electrical routing are outside this geometric check.
 
 ## Recommended opening and wire landing

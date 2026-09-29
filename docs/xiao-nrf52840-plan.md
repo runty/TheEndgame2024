@@ -1,6 +1,6 @@
 # Endgame XIAO nRF52840 development branch
 
-Status: initial electrical and mechanical design study, not a manufacturing release.
+Status: historical design study, superseded by the [implemented wireless prototype](xiao-wireless.md). Dimensions and pending-work statements below describe the preliminary study; use the current PCB, case, and assembly notes for fabrication.
 
 The `codex/xiao-nrf52840-battery` branch starts from Choc V1/V2 commit `503635fe0c49a6c597ee685ef395d58eaf00e6dd`. It targets the standard Seeed Studio XIAO nRF52840, a central battery opening, and a modified case. The previous wired RP2040 Gerbers remain the last completed manufacturing release; they do not implement this controller or battery opening.
 
