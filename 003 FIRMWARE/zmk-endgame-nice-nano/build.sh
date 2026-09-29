@@ -26,7 +26,7 @@ build_dir="$workspace/build/endgame-nice-nano"
 staging_dir="$workspace/endgame-nice-nano"
 zmk_dir="$staging_dir/zmk"
 mkdir -p "$root_dir/firmware"
-mkdir -p "$staging_dir/config" "$staging_dir/status-pulse"
+mkdir -p "$staging_dir/config" "$staging_dir/status-pulse" "$staging_dir/rgbled-widget"
 # Extract the pinned, tracked source into this build's own tree. The older
 # XIAO workspace may have the old 74HC595 kscan IRQ patch applied locally;
 # this firmware must compile the stock direct-matrix driver instead.
@@ -39,13 +39,15 @@ fi
 # space-containing path under a path without spaces for CMake/devicetree.
 rsync -a --delete "$root_dir/config/" "$staging_dir/config/"
 rsync -a --delete "$root_dir/status-pulse/" "$staging_dir/status-pulse/"
+rsync -a --delete "$root_dir/rgbled-widget/" "$staging_dir/rgbled-widget/"
 cd "$workspace"
 ZEPHYR_TOOLCHAIN_VARIANT=gnuarmemb GNUARMEMB_TOOLCHAIN_PATH=/opt/homebrew \
   "$west_bin" build -p always -d "$build_dir" -s "$zmk_dir/app" \
   -b nice_nano//zmk -- \
   -DSHIELD=endgame \
   -DZMK_CONFIG="$staging_dir/config" \
-  -DZMK_EXTRA_MODULES="$staging_dir/status-pulse"
+  -DZMK_EXTRA_MODULES="$staging_dir/status-pulse;$staging_dir/rgbled-widget" \
+  2>&1 | tee "$root_dir/firmware/build.log"
 
 if [ -f "$build_dir/zephyr/zmk.uf2" ]; then
   cp "$build_dir/zephyr/zmk.uf2" "$root_dir/firmware/endgame-nice-nano-v2.uf2"

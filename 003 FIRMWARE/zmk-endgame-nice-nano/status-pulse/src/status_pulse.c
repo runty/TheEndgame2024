@@ -45,11 +45,13 @@ enum {
 static K_MUTEX_DEFINE(pulse_lock);
 static K_MUTEX_DEFINE(api_lock);
 static struct k_work_delayable end_work;
-static struct k_work_sync end_sync;
 static bool powered;
+/* Guard against an expiry work item already dequeued when a new pulse starts. */
+static int64_t end_due_ms;
 
 static int power_off_locked(void) {
     int rc = 0;
+    end_due_ms = 0;
 
     if (powered && device_is_ready(pixel)) {
         struct led_rgb black = {0};
@@ -71,13 +73,23 @@ static int power_off_locked(void) {
 static void end_work_handler(struct k_work *work) {
     ARG_UNUSED(work);
     k_mutex_lock(&pulse_lock, K_FOREVER);
-    (void)power_off_locked();
+    int64_t remaining = end_due_ms - k_uptime_get();
+    if (end_due_ms != 0 && remaining > 0) {
+        if (k_work_reschedule(&end_work, K_MSEC(remaining)) < 0) {
+            (void)power_off_locked();
+        }
+    } else if (end_due_ms != 0) {
+        (void)power_off_locked();
+    }
     k_mutex_unlock(&pulse_lock);
 }
 
 int endgame_status_cancel(void) {
     k_mutex_lock(&api_lock, K_FOREVER);
-    k_work_cancel_delayable_sync(&end_work, &end_sync);
+    /* This may run on Zephyr's system work queue during ZMK sleep. Waiting
+     * for end_work here would deadlock that queue. The mutex and deadline
+     * keep cancellation ordered with a possibly running expiry handler. */
+    (void)k_work_cancel_delayable(&end_work);
     k_mutex_lock(&pulse_lock, K_FOREVER);
     int rc = power_off_locked();
     k_mutex_unlock(&pulse_lock);
@@ -125,7 +137,7 @@ int endgame_status_pulse(uint8_t red, uint8_t green, uint8_t blue,
     };
 
     k_mutex_lock(&api_lock, K_FOREVER);
-    k_work_cancel_delayable_sync(&end_work, &end_sync);
+    (void)k_work_cancel_delayable(&end_work);
     k_mutex_lock(&pulse_lock, K_FOREVER);
     int rc;
     if (zmk_activity_get_state() == ZMK_ACTIVITY_SLEEP) {
@@ -151,6 +163,7 @@ int endgame_status_pulse(uint8_t red, uint8_t green, uint8_t blue,
     if (rc != 0) {
         goto fail;
     }
+    end_due_ms = k_uptime_get() + bounded_ms;
     rc = k_work_reschedule(&end_work, K_MSEC(bounded_ms));
     if (rc < 0) {
         goto fail;

@@ -54,7 +54,7 @@ The insulating tray and internal battery recess use an **18.5 × 33 × 5 mm pack
 
 Install R1 and R2 lying flat on the top side, with bodies no larger than 6.5 mm long × 2.5 mm diameter and no more than 0.2 mm above the PCB. Trim their soldered leads to at most 0.8 mm below the PCB underside. The revised case has internal pockets for their bodies and leads and retains its original exterior height. C1 remains a 0603 capacitor.
 
-Leave the nice!nano charge-boost jumper open for its ordinary nominal **100 mA** charging setting, and verify suitability for the actual cell. There is no external charger or matrix-expander chip. The pixel uses nice!nano v2 switched VCC and P0.06 through R1; firmware keeps its power off between events. The shipped keymap has no LED bindings. The compiled test behavior/API is ready for later status meanings; see [firmware notes](nice-nano-firmware.md). Electrical pin mapping and component orientation are in the [electrical notes](nice-nano-electrical.md).
+Leave the nice!nano charge-boost jumper open for its ordinary nominal **100 mA** charging setting, and verify suitability for the actual cell. There is no external charger or matrix-expander chip. The pixel uses nice!nano v2 switched VCC and P0.06 through R1; firmware keeps its power off between events. The shipped keymap has no LED bindings. An adapted zmk-rgbled-widget supplies automatic battery and Bluetooth/USB status flashes; see [firmware notes](nice-nano-firmware.md). Electrical pin mapping and component orientation are in the [electrical notes](nice-nano-electrical.md).
 
 Before treating this as proven hardware, verify controller/USB/pack fit, keycap travel, all 36 keys, BLE and USB, idle/sleep wake, charging current, and LED DIN/VCC behavior on the first assembly. This is the remaining prototype validation, not work established by CAD or compilation.
 
@@ -64,6 +64,6 @@ Gerber ZIP SHA-256: `25c72831301f0641045401afa0cec08d2440b7e30919f5c405f65c11e87
 
 PCB source SHA-256: `e5223e848921047923474be2aa05235f5087fc120c3f9a9fd1052ff5834562f4`
 
-UF2 SHA-256: `dd09dd839af2fcc30e750b2b8cfd9ea6b40a9c6e78241b1ceba5eac6654ca5ae`
+UF2 SHA-256: `f5662f0993dc97762743c5ac36d98072a58d338cdeca31086cd5abc1d131457a`
 
 The [artifact manifest](validation/nice-nano-artifacts.json) records all source/output checksums and the baseline revision.
