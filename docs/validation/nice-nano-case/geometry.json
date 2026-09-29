@@ -3,11 +3,11 @@
   "parts": {
     "case": {
       "step_valid_single_solid": true,
-      "step_volume_mm3": 60314.033,
+      "step_volume_mm3": 62326.043,
       "stl_watertight": true,
       "stl_winding_consistent": true,
-      "stl_faces": 16164,
-      "stl_volume_mm3": 60315.376
+      "stl_faces": 16404,
+      "stl_volume_mm3": 62327.364
     },
     "tray": {
       "step_valid_single_solid": true,
@@ -18,7 +18,33 @@
       "stl_volume_mm3": 1194.133
     }
   },
-  "original_case_exterior_and_key_openings_retained": true,
+  "original_key_openings_translated_with_each_half": true,
+  "source_case_width_mm": 227.0,
+  "revised_case_width_mm": 231.0,
+  "split_x_case_mm": [
+    -12.0,
+    12.0
+  ],
+  "outer_half_translation_x_mm": [
+    -2.0,
+    2.0
+  ],
+  "all_six_bridge_roof_probes_solid": true,
+  "pcb_switch_half_shift_verified": true,
+  "pcb_outer_mount_half_shift_verified": true,
+  "pcb_central_mounts_fixed_verified": true,
+  "pcb_axial_positions_verified": true,
+  "central_components_and_mounts_stay_fixed": true,
+  "central_case_mount_xy_mm": [
+    [
+      -9.804941,
+      -14.168516
+    ],
+    [
+      9.804965,
+      -14.170142
+    ]
+  ],
   "added_controller_shoulders": false,
   "usb_local_cover_min_top_z_mm": 8.55,
   "battery_pocket_pcb_xy_mm": [
@@ -43,6 +69,222 @@
   "minimum_switch_body_proxy_clearance_mm": 1.6,
   "nominal_cs_1u_envelope_checked": true,
   "physical_keycap_fit_verified": false,
+  "axial_resistors": {
+    "installation": "horizontal F.Cu, body parallel to PCB X; board top Z=1.6 mm",
+    "nominal_body_length_diameter_mm": [
+      6.3,
+      2.5
+    ],
+    "checked_body_length_diameter_mm": [
+      6.5,
+      2.5
+    ],
+    "body_standoff_mm": 0.2,
+    "lead_diameter_proxy_mm": 0.6,
+    "pad_pitch_mm": 10.16,
+    "body_pockets_case_xyz_mm": [
+      [
+        [
+          -10.55,
+          39.2,
+          0.0
+        ],
+        [
+          -3.75,
+          42.0,
+          4.65
+        ]
+      ],
+      [
+        [
+          3.75,
+          31.0,
+          0.0
+        ],
+        [
+          10.55,
+          33.8,
+          4.65
+        ]
+      ]
+    ],
+    "lead_channels_case_x_mm": [
+      [
+        -12.65,
+        -10.55
+      ],
+      [
+        -3.75,
+        -1.65
+      ],
+      [
+        1.65,
+        3.75
+      ],
+      [
+        10.55,
+        12.65
+      ]
+    ],
+    "lead_channels_case_y_mm": [
+      [
+        40.1,
+        41.1
+      ],
+      [
+        31.9,
+        32.9
+      ]
+    ],
+    "lead_channel_top_z_mm": 3.55,
+    "pocket_top_z_mm": 4.65,
+    "minimum_body_to_roof_gap_mm": 0.35,
+    "minimum_body_to_LED_x_edge_gap_mm": 1.4,
+    "r2_pocket_joins_battery_recess": true,
+    "battery_pack_proxy_is_a_maximum": false,
+    "resistors": [
+      {
+        "reference": "R1",
+        "pcb_body_center_mm": [
+          142.85,
+          99.4
+        ],
+        "pcb_pad_centers_mm": [
+          [
+            137.77,
+            99.4
+          ],
+          [
+            147.93,
+            99.4
+          ]
+        ],
+        "pcb_pad1_center_mm": [
+          137.77,
+          99.4
+        ],
+        "pcb_pad2_center_mm": [
+          147.93,
+          99.4
+        ],
+        "case_body_bounds_xyz_mm": [
+          [
+            -10.4,
+            39.35,
+            1.8
+          ],
+          [
+            -3.9,
+            41.85,
+            4.3
+          ]
+        ],
+        "case_lead_bounds_xyz_mm": [
+          [
+            [
+              -12.53,
+              40.3,
+              2.75
+            ],
+            [
+              -10.4,
+              40.9,
+              3.35
+            ]
+          ],
+          [
+            [
+              -3.9,
+              40.3,
+              2.75
+            ],
+            [
+              -1.77,
+              40.9,
+              3.35
+            ]
+          ]
+        ],
+        "body_and_lead_case_overlap_mm3": 0,
+        "solid_roof_above_body_mm": 1.95,
+        "nominal_led_body_edge_gap_mm": 0.35,
+        "nominal_led_body_x_edge_gap_mm": 1.4,
+        "nominal_body_to_LED_3d_clearance_mm": 1.443,
+        "battery_pack_planning_proxy_edge_gap_mm": null,
+        "battery_pack_planning_proxy_3d_clearance_mm": null
+      },
+      {
+        "reference": "R2",
+        "pcb_body_center_mm": [
+          157.15,
+          107.6
+        ],
+        "pcb_pad_centers_mm": [
+          [
+            152.07,
+            107.6
+          ],
+          [
+            162.23,
+            107.6
+          ]
+        ],
+        "pcb_pad1_center_mm": [
+          162.23,
+          107.6
+        ],
+        "pcb_pad2_center_mm": [
+          152.07,
+          107.6
+        ],
+        "case_body_bounds_xyz_mm": [
+          [
+            3.9,
+            31.15,
+            1.8
+          ],
+          [
+            10.4,
+            33.65,
+            4.3
+          ]
+        ],
+        "case_lead_bounds_xyz_mm": [
+          [
+            [
+              1.77,
+              32.1,
+              2.75
+            ],
+            [
+              3.9,
+              32.7,
+              3.35
+            ]
+          ],
+          [
+            [
+              10.4,
+              32.1,
+              2.75
+            ],
+            [
+              12.53,
+              32.7,
+              3.35
+            ]
+          ]
+        ],
+        "body_and_lead_case_overlap_mm3": 0,
+        "solid_roof_above_body_mm": 1.95,
+        "nominal_led_body_edge_gap_mm": 0.35,
+        "nominal_led_body_x_edge_gap_mm": 1.4,
+        "nominal_body_to_LED_3d_clearance_mm": 1.443,
+        "battery_pack_planning_proxy_edge_gap_mm": 1.15,
+        "battery_pack_planning_proxy_3d_clearance_mm": 1.15
+      }
+    ]
+  },
   "maximum_case_height_increased": false,
   "original_case_z_bounds_mm": [
     -1.399999976158142,
@@ -51,5 +293,6 @@
   "revised_case_z_bounds_mm": [
     -1.399999976158142,
     10.127236366271973
-  ]
+  ],
+  "widened_baseline_volume_mm3": 69099.392
 }

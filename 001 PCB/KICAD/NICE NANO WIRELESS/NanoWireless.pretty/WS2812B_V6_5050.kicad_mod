@@ -227,7 +227,7 @@
 		(uuid "f8d50f82-4f50-4dc1-9fc5-40139784ae7c")
 	)
 	(fp_text user "1"
-		(at -2.5 -3.4 0)
+		(at -5 -1 0)
 		(unlocked yes)
 		(layer "F.SilkS")
 		(uuid "b588dad5-0fb6-43e3-ac5f-135d2c85cb08")

@@ -1,0 +1,121 @@
+{
+  "source_pcb": "001 PCB/KICAD/NICE NANO WIRELESS/TheEndgame2024_NiceNano.kicad_pcb",
+  "source_sha256": "e5223e848921047923474be2aa05235f5087fc120c3f9a9fd1052ff5834562f4",
+  "measurement": "Final widened PCB. Top-view horizontal X distances to exterior side edge. Caps are nominal 17.5 x 16.5 mm envelopes centered and oriented on switch centers; V2 locating slot dimensions are NPTH drill.",
+  "pair": {
+    "SW2": {
+      "side": "left",
+      "switch_center_mm": [
+        49.250005,
+        80.666439
+      ],
+      "rotation_deg": 180.0,
+      "outer_edge_x_mm": 38.5,
+      "nominal_1u_cap_envelope_mm": [
+        17.5,
+        16.5
+      ],
+      "cap_side_x_mm": 40.500005,
+      "switch_center_to_side_edge_mm": 10.750005,
+      "cap_to_side_edge_mm": 2.000005,
+      "v2_locating_slot_center_mm": [
+        54.250005,
+        75.516439
+      ],
+      "v2_locating_slot_drill_mm": [
+        1.5,
+        2.0
+      ],
+      "slot_center_to_side_edge_mm": 15.750005,
+      "slot_outline_to_side_edge_mm": 15.000005
+    },
+    "SW34": {
+      "side": "right",
+      "switch_center_mm": [
+        250.749995,
+        80.666445
+      ],
+      "rotation_deg": 180.0,
+      "outer_edge_x_mm": 261.5,
+      "nominal_1u_cap_envelope_mm": [
+        17.5,
+        16.5
+      ],
+      "cap_side_x_mm": 259.499995,
+      "switch_center_to_side_edge_mm": 10.750005,
+      "cap_to_side_edge_mm": 2.000005,
+      "v2_locating_slot_center_mm": [
+        255.749995,
+        75.516445
+      ],
+      "v2_locating_slot_drill_mm": [
+        1.5,
+        2.0
+      ],
+      "slot_center_to_side_edge_mm": 5.750005,
+      "slot_outline_to_side_edge_mm": 5.000005
+    }
+  },
+  "paired_center_mirror_error_mm": 6e-06,
+  "finding": "After the 4 mm symmetric widening, all nominal keycap borders retain their original clearance; the outer 1u pair remains 2.00 mm per side. The nice!nano, LED and battery opening remain centered. In top-view XY, the conservative 18 x 33 mm MCU fit envelope clears the nearest keycap by about 2.16 mm.",
+  "central_alignment": {
+    "shared_centerline_x_mm": 150.0,
+    "nice_nano_u2": {
+      "footprint_center_mm": [
+        150.0,
+        80.0
+      ],
+      "fab_body_bounds_mm": [
+        141.11,
+        64.76,
+        158.89,
+        95.24
+      ],
+      "body_width_mm": 17.78
+    },
+    "led1": {
+      "footprint_center_mm": [
+        150.0,
+        103.5
+      ],
+      "fab_body_bounds_mm": [
+        147.5,
+        101.0,
+        152.5,
+        106.0
+      ]
+    },
+    "battery_opening": {
+      "edge_cuts_bounds_mm": [
+        139.0,
+        109.0,
+        161.0,
+        144.0
+      ],
+      "center_x_mm": 150.0,
+      "width_mm": 22.0
+    }
+  },
+  "layout_change": {
+    "pcb_width_before_mm": 219,
+    "pcb_width_after_mm": 223.000002,
+    "each_key_half_shift_outward_mm": 2,
+    "all_pair_cap_borders_retained": true
+  },
+  "mcu_envelope": {
+    "width_mm": 18,
+    "height_mm": 33,
+    "conservative_xy_bounds_mm": [
+      141.0,
+      63.0,
+      159.0,
+      96.0
+    ],
+    "minimum_cap_gap_mm": 2.159862044332641,
+    "nominal_body_minimum_gap_mm": 2.2698620443326547,
+    "limiting_switches": [
+      "SW16",
+      "SW20"
+    ]
+  }
+}

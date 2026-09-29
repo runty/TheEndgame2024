@@ -1,5 +1,5 @@
 Drill report for TheEndgame2024_NiceNano.kicad_pcb
-Created on 2026-09-28T21:17:31
+Created on 2026-09-29T09:10:03
 
 Copper Layer Stackup:
     =============================================================
@@ -10,15 +10,16 @@ Copper Layer Stackup:
 Drill file 'TheEndgame2024_NiceNano-PTH.drl' contains
     plated through holes:
     =============================================================
-    T1  0.300mm  0.0118"  (19 holes))
+    T1  0.300mm  0.0118"  (23 holes))
     T2  0.300mm  0.0118"  (36 holes))
     T3  0.400mm  0.0157"  (13 holes))
-    T4  1.000mm  0.0394"  (26 holes))
-    T5  1.270mm  0.0500"  (36 holes))
-    T6  3.000mm  0.1181"  (72 holes))
-    T7  4.000mm  0.1575"  (16 holes))
+    T4  0.800mm  0.0315"  (4 holes))
+    T5  1.000mm  0.0394"  (26 holes))
+    T6  1.270mm  0.0500"  (36 holes))
+    T7  3.000mm  0.1181"  (72 holes))
+    T8  4.000mm  0.1575"  (16 holes))
 
-    Total plated holes count 218
+    Total plated holes count 226
 
 
 Drill file 'TheEndgame2024_NiceNano-NPTH.drl' contains

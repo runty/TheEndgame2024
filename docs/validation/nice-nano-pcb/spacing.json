@@ -1,0 +1,207 @@
+{
+  "source_before_widening_sha256": "97b93ffb6c5ccdf22cb4e0ffb7a5db2e51f918ecfcd67f0782456b09a99d71ac",
+  "final_sha256": "e5223e848921047923474be2aa05235f5087fc120c3f9a9fd1052ff5834562f4",
+  "external_profile": {
+    "final_x_bounds_mm": [
+      38.499999,
+      261.500001
+    ],
+    "final_width_mm": 223.000002,
+    "expected_profile_hausdorff_mm": 0.00507838645513076,
+    "mirror_hausdorff_mm": 0.0002658145069603459,
+    "expected_symmetric_difference_area_mm2": 0.03857545005639038,
+    "split_x_mm": [
+      138.0,
+      162.0
+    ],
+    "outer_half_shift_mm": 2.0
+  },
+  "switches_checked": 36,
+  "mirror_pairs_checked": 18,
+  "maximum_pair_center_error_mm": 7.7201036260841e-05,
+  "maximum_pair_cap_border_difference_mm": 6.21372243525542e-05,
+  "maximum_old_to_new_cap_border_change_mm": 5.684341886080802e-14,
+  "outer_1u_cap_border_mm": {
+    "SW2": 2.000004315779836,
+    "SW3": 2.0000000056318545,
+    "SW4": 1.9999966954847184,
+    "SW34": 2.0000013438395334,
+    "SW35": 2.000000435628787,
+    "SW36": 2.000002527418225
+  },
+  "mcu_envelope": {
+    "width_mm": 18.0,
+    "height_mm": 33.0,
+    "center_mm": [
+      150.0,
+      80.0
+    ],
+    "bounds_mm": [
+      141.0,
+      63.0,
+      159.0,
+      96.0
+    ],
+    "xy_clearance_is_full_travel_conservative": true,
+    "minimum_source_gap_mm": 0.15986204433266948,
+    "minimum_final_gap_mm": 2.159862044332641,
+    "limiting_switches": [
+      "SW16",
+      "SW20"
+    ],
+    "nominal_body_bounds_mm": [
+      141.11,
+      64.76,
+      158.89,
+      95.24
+    ],
+    "minimum_nominal_body_to_cap_gap_mm": 2.2698620443326547
+  },
+  "central_alignment_x_mm": 150.0,
+  "pairs": [
+    {
+      "left": "SW10",
+      "right": "SW29",
+      "center_mirror_error_mm": 6.70820392191807e-06,
+      "cap_mirror_error_mm": 6.708203960049794e-06,
+      "left_cap_to_exterior_mm": 19.357901584332843,
+      "right_cap_to_exterior_mm": 19.357892894711252
+    },
+    {
+      "left": "SW11",
+      "right": "SW30",
+      "center_mirror_error_mm": 5.3851648067327175e-06,
+      "cap_mirror_error_mm": 5.385164780343823e-06,
+      "left_cap_to_exterior_mm": 28.578569190971795,
+      "right_cap_to_exterior_mm": 28.57856953826815
+    },
+    {
+      "left": "SW12",
+      "right": "SW24",
+      "center_mirror_error_mm": 2.2360679774469136e-05,
+      "cap_mirror_error_mm": 2.2360679760487505e-05,
+      "left_cap_to_exterior_mm": 9.449065385413698,
+      "right_cap_to_exterior_mm": 9.449064075207353
+    },
+    {
+      "left": "SW13",
+      "right": "SW25",
+      "center_mirror_error_mm": 3.6221540575659896e-05,
+      "cap_mirror_error_mm": 3.622154053328808e-05,
+      "left_cap_to_exterior_mm": 26.077569077958987,
+      "right_cap_to_exterior_mm": 26.07757628017626
+    },
+    {
+      "left": "SW14",
+      "right": "SW26",
+      "center_mirror_error_mm": 5.1971145836405554e-05,
+      "cap_mirror_error_mm": 5.197114586101492e-05,
+      "left_cap_to_exterior_mm": 24.499973037824464,
+      "right_cap_to_exterior_mm": 24.500000376791995
+    },
+    {
+      "left": "SW15",
+      "right": "SW27",
+      "center_mirror_error_mm": 7.280109898228162e-06,
+      "cap_mirror_error_mm": 7.280109921652294e-06,
+      "left_cap_to_exterior_mm": 2.0000075201269376,
+      "right_cap_to_exterior_mm": 1.9999936400218699
+    },
+    {
+      "left": "SW16",
+      "right": "SW20",
+      "center_mirror_error_mm": 7.7201036260841e-05,
+      "cap_mirror_error_mm": 7.720103629471098e-05,
+      "left_cap_to_exterior_mm": 13.191424916954503,
+      "right_cap_to_exterior_mm": 13.191487054178856
+    },
+    {
+      "left": "SW17",
+      "right": "SW21",
+      "center_mirror_error_mm": 6.447480130117936e-05,
+      "cap_mirror_error_mm": 6.447480131418352e-05,
+      "left_cap_to_exterior_mm": 29.81996660949943,
+      "right_cap_to_exterior_mm": 29.819993259148035
+    },
+    {
+      "left": "SW18",
+      "right": "SW22",
+      "center_mirror_error_mm": 3.705401463307639e-05,
+      "cap_mirror_error_mm": 3.7054014632309356e-05,
+      "left_cap_to_exterior_mm": 24.500032409175105,
+      "right_cap_to_exterior_mm": 24.49999061021164
+    },
+    {
+      "left": "SW19",
+      "right": "SW23",
+      "center_mirror_error_mm": 2.4698178071391908e-05,
+      "cap_mirror_error_mm": 2.4698178071391908e-05,
+      "left_cap_to_exterior_mm": 1.999995679739161,
+      "right_cap_to_exterior_mm": 1.9999991365727816
+    },
+    {
+      "left": "SW2",
+      "right": "SW34",
+      "center_mirror_error_mm": 5.999999999062311e-06,
+      "cap_mirror_error_mm": 5.999999999062311e-06,
+      "left_cap_to_exterior_mm": 2.000004315779836,
+      "right_cap_to_exterior_mm": 2.0000013438395334
+    },
+    {
+      "left": "SW3",
+      "right": "SW35",
+      "center_mirror_error_mm": 5.0990195146538875e-06,
+      "cap_mirror_error_mm": 5.099019513260399e-06,
+      "left_cap_to_exterior_mm": 2.0000000056318545,
+      "right_cap_to_exterior_mm": 2.000000435628787
+    },
+    {
+      "left": "SW4",
+      "right": "SW36",
+      "center_mirror_error_mm": 4.4721359437085214e-06,
+      "cap_mirror_error_mm": 4.4721359437085214e-06,
+      "left_cap_to_exterior_mm": 1.9999966954847184,
+      "right_cap_to_exterior_mm": 2.000002527418225
+    },
+    {
+      "left": "SW5",
+      "right": "SW37",
+      "center_mirror_error_mm": 9.999999974752427e-07,
+      "cap_mirror_error_mm": 9.999999974752427e-07,
+      "left_cap_to_exterior_mm": 1.7025704058410038,
+      "right_cap_to_exterior_mm": 1.7025991477112281
+    },
+    {
+      "left": "SW6",
+      "right": "SW31",
+      "center_mirror_error_mm": 2.2090722035210786e-05,
+      "cap_mirror_error_mm": 2.2090722033924193e-05,
+      "left_cap_to_exterior_mm": 2.861424627735497,
+      "right_cap_to_exterior_mm": 2.8614272639703797
+    },
+    {
+      "left": "SW7",
+      "right": "SW32",
+      "center_mirror_error_mm": 3.9115214431642446e-05,
+      "cap_mirror_error_mm": 3.911521443382229e-05,
+      "left_cap_to_exterior_mm": 19.768340532650065,
+      "right_cap_to_exterior_mm": 19.768301978710852
+    },
+    {
+      "left": "SW8",
+      "right": "SW33",
+      "center_mirror_error_mm": 2.9154759471294914e-05,
+      "cap_mirror_error_mm": 2.915475948689262e-05,
+      "left_cap_to_exterior_mm": 19.997261695125236,
+      "right_cap_to_exterior_mm": 19.9972608422713
+    },
+    {
+      "left": "SW9",
+      "right": "SW28",
+      "center_mirror_error_mm": 2.5317977796797257e-05,
+      "cap_mirror_error_mm": 2.5317977794552078e-05,
+      "left_cap_to_exterior_mm": 2.357902379304119,
+      "right_cap_to_exterior_mm": 2.3578960041901382
+    }
+  ]
+}

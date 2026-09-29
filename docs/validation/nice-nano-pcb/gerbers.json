@@ -1,18 +1,18 @@
 {
-  "archive": "TheEndgame2024_NiceNano_Choc_V1_V2_JLCPCB.zip",
-  "archive_sha256": "38e40b6a6d573aae45d99548bf262564769d062702ccbc1766b2d89740687457",
-  "source_sha256": "1d4d96c9efb6e6973a54d4c306bff2627ea1e06086c7c1779a54965a278054cf",
+  "archive": "TheEndgame2024_NiceNano_223mm_THT_JLCPCB.zip",
+  "archive_sha256": "25c72831301f0641045401afa0cec08d2440b7e30919f5c405f65c11e87c0e7b",
+  "source_sha256": "e5223e848921047923474be2aa05235f5087fc120c3f9a9fd1052ff5834562f4",
   "graphic_layers": 7,
-  "plated_drills": 218,
+  "plated_drills": 226,
   "nonplated_drills_and_slots": 148,
   "all_drills_registered_to_source": true,
   "registration_tolerance_mm": 0.002,
   "closed_outline_contours": 2,
   "outline_contour_bounds_mm": [
     [
-      40.499969,
-      -158.66867030576088,
-      259.500001,
+      38.499969,
+      -158.6686663056127,
+      261.500001,
       -62.562598999998215
     ],
     [
@@ -23,8 +23,8 @@
     ]
   ],
   "board_dimensions_mm": [
-    219.000032,
-    96.10607130576267
+    223.000032,
+    96.10606730561449
   ],
   "switch_center_holes_5mm": 36,
   "v1_locators_1_7mm": 72,

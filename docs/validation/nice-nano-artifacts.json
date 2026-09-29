@@ -3,19 +3,34 @@
   "baseline_commit": "266837a31cb1650d1b328a3d6603a5b71241a465",
   "kicad_version": "10.0.6",
   "pcb_and_gerber_checks": "passed",
-  "case_checks": "passed: original openings restored; all 36 nominal 17.5 x 16.5 mm CS 1U footprints clear through case height",
+  "case_checks": "passed: 231 mm case, same height; all 36 shifted nominal 17.5 x 16.5 mm CS 1U footprints and axial resistor envelopes clear",
   "firmware_build": "passed",
   "physical_assembly_tested": false,
   "jlcpcb_portal_verified": false,
   "source_hashes": {
-    "001 PCB/KICAD/NICE NANO WIRELESS/TheEndgame2024_NiceNano.kicad_pcb": "1d4d96c9efb6e6973a54d4c306bff2627ea1e06086c7c1779a54965a278054cf",
-    "001 PCB/KICAD/NICE NANO WIRELESS/TheEndgame2024_NiceNano.kicad_sch": "bf6779ff350411f8813afbc0e9fe88df1e0b6041f0935f357b1f72769bdf5e82",
-    "001 PCB/GERBER/NICE NANO WIRELESS/TheEndgame2024_NiceNano_Choc_V1_V2_JLCPCB.zip": "38e40b6a6d573aae45d99548bf262564769d062702ccbc1766b2d89740687457",
+    "001 PCB/KICAD/NICE NANO WIRELESS/TheEndgame2024_NiceNano.kicad_pcb": "e5223e848921047923474be2aa05235f5087fc120c3f9a9fd1052ff5834562f4",
+    "001 PCB/KICAD/NICE NANO WIRELESS/TheEndgame2024_NiceNano.kicad_sch": "9bb7c06de2f98a17929662c34dbf1dbff7aed24a48cdfdddd2be9f5615f419e7",
     "003 FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-v2.uf2": "dd09dd839af2fcc30e750b2b8cfd9ea6b40a9c6e78241b1ceba5eac6654ca5ae",
-    "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_CASE.step": "7cd0e0b93267b6303768920c882dd7d5e52c55431051f84e70aa62ce2a353e84",
+    "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_CASE.step": "530ec95b98cade882e51b9281a5aa2ee14a83c5995db31c7f7018ada5ed64566",
     "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.step": "25ae9ef95af9a3886de24d7d04de4f65fddc93355674285928c16efceb7628bc",
     "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.stl": "b7c187ba37d6280ef2f829c727175fff5649332a0961c6e5099ae99ea8ca7e69",
-    "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_CASE.stl": "59656e002a0cff1ebc2a48a2b25b2a9b187d725dd861686cfcf8e9ac5b8bbd95"
+    "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_CASE.stl": "896dc7dec76e1edef761b292a253ee1c40424232ee840a4ae5317e9605f039fb",
+    "001 PCB/GERBER/NICE NANO WIRELESS/TheEndgame2024_NiceNano_223mm_THT_JLCPCB.zip": "25c72831301f0641045401afa0cec08d2440b7e30919f5c405f65c11e87c0e7b",
+    "001 PCB/KICAD/NICE NANO WIRELESS/NanoWireless.pretty/R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal.kicad_mod": "c767324fc42230f3eaba749d3ff50c2912d3387d74fd706e9f94b080fd6d7b3a",
+    "001 PCB/KICAD/NICE NANO WIRELESS/NanoWireless.pretty/WS2812B_V6_5050.kicad_mod": "95b4c2795f62b8dc93fd05c3cb06bce5c29ff3f48466050095d44996f8037365",
+    "tools/build_nice_nano_case.py": "57f526d1d552988a928f3276ff03d2655531ad4c115433bab1d0eefa3d1616a0",
+    "tools/widen_nice_nano_pcb.py": "50c4e392e19f254340d759224fa0d095f4b028980813226be3b1084eb6626a65"
   },
-  "case_revision_note": "Removed controller lips after 8952a78; fixed-height cap proxy had missed press interference."
+  "case_revision_note": "Widened both case wings by 2 mm around the fixed centre section; offset axial resistor pockets; original controller lips remain removed.",
+  "pcb_revision_note": "223 mm width; both key halves shifted 2 mm outward, original cap borders retained; nice!nano, battery opening and LED share X=150 mm; 1/4 W axial R1/R2.",
+  "spacing_checks": "passed: 2.159862 mm minimum XY clearance from conservative 18 x 33 mm nice!nano envelope to nominal keycap envelopes",
+  "order_settings": {
+    "size_mm": [
+      223.0,
+      96.11
+    ],
+    "layers": 2,
+    "thickness_mm": 1.6,
+    "copper_weight_oz": 1
+  }
 }

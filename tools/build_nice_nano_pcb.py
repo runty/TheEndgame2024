@@ -18,7 +18,7 @@ BASE = ROOT / '001 PCB/KICAD/XIAO WIRELESS/TheEndgame2024_XIAO.kicad_pcb'
 PROJECT = ROOT / '001 PCB/KICAD/NICE NANO WIRELESS'
 LIBS = Path('/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints')
 PLACEMENT = {'U2': (150,80,0), 'LED1': (150,103.5,0),
-             'C1': (154.5,102,90), 'R1': (145.5,102,90), 'R2': (144.5,104.5,0)}
+             'C1': (154.5,102,90), 'R1': (137.77,99.4,0), 'R2': (162.23,107.6,180)}
 
 def vec(x,y):
     return p.VECTOR2I(p.FromMM(x),p.FromMM(y))
