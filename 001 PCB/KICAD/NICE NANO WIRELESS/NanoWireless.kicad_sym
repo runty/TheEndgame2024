@@ -1,0 +1,317 @@
+(kicad_symbol_lib (version 20231120) (generator "kicad_symbol_editor")
+(symbol "NiceNano_v2_PinPosts"
+ (pin_names (offset 0.762)) (in_bom yes) (on_board yes)
+ (property "Reference" "U" (at 0 20.32 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "nice!nano_v2" (at 0 17.78 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "NanoWireless:NiceNano_v2_PinPosts" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "https://nicekeyboards.com/docs/nice-nano/pinout-schematic/" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (symbol "NiceNano_v2_PinPosts_0_1" (rectangle (start -12.70 16.51) (end 12.70 -16.51) (stroke (width 0.254) (type default)) (fill (type background))))
+ (symbol "NiceNano_v2_PinPosts_1_1"
+ (pin bidirectional line (at -17.78 13.97 0) (length 5.08) (name "D1/P0.06" (effects (font (size 1.00 1.00)))) (number "1" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at -17.78 11.43 0) (length 5.08) (name "D0/P0.08" (effects (font (size 1.00 1.00)))) (number "2" (effects (font (size 1.00 1.00)))))
+ (pin power_in line (at -17.78 8.89 0) (length 5.08) (name "GND" (effects (font (size 1.00 1.00)))) (number "3" (effects (font (size 1.00 1.00)))))
+ (pin power_in line (at -17.78 6.35 0) (length 5.08) (name "GND" (effects (font (size 1.00 1.00)))) (number "4" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at -17.78 3.81 0) (length 5.08) (name "D2/P0.17" (effects (font (size 1.00 1.00)))) (number "5" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at -17.78 1.27 0) (length 5.08) (name "D3/P0.20" (effects (font (size 1.00 1.00)))) (number "6" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at -17.78 -1.27 0) (length 5.08) (name "D4/P0.22" (effects (font (size 1.00 1.00)))) (number "7" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at -17.78 -3.81 0) (length 5.08) (name "D5/P0.24" (effects (font (size 1.00 1.00)))) (number "8" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at -17.78 -6.35 0) (length 5.08) (name "D6/P1.00" (effects (font (size 1.00 1.00)))) (number "9" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at -17.78 -8.89 0) (length 5.08) (name "D7/P0.11" (effects (font (size 1.00 1.00)))) (number "10" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at -17.78 -11.43 0) (length 5.08) (name "D8/P1.04" (effects (font (size 1.00 1.00)))) (number "11" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at -17.78 -13.97 0) (length 5.08) (name "D9/P1.06" (effects (font (size 1.00 1.00)))) (number "12" (effects (font (size 1.00 1.00)))))
+ (pin power_in line (at 17.78 13.97 180) (length 5.08) (name "RAW" (effects (font (size 1.00 1.00)))) (number "24" (effects (font (size 1.00 1.00)))))
+ (pin power_in line (at 17.78 11.43 180) (length 5.08) (name "GND" (effects (font (size 1.00 1.00)))) (number "23" (effects (font (size 1.00 1.00)))))
+ (pin input line (at 17.78 8.89 180) (length 5.08) (name "RST" (effects (font (size 1.00 1.00)))) (number "22" (effects (font (size 1.00 1.00)))))
+ (pin power_out line (at 17.78 6.35 180) (length 5.08) (name "VCC_SW" (effects (font (size 1.00 1.00)))) (number "21" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at 17.78 3.81 180) (length 5.08) (name "D21/P0.31" (effects (font (size 1.00 1.00)))) (number "20" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at 17.78 1.27 180) (length 5.08) (name "D20/P0.29" (effects (font (size 1.00 1.00)))) (number "19" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at 17.78 -1.27 180) (length 5.08) (name "D19/P0.02" (effects (font (size 1.00 1.00)))) (number "18" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at 17.78 -3.81 180) (length 5.08) (name "D18/P1.15" (effects (font (size 1.00 1.00)))) (number "17" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at 17.78 -6.35 180) (length 5.08) (name "D15/P1.13" (effects (font (size 1.00 1.00)))) (number "16" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at 17.78 -8.89 180) (length 5.08) (name "D14/P1.11" (effects (font (size 1.00 1.00)))) (number "15" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at 17.78 -11.43 180) (length 5.08) (name "D16/P0.10" (effects (font (size 1.00 1.00)))) (number "14" (effects (font (size 1.00 1.00)))))
+ (pin bidirectional line (at 17.78 -13.97 180) (length 5.08) (name "D10/P0.09" (effects (font (size 1.00 1.00)))) (number "13" (effects (font (size 1.00 1.00))))))
+)
+(symbol "Battery_Wire_Pads"
+ (pin_names (offset 0.762)) (in_bom yes) (on_board yes)
+ (property "Reference" "J" (at 0 6.35 0) (effects (font (size 1.27 1.27))))
+ (property "Value" "BATTERY_WIRES" (at 0 -6.35 0) (effects (font (size 1.27 1.27))))
+ (property "Footprint" "NanoWireless:Battery_Wire_Pads" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+ (symbol "Battery_Wire_Pads_0_1" (rectangle (start -3.81 3.81) (end 3.81 -3.81) (stroke (width 0.254) (type default)) (fill (type background))))
+ (symbol "Battery_Wire_Pads_1_1"
+  (pin power_out line (at 6.35 2.54 180) (length 2.54) (name "B+" (effects (font (size 1.27 1.27)))) (number "1" (effects (font (size 1.27 1.27)))))
+  (pin power_out line (at 6.35 -2.54 180) (length 2.54) (name "B-" (effects (font (size 1.27 1.27)))) (number "2" (effects (font (size 1.27 1.27))))))
+)
+(symbol "WS2812B_V6"
+		(pin_names
+			(offset 0.254)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "D"
+			(at 5.08 5.715 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right bottom)
+			)
+		)
+		(property "Value" "WS2812B-V6"
+			(at 1.27 -5.715 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(property "Footprint" "NanoWireless:WS2812B_V6_5050"
+			(at 1.27 -7.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(property "Datasheet" "https://www.world-semi.com/downloads/datasheets/en/ws2812b-v6-1.0.pdf"
+			(at 2.54 -9.525 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(property "Description" "RGB LED with integrated controller"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "RGB LED NeoPixel addressable"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "LED*WS2812*PLCC*5.0x5.0mm*P3.2mm*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "WS2812B_V6_0_0"
+			(text "RGB"
+				(at 2.286 -4.191 0)
+				(effects
+					(font
+						(size 0.762 0.762)
+					)
+				)
+			)
+		)
+		(symbol "WS2812B_V6_0_1"
+			(polyline
+				(pts
+					(xy 1.27 -2.54) (xy 1.778 -2.54)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 1.27 -3.556) (xy 1.778 -3.556)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 2.286 -1.524) (xy 1.27 -2.54) (xy 1.27 -2.032)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 2.286 -2.54) (xy 1.27 -3.556) (xy 1.27 -3.048)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 3.683 -1.016) (xy 3.683 -3.556) (xy 3.683 -4.064)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 4.699 -1.524) (xy 2.667 -1.524) (xy 3.683 -3.556) (xy 4.699 -1.524)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 4.699 -3.556) (xy 2.667 -3.556)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start 5.08 5.08)
+				(end -5.08 -5.08)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+		)
+		(symbol "WS2812B_V6_1_1"
+			(pin power_in line
+				(at 0 7.62 270)
+				(length 2.54)
+				(name "VDD"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin output line
+				(at 7.62 0 180)
+				(length 2.54)
+				(name "DOUT"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at 0 -7.62 90)
+				(length 2.54)
+				(name "VSS"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at -7.62 0 0)
+				(length 2.54)
+				(name "DIN"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+)

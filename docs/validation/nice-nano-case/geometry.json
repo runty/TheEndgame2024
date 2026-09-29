@@ -1,0 +1,60 @@
+{
+  "coordinate_frame": "(PCB X - 150, 140 - PCB Y, Z)",
+  "parts": {
+    "case": {
+      "step_valid_single_solid": true,
+      "step_volume_mm3": 60337.676,
+      "stl_watertight": true,
+      "stl_winding_consistent": true,
+      "stl_faces": 16208,
+      "stl_volume_mm3": 60339.013
+    },
+    "tray": {
+      "step_valid_single_solid": true,
+      "step_volume_mm3": 1194.085,
+      "stl_watertight": true,
+      "stl_winding_consistent": true,
+      "stl_faces": 4444,
+      "stl_volume_mm3": 1194.133
+    }
+  },
+  "original_case_profile_retained_outside_controller_bump": true,
+  "controller_bump_xy_bounds_mm": [
+    -10,
+    42.2,
+    10,
+    79.7
+  ],
+  "controller_local_cover_min_top_z_mm": 7.75,
+  "usb_local_cover_min_top_z_mm": 8.55,
+  "battery_pocket_pcb_xy_mm": [
+    139,
+    109,
+    161,
+    144
+  ],
+  "battery_pack_proxy_xyz_mm": [
+    18.5,
+    33.0,
+    5.0
+  ],
+  "battery_pack_proxy_is_a_maximum": false,
+  "battery_roof_minimum_mm": 1.25,
+  "controller_cavity_top_z_mm": 6.5,
+  "controller_complete_assembly_max_z_mm": 6.0,
+  "controller_hood_roof_mm": 1.25,
+  "usb_passage_top_z_mm": 7.3,
+  "usb_crown_roof_mm": 1.25,
+  "all_36_switch_body_proxies_clear": true,
+  "minimum_switch_body_proxy_clearance_mm": 0.5385,
+  "keycap_clearance_verified": false,
+  "maximum_case_height_increased": false,
+  "original_case_z_bounds_mm": [
+    -1.399999976158142,
+    10.127236366271973
+  ],
+  "revised_case_z_bounds_mm": [
+    -1.399999976158142,
+    10.127236366271973
+  ]
+}

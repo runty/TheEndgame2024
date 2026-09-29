@@ -1,0 +1,48 @@
+# Endgame nice!nano v2 firmware
+
+The buildable ZMK configuration is in [`003 FIRMWARE/zmk-endgame-nice-nano`](../003%20FIRMWARE/zmk-endgame-nice-nano). It targets **nice!nano v2** (`nice_nano//zmk`, board revision 2.0.0) and the revised Endgame PCB with 36 Choc V1/V2 switch positions, one WS2812B-V6 status LED, and no 74HC595. The original XIAO configuration remains separate.
+
+## Matrix and keymap
+
+The shield uses ZMK's stock `zmk,kscan-gpio-matrix` with COL2ROW diodes, four direct rows, ten direct columns, and the existing 36-position transform. The keymap file is byte-for-byte identical to the old ZMK keymap. Nothing in the shipped keymap invokes the LED.
+
+| Matrix signal | nice!nano D pin | nRF52840 pin |
+| --- | ---: | --- |
+| Row 0 | D6 | P1.00 |
+| Row 1 | D7 | P0.11 |
+| Row 2 | D8 | P1.04 |
+| Row 3 | D9 | P1.06 |
+| Col 0 | D0 | P0.08 |
+| Col 1 | D2 | P0.17 |
+| Col 2 | D3 | P0.20 |
+| Col 3 | D4 | P0.22 |
+| Col 4 | D5 | P0.24 |
+| Col 5 | D21 | P0.31 |
+| Col 6 | D20 | P0.29 |
+| Col 7 | D19 | P0.02 |
+| Col 8 | D18 | P1.15 |
+| Col 9 | D15 | P1.13 |
+
+The bottom row has positions `RC(3,0)`, `RC(3,3)`, `RC(3,4)`, `RC(3,5)`, `RC(3,6)`, and `RC(3,9)`; these retain Left Shift, Lower/Escape, Return, Space, Raise/Delete, and Right Shift.
+
+## Status pixel
+
+The PCB has one WS2812B-V6 behind the translucent case; no dedicated case opening is needed. Its DIN is on **D1/P0.06** through 330 Ω, with a 100 kΩ pulldown on DIN. Its VDD is on nice!nano v2 switched VCC, decoupled with 100 nF next to the LED. **P0.13 high enables that rail; low disables it.** Firmware disables ZMK's stock persistent `EXT_POWER` node and drives P0.13 low at startup. DIN is also driven low when the LED is unpowered to avoid phantom power through the input pin.
+
+SPI3 is used only to send the WS2812 data on P0.06. A dedicated V6 encoder packs twenty samples per bit at 16 MHz: zero is 312.5 ns high / 937.5 ns low, one is 625 ns high / 625 ns low, and every bit lasts 1.25 µs. It waits 300 µs after each frame and 1 ms after enabling power, then initializes the pixel to black before a pulse. These values match the selected V6 datasheet; the generic four-megahertz WS2812 example is not used. A host test decodes 258 encoded frames and verifies GRB order, high/low pulse widths, and final data-low state. Its stock 74HC595 SPI IRQ patch is neither copied nor applied. ZMK RGB underglow is disabled, so there is no animation, stored on-state, or persistent LED supply.
+
+[`status_pulse.h`](../003%20FIRMWARE/zmk-endgame-nice-nano/status-pulse/include/endgame/status_pulse.h) exposes `endgame_status_pulse(red, green, blue, duration_ms)` and `endgame_status_cancel()` for later status-event work. Each RGB channel is capped at 25/255 (under 10%); a zero duration uses 100 ms and any requested duration is capped at 500 ms. A fresh voltage reading below 3.6 V suppresses a pulse; sensor failure also suppresses it. The pulse is rejected during sleep, canceled on sleep or device suspend, and cut off after errors or explicit cancellation. This 3.6 V threshold is provisional headroom for the LED's 3.3 V minimum. The battery sensor reads nice!nano VDDH, **not the switched LED rail**; measure LED VDD on the assembled board before treating the threshold as electrically validated.
+
+The behavior node `&status_pulse` is compiled but intentionally unbound. To test it on hardware, temporarily replace an expendable Raise-layer binding such as `&kp F12` in `config/endgame.keymap` with `&status_pulse`, rebuild, press that key while holding Raise, and then restore the keymap. It sends a dim amber 100 ms pulse. No automatic Bluetooth, battery, or other status meaning is assigned yet.
+
+## Build and flash
+
+Run `003 FIRMWARE/zmk-endgame-nice-nano/build.sh` from the repository or any working directory. The script uses the existing `/tmp/endgame-zmk-workspace` dependency tree and pinned ZMK commit `5b51501fead672c41b5cfb396f3dafe0894bf4e9`. It extracts a clean archive of that commit into a separate temporary source tree and builds in `/tmp/endgame-zmk-workspace/build/endgame-nice-nano`. This isolates the build from the XIAO source's local IRQ patch. The script stages the config and module under a path without spaces because ZMK's devicetree overlay list splits a path containing `003 FIRMWARE`.
+
+The output is [`endgame-nice-nano-v2.uf2`](../003%20FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-v2.uf2). Double-tap reset on nice!nano v2 and copy the UF2 to its bootloader drive. A successful clean compile is recorded in [`build.log`](../003%20FIRMWARE/zmk-endgame-nice-nano/firmware/build.log). The UF2 SHA-256 is:
+
+```text
+dd09dd839af2fcc30e750b2b8cfd9ea6b40a9c6e78241b1ceba5eac6654ca5ae
+```
+
+The build proves that the pinned source, devicetree, keymap, pulse module, and target link together. Board-level validation remains: check that P0.13 and LED VDD are low after boot and after a pulse, DIN is low while VDD is off, all 36 matrix positions register once, BLE/USB work, and the LED is visible through the case. Measure the LED rail at low battery and during USB charging before choosing a final cutoff.

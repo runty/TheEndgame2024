@@ -1,3 +1,9 @@
+## nice!nano wireless development
+
+The current wireless prototype uses **nice!nano v2**, a direct-wired **401730 battery**, and one **WS2812B-V6 status LED**, while retaining all 36 Choc V1/V2 hot-swap keys and the preferred power-switch location. The case keeps the original sloped profile and overall height; deeper internal pockets and small local controller shoulders provide clearance. The LED stays off until a status behavior is assigned.
+
+The [prototype handoff](docs/nice-nano-wireless.md) links the [JLCPCB Gerber ZIP](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano_Choc_V1_V2_JLCPCB.zip), case/tray STL and STEP files, firmware, BOM, and validation reports. Order **2 layers, 1.6 mm FR-4, 219 × 96.11 mm**. ERC/DRC and independent Gerber checks pass. This is a digital prototype: the actual generic battery, short-post controller assembly, printed case, and electrical behavior still need physical verification. The separate XIAO and wired variants follow below.
+
 ## XIAO wireless development
 
 The XIAO nRF52840 wireless revision has reached a complete digital prototype: the schematic/ERC, routed PCB/KiCad 10 DRC, case and battery-tray CAD, ZMK firmware build, and independently checked Gerber/drill package are complete. No JLCPCB upload or portal preview has been performed, and no physical wireless board or case has been tested. The original 36 Choc V1/V2 switch positions are retained, the battery solders directly to B+/B−, and the buzzer is removed. The older ZIP linked below is the previous **wired RP2040** board and must not be used for the wireless design.

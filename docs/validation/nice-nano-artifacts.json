@@ -1,0 +1,20 @@
+{
+  "branch": "codex/nice-nano-401730",
+  "baseline_commit": "266837a31cb1650d1b328a3d6603a5b71241a465",
+  "kicad_version": "10.0.6",
+  "pcb_and_gerber_checks": "passed",
+  "case_checks": "passed for documented geometric proxies",
+  "firmware_build": "passed",
+  "physical_assembly_tested": false,
+  "jlcpcb_portal_verified": false,
+  "source_hashes": {
+    "001 PCB/KICAD/NICE NANO WIRELESS/TheEndgame2024_NiceNano.kicad_pcb": "1d4d96c9efb6e6973a54d4c306bff2627ea1e06086c7c1779a54965a278054cf",
+    "001 PCB/KICAD/NICE NANO WIRELESS/TheEndgame2024_NiceNano.kicad_sch": "bf6779ff350411f8813afbc0e9fe88df1e0b6041f0935f357b1f72769bdf5e82",
+    "001 PCB/GERBER/NICE NANO WIRELESS/TheEndgame2024_NiceNano_Choc_V1_V2_JLCPCB.zip": "38e40b6a6d573aae45d99548bf262564769d062702ccbc1766b2d89740687457",
+    "003 FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-v2.uf2": "dd09dd839af2fcc30e750b2b8cfd9ea6b40a9c6e78241b1ceba5eac6654ca5ae",
+    "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_CASE.step": "71ff3ad6ccd48c32bc4dffc23516a307de1b5d0c567dd854f11138d0ac0ba67c",
+    "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.step": "25ae9ef95af9a3886de24d7d04de4f65fddc93355674285928c16efceb7628bc",
+    "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.stl": "b7c187ba37d6280ef2f829c727175fff5649332a0961c6e5099ae99ea8ca7e69",
+    "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_CASE.stl": "920bf6efc22e03dabba5b98fb5e0d8b7bd97ba312e42520de553c534b392073c"
+  }
+}

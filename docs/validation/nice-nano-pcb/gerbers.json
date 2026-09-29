@@ -1,0 +1,33 @@
+{
+  "archive": "TheEndgame2024_NiceNano_Choc_V1_V2_JLCPCB.zip",
+  "archive_sha256": "38e40b6a6d573aae45d99548bf262564769d062702ccbc1766b2d89740687457",
+  "source_sha256": "1d4d96c9efb6e6973a54d4c306bff2627ea1e06086c7c1779a54965a278054cf",
+  "graphic_layers": 7,
+  "plated_drills": 218,
+  "nonplated_drills_and_slots": 148,
+  "all_drills_registered_to_source": true,
+  "registration_tolerance_mm": 0.002,
+  "closed_outline_contours": 2,
+  "outline_contour_bounds_mm": [
+    [
+      40.499969,
+      -158.66867030576088,
+      259.500001,
+      -62.562598999998215
+    ],
+    [
+      139.0,
+      -144.0,
+      161.0,
+      -109.0
+    ]
+  ],
+  "board_dimensions_mm": [
+    219.000032,
+    96.10607130576267
+  ],
+  "switch_center_holes_5mm": 36,
+  "v1_locators_1_7mm": 72,
+  "v2_slots_1_5_by_2mm": 36,
+  "parser": "Gerbonara 1.6.3"
+}
