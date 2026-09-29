@@ -1,26 +1,86 @@
-## nice!nano wireless development
+# Endgame — nice!nano wireless / Choc V1 & V2
 
-The current wireless prototype uses **nice!nano v2**, a direct-wired **401730 battery**, and one **WS2812B-V6 status LED**, while retaining all 36 Choc V1/V2 hot-swap keys and the preferred power-switch location. The case keeps the original sloped profile and overall height; deeper internal pockets provide clearance. The controller hood and side shoulders were removed after a full-height cap-envelope check found interference with adjacent keycap envelopes. The LED stays off until a status behavior is assigned.
+A 36-key wireless adaptation of [OldMan6955's Endgame](https://github.com/OldMan6955/TheEndgame2024), using **nice!nano v2**, Choc V1/V2 hot-swap switches, a directly soldered **401730 battery**, and one **WS2812B-V6 status LED**.
 
-R1 and R2 now accept **¼ W axial through-hole resistors** at 10.16 mm pitch. The controller, battery opening, and LED share the board's X=150 mm centreline. Each key half moves 2 mm outward, retaining the original equal left/right borders; the offset Choc locating holes account for the apparent asymmetry in the drill pattern. See the [measured comparison](docs/validation/nice-nano-pcb/outer-key-symmetry.png).
+The current revision is **4 mm wider than the original PCB**. Each key half moves outward 2 mm, giving the inner keys more clearance from the controller while preserving the original outer borders. The controller, battery opening, and LED remain on the board's centreline. The matching case is wider but retains the original height and sloped profile.
 
-The [prototype handoff](docs/nice-nano-wireless.md) links the [JLCPCB Gerber ZIP](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano_223mm_THT_JLCPCB.zip), case/tray STL and STEP files, firmware, BOM, and validation reports. Order **2 layers, 1 oz copper, 1.6 mm FR-4, 223 × 96.11 mm**. ERC/DRC and independent Gerber checks pass. All 36 nominal 17.5 × 16.5 mm CS keycap envelopes swept from PCB top through Z=20 clear the case in CAD (minimum gap 0.70 mm); this rectangular check does not prove physical print fit or larger thumb-cap clearance. Choc V2 uses the MX-stem CS variant; see the [case clearance notes](docs/nice-nano-case.md). This is a digital prototype: the actual generic battery, short-post controller assembly, printed case, and electrical behavior still need physical verification. The separate XIAO and wired variants follow below.
+**Status:** verified digital prototype. Electrical, manufacturing-file, and CAD checks pass; physical assembly and electrical operation have not been tested. The current Gerber package has not been verified in JLCPCB's upload preview.
 
-## XIAO wireless development
+![Current PCB, front](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/front-preview.png)
 
-The XIAO nRF52840 wireless revision has reached a complete digital prototype: the schematic/ERC, routed PCB/KiCad 10 DRC, case and battery-tray CAD, ZMK firmware build, and independently checked Gerber/drill package are complete. No JLCPCB upload or portal preview has been performed, and no physical wireless board or case has been tested. The original 36 Choc V1/V2 switch positions are retained, the battery solders directly to B+/B−, and the buzzer is removed. The older ZIP linked below is the previous **wired RP2040** board and must not be used for the wireless design.
+## Downloads
 
-See the [XIAO wireless prototype handoff](docs/xiao-wireless.md) for the current BOM, assembly constraints, validation status, and remaining hardware checks. The digital board passed KiCad 10 ERC and DRC with no violations or unconnected items. The wireless [Gerber/drill ZIP](001%20PCB/GERBER/XIAO%20WIRELESS/TheEndgame2024_XIAO_Choc_V1_V2_JLCPCB.zip) has been independently checked; no JLCPCB upload or portal preview has been performed. Order as **2 layers, 1.6 mm FR-4** with an outline of **219 × 96.11 mm**. Printable [case STL](002%20CASE/XIAO%20WIRELESS/TheENDGAME2024_XIAO_CASE.stl), [battery tray STL](002%20CASE/XIAO%20WIRELESS/TheENDGAME2024_XIAO_BATTERY_TRAY.stl), and [prototype UF2](003%20FIRMWARE/zmk-endgame/firmware/endgame-xiao-nrf52840.uf2) are available. Detailed [electrical](docs/xiao-electrical.md), [case](docs/xiao-case.md), and [firmware](docs/xiao-firmware.md) notes cover design limits and bring-up checks. The original [development plan](docs/xiao-nrf52840-plan.md) and [battery comparison](docs/xiao-battery-options.md) remain available as design history.
+Use the PCB, case, and firmware from this table together. The original case and the older XIAO/wired files are separate revisions.
 
-## Choc V1/V2 fork
+| File | Download |
+| --- | --- |
+| JLCPCB manufacturing package | [223 mm through-hole-resistor Gerber ZIP](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano_223mm_THT_JLCPCB.zip) |
+| Widened case | [STL](002%20CASE/NICE%20NANO%20WIRELESS/TheENDGAME2024_NICE_NANO_CASE.stl) · [STEP](002%20CASE/NICE%20NANO%20WIRELESS/TheENDGAME2024_NICE_NANO_CASE.step) |
+| Removable battery tray | [STL](002%20CASE/NICE%20NANO%20WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.stl) · [STEP](002%20CASE/NICE%20NANO%20WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.step) |
+| Editable KiCad project | [PCB](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano.kicad_pcb) · [schematic](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano.kicad_sch) · [project and local libraries](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/) |
+| nice!nano v2 firmware | [UF2](003%20FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-v2.uf2) · [ZMK source](003%20FIRMWARE/zmk-endgame-nice-nano/) |
+| Build details | [Full BOM and assembly notes](docs/nice-nano-wireless.md) · [electrical](docs/nice-nano-electrical.md) · [case](docs/nice-nano-case.md) · [firmware](docs/nice-nano-firmware.md) |
 
-This fork adds **Kailh Choc V2 (PG1353) hot-swap support alongside Choc V1** while preserving the original Endgame PCB mounting geometry and 1.6 mm thickness for the existing case.
+## JLCPCB order settings
 
-See [the compatibility and manufacturing notes](docs/choc-v1-v2.md) for the exact switch drawing, case-fit check, keycap spacing limits, and assembly changes. The conversion uses hot-swap sockets; the original optional direct-solder pattern is no longer supported.
+| Setting | Value |
+| --- | --- |
+| Dimensions to enter | **223.00 × 96.11 mm** |
+| Layers | **2** |
+| Material | **FR-4** |
+| Board thickness | **1.6 mm** |
+| Copper weight | **1 oz** |
 
-[Download the JLCPCB manufacturing ZIP](001%20PCB/GERBER/CHOC%20V1%20V2/TheEndgame2024_Choc_V1_V2_JLCPCB.zip). Order a **2-layer, 1.6 mm FR-4** board. The new revision passes KiCad DRC and CAD case-fit checks, but has not been physically prototyped.
+The measured Gerber outline is **223.000032 × 96.106067 mm**. Upload the ZIP intact: it contains the seven board layers, separate plated/non-plated drill files, and the Gerber job file. The **22 × 35 mm battery opening** is included as an internal routed contour. If dimensions need to be entered manually, use the rounded values above and check the board outline and battery opening in the preview.
 
-The original project description follows.
+## Fit and clearance
+
+| Feature | Current design |
+| --- | --- |
+| Key field | 36 Choc V1/V2 hot-swap positions; each half moved outward 2 mm |
+| Outer left/right 1U cap borders | **2.00 mm**, matching the original PCB with 17.5 × 16.5 mm caps |
+| Keycap-to-controller clearance | **2.16 mm minimum** to the conservative 18 × 33 mm nice!nano envelope in CAD |
+| Printed case width | **231 mm**, with the original overall height retained |
+| Battery opening | **22 × 35 mm**, with 1 mm corner radii |
+| Battery allowance checked | **18.5 × 33 × 5 mm** complete-pack envelope |
+
+A centred **17 × 30 mm** battery leaves **2.5 mm on each side of the PCB opening**. The larger checked pack envelope leaves **1.75 mm per side and 1.0 mm at each end**, with **0.15 mm above the 5 mm-thick envelope** inside the case after the planned 0.2 mm support allowance. The actual wrapped battery and its lead exit still need measurement.
+
+All 36 nominal **17.5 × 16.5 mm Chicago Steno 1U keycap envelopes** clear the case throughout a full-height CAD sweep, with a **0.70 mm minimum gap**. Choc V2 requires **MX-stem** keycaps. Larger thumb caps and actual print tolerances are not established by this rectangular-envelope check.
+
+See the [measured layout and centreline](docs/validation/nice-nano-pcb/outer-key-symmetry.png), [keycap clearance comparison](docs/validation/nice-nano-case/cs-clearance.png), and [case preview](002%20CASE/NICE%20NANO%20WIRELESS/case-and-tray-preview.png).
+
+## Electronics and assembly
+
+- **nice!nano v2:** mount on short soldered posts, with USB facing the upper edge. Follow the [assembly-height limits](docs/nice-nano-case.md); standard sockets have not been qualified for this case.
+- **Battery:** generic 401730 single-cell LiPo, target capacity ≤200 mAh. Solder its wires directly to **J1: pad 1 B+, pad 2 B−**. No JST connector is used. SW38 remains the physical battery disconnect.
+- **Resistors:** R1 **330 Ω** and R2 **100 kΩ**, ordinary **¼ W axial through-hole** parts. Use nominal 6.3 × 2.5 mm bodies at **10.16 mm lead pitch**, mounted flat on the PCB's top side. The case accommodates bodies up to 6.5 × 2.5 mm; installation and lead-trimming limits are in the [BOM](docs/nice-nano-wireless.md#parts-and-assembly).
+- **Status LED:** one **Worldsemi WS2812B-V6**, powered through nice!nano v2 switched VCC. The translucent case roof acts as the diffuser. Firmware keeps it off between events; status meanings are not assigned yet.
+- **Other parts:** C1 remains a **100 nF 0603 capacitor**, and the matrix retains **36 SOD-123 diodes and 36 Choc hot-swap sockets**. This is a hot-swap switch design; the original optional direct-solder switch pattern is not retained.
+
+The [full parts list](docs/nice-nano-wireless.md#parts-and-assembly) includes controller posts, inserts, tray screws, feet, battery-fit assumptions, and charging requirements. Firmware is **ZMK for nice!nano v2**; the original wired QMK/Vial firmware does not apply to this revision.
+
+## Verification
+
+- **KiCad ERC, DRC, and schematic parity:** zero reported violations or unconnected items under the recorded rules. [ERC](docs/validation/nice-nano-schematic/erc.json) · [DRC](docs/validation/nice-nano-pcb/drc.json)
+- **Independent Gerber parsing:** seven board layers, **226 plated and 148 non-plated holes/slots**, both contours closed, and drill registration checked against the PCB source. [Report](docs/validation/nice-nano-pcb/gerbers.json)
+- **Mechanical checks:** mirrored key placement, preserved outer borders, centred electronics, valid single-solid STEP parts, watertight STL files, and component/keycap clearance checks. [Spacing](docs/validation/nice-nano-pcb/spacing.json) · [case](docs/validation/nice-nano-case/geometry.json)
+- **Firmware:** pinned ZMK build and LED encoder host checks pass. Hardware timing, charging, RF, and full keyboard operation remain untested. [Build and bring-up notes](docs/nice-nano-firmware.md)
+
+The committed PCB is the authoritative manufacturing source. The scratch PCB generator is not a replacement for the finished routing. The [artifact manifest](docs/validation/nice-nano-artifacts.json) records source and output checksums.
+
+## Earlier revisions
+
+| Revision | Details |
+| --- | --- |
+| XIAO nRF52840 wireless prototype | [Handoff, files, and assembly notes](docs/xiao-wireless.md); 219 × 96.11 mm PCB with a different controller and case |
+| Wired Choc V1/V2 conversion | [Compatibility and manufacturing notes](docs/choc-v1-v2.md); original mounting geometry and case |
+| Original Endgame | [Upstream project](https://github.com/OldMan6955/TheEndgame2024); original author documentation preserved below |
+
+<details>
+<summary>Original upstream README — wired Endgame, parts, credits, and photos</summary>
+
+The following is the original project's documentation. Its controller, firmware, parts lists, manufacturing comments, and physical-test statements refer to the original wired design, not the nice!nano revision above.
 
 <img src="https://github.com/OldMan6955/TheEndgame2024/blob/main/004%20IMAGES/TheEndgameBillboard.jpg" alt="TheEndgameBillboard">
 
@@ -145,3 +205,5 @@ Just a heads-up: I can’t help with technical issues or soldering nightmares be
 
     "The worst thing that can happen is someone calling me a keyboard designer."
     -OLDMAN6955
+
+</details>
