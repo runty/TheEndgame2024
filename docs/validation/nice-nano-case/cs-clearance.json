@@ -1,0 +1,198 @@
+{
+  "footprint_mm": [
+    17.5,
+    16.5
+  ],
+  "footprint_source": "User-specified nominal CS 1U size, centred on each switch",
+  "swept_z_bounds_mm": [
+    1.6,
+    20
+  ],
+  "coordinate_datum": "PCB bottom Z=0; no assumed resting skirt height",
+  "all_36_nominal_1u_envelopes_clear": true,
+  "minimum_clearance_mm": 0.7042754787491189,
+  "original_clearance_preserved": true,
+  "physical_print_or_wider_thumb_caps_verified": false,
+  "positions": [
+    {
+      "reference": "SW20",
+      "original_clearance_mm": 0.7043277829659274,
+      "revised_clearance_mm": 0.7043277829659274
+    },
+    {
+      "reference": "SW30",
+      "original_clearance_mm": 0.8500033131349914,
+      "revised_clearance_mm": 0.8500033131349914
+    },
+    {
+      "reference": "SW23",
+      "original_clearance_mm": 0.8499971506537415,
+      "revised_clearance_mm": 0.8499971506537415
+    },
+    {
+      "reference": "SW11",
+      "original_clearance_mm": 0.8499980417991818,
+      "revised_clearance_mm": 0.8499980417991818
+    },
+    {
+      "reference": "SW7",
+      "original_clearance_mm": 13.554156916285415,
+      "revised_clearance_mm": 13.554156916285415
+    },
+    {
+      "reference": "SW29",
+      "original_clearance_mm": 14.083361317632873,
+      "revised_clearance_mm": 14.083361317632873
+    },
+    {
+      "reference": "SW34",
+      "original_clearance_mm": 0.7046177732264263,
+      "revised_clearance_mm": 0.7046177732264263
+    },
+    {
+      "reference": "SW21",
+      "original_clearance_mm": 0.8499907477592543,
+      "revised_clearance_mm": 0.8499907477592543
+    },
+    {
+      "reference": "SW27",
+      "original_clearance_mm": 0.7043329123969139,
+      "revised_clearance_mm": 0.7043329123969139
+    },
+    {
+      "reference": "SW31",
+      "original_clearance_mm": 0.8174838671017493,
+      "revised_clearance_mm": 0.8174838671017493
+    },
+    {
+      "reference": "SW35",
+      "original_clearance_mm": 0.8500030000000294,
+      "revised_clearance_mm": 0.8500030000000294
+    },
+    {
+      "reference": "SW17",
+      "original_clearance_mm": 0.8500538641712738,
+      "revised_clearance_mm": 0.8500538641712738
+    },
+    {
+      "reference": "SW5",
+      "original_clearance_mm": 0.8499967918178006,
+      "revised_clearance_mm": 0.8499967918178006
+    },
+    {
+      "reference": "SW19",
+      "original_clearance_mm": 0.8499944995710512,
+      "revised_clearance_mm": 0.8499944995710512
+    },
+    {
+      "reference": "SW4",
+      "original_clearance_mm": 0.7042754787491189,
+      "revised_clearance_mm": 0.7042754787491189
+    },
+    {
+      "reference": "SW24",
+      "original_clearance_mm": 0.849994882563591,
+      "revised_clearance_mm": 0.849994882563591
+    },
+    {
+      "reference": "SW13",
+      "original_clearance_mm": 14.03100201215028,
+      "revised_clearance_mm": 14.03100201215028
+    },
+    {
+      "reference": "SW26",
+      "original_clearance_mm": 0.7324030986263558,
+      "revised_clearance_mm": 0.7324030986263558
+    },
+    {
+      "reference": "SW16",
+      "original_clearance_mm": 0.7043338734647174,
+      "revised_clearance_mm": 0.7043338734647174
+    },
+    {
+      "reference": "SW3",
+      "original_clearance_mm": 0.8500019999998187,
+      "revised_clearance_mm": 0.8500019999998187
+    },
+    {
+      "reference": "SW10",
+      "original_clearance_mm": 14.083361755954673,
+      "revised_clearance_mm": 14.083361755954673
+    },
+    {
+      "reference": "SW22",
+      "original_clearance_mm": 0.7045228094070298,
+      "revised_clearance_mm": 0.7045228094070298
+    },
+    {
+      "reference": "SW36",
+      "original_clearance_mm": 0.7042796939016344,
+      "revised_clearance_mm": 0.7042796939016344
+    },
+    {
+      "reference": "SW2",
+      "original_clearance_mm": 0.704613484551871,
+      "revised_clearance_mm": 0.704613484551871
+    },
+    {
+      "reference": "SW37",
+      "original_clearance_mm": 0.8499967918188744,
+      "revised_clearance_mm": 0.8499967918188744
+    },
+    {
+      "reference": "SW33",
+      "original_clearance_mm": 0.7382846625658653,
+      "revised_clearance_mm": 0.7382846625658653
+    },
+    {
+      "reference": "SW32",
+      "original_clearance_mm": 13.55412097190834,
+      "revised_clearance_mm": 13.55412097190834
+    },
+    {
+      "reference": "SW14",
+      "original_clearance_mm": 0.7323513948520368,
+      "revised_clearance_mm": 0.7323513948520368
+    },
+    {
+      "reference": "SW9",
+      "original_clearance_mm": 0.7865929676933175,
+      "revised_clearance_mm": 0.7865929676933175
+    },
+    {
+      "reference": "SW6",
+      "original_clearance_mm": 0.8174753872944108,
+      "revised_clearance_mm": 0.8174753872944108
+    },
+    {
+      "reference": "SW18",
+      "original_clearance_mm": 0.7045531598350612,
+      "revised_clearance_mm": 0.7045531598350612
+    },
+    {
+      "reference": "SW28",
+      "original_clearance_mm": 0.7866064224998706,
+      "revised_clearance_mm": 0.7866064224998706
+    },
+    {
+      "reference": "SW8",
+      "original_clearance_mm": 0.7382588941830338,
+      "revised_clearance_mm": 0.7382588941830338
+    },
+    {
+      "reference": "SW12",
+      "original_clearance_mm": 0.8500033692115228,
+      "revised_clearance_mm": 0.8500033692115228
+    },
+    {
+      "reference": "SW15",
+      "original_clearance_mm": 0.7043351793849836,
+      "revised_clearance_mm": 0.7043351793849836
+    },
+    {
+      "reference": "SW25",
+      "original_clearance_mm": 14.031010997801676,
+      "revised_clearance_mm": 14.031010997801676
+    }
+  ]
+}

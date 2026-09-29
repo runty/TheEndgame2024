@@ -129,7 +129,7 @@ def verify_exports_and_preview(case_volume, tray_volume, switch_clearance, origi
         reader.TransferRoots()
         imported = reader.OneShape()
         assert solids(imported) == 1 and BRepCheck_Analyzer(imported).IsValid()
-        # STEP healing at narrow hood/cavity edges changes the case volume
+        # STEP healing at narrow cavity edges changes the case volume
         # by about 1.24 mm3 (0.0021%) without changing its solid validity.
         assert abs(volume(imported) - expected_volume) < 2.0, (
             label, volume(imported), expected_volume
@@ -147,9 +147,8 @@ def verify_exports_and_preview(case_volume, tray_volume, switch_clearance, origi
             "stl_volume_mm3": round(mesh.volume, 3),
         }
     report.update({
-        "original_case_profile_retained_outside_controller_bump": True,
-        "controller_bump_xy_bounds_mm": [-10, 42.2, 10, 79.7],
-        "controller_local_cover_min_top_z_mm": 7.75,
+        "original_case_exterior_and_key_openings_retained": True,
+        "added_controller_shoulders": False,
         "usb_local_cover_min_top_z_mm": 8.55,
         "battery_pocket_pcb_xy_mm": [139, 109, 161, 144],
         "battery_pack_proxy_xyz_mm": [18.5, 33.0, 5.0],
@@ -157,12 +156,13 @@ def verify_exports_and_preview(case_volume, tray_volume, switch_clearance, origi
         "battery_roof_minimum_mm": 1.25,
         "controller_cavity_top_z_mm": 6.5,
         "controller_complete_assembly_max_z_mm": 6.0,
-        "controller_hood_roof_mm": 1.25,
+        "controller_central_16mm_roof_minimum_mm": 1.25,
         "usb_passage_top_z_mm": 7.3,
         "usb_crown_roof_mm": 1.25,
         "all_36_switch_body_proxies_clear": True,
         "minimum_switch_body_proxy_clearance_mm": round(switch_clearance, 4),
-        "keycap_clearance_verified": False,
+        "nominal_cs_1u_envelope_checked": True,
+        "physical_keycap_fit_verified": False,
     })
     validation_dir = ROOT / "docs/validation/nice-nano-case"
     validation_dir.mkdir(parents=True, exist_ok=True)
@@ -196,7 +196,7 @@ def verify_exports_and_preview(case_volume, tray_volume, switch_clearance, origi
     ax.annotate("LED pocket", xy=(0, 36.5), xytext=(26, 43), arrowprops={"arrowstyle": "->"})
     ax.annotate("nice!nano cavity", xy=(0, 57), xytext=(25, 66), arrowprops={"arrowstyle": "->"})
     ax = fig.add_subplot(grid[1, 0])
-    projection(ax, meshes["case"], "top", "Top: retained sloped roof and local controller cover", (-35, 35), (15, 84))
+    projection(ax, meshes["case"], "top", "Top: original sloped roof and key-opening edges", (-35, 35), (15, 84))
     ax = fig.add_subplot(grid[1, 1])
     projection(ax, meshes["tray"], "top", "Removable insulating battery tray", (-18, 18), (-20, 34))
     fig.suptitle("Endgame nice!nano / 401730 case prototype", fontsize=17)
@@ -266,6 +266,55 @@ def switch_body_clearance(case):
     return min(distances)
 
 
+def cs_keycap_clearance(original, revised):
+    """Check the user's nominal CS 1U footprint over the entire case height.
+
+    This deliberately makes no assumption about skirt height at rest or at
+    bottom-out. It is a centred 17.5 x 16.5 mm bounding envelope, not a model
+    of every CS variant or a claim about wider thumb caps or print tolerance.
+    """
+    board = (ROOT / "001 PCB/KICAD/SILKSCREEN KICAD/TheENDGAME2024_SILKSCREEN.kicad_pcb").read_text()
+    rows = []
+    for footprint in blocks(board, "footprint"):
+        if "SW_choc_v1_v2_HS_" not in footprint.splitlines()[0]:
+            continue
+        at = coords(footprint, "at", 2)
+        angle = at[2] if len(at) == 3 else 0.0
+        ref = re.search(r'\(property "Reference" "([^"]+)', footprint).group(1)
+        proxy = box(-8.75, -8.25, 1.6, 8.75, 8.25, 20)
+        transform = gp_Trsf()
+        transform.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), math.radians(angle))
+        proxy = BRepBuilderAPI_Transform(proxy, transform, True).Shape()
+        transform = gp_Trsf()
+        transform.SetTranslation(gp_Vec(at[0] - 150, 140 - at[1], 0))
+        proxy = BRepBuilderAPI_Transform(proxy, transform, True).Shape()
+        row = {"reference": ref}
+        for name, shape in (("original", original), ("revised", revised)):
+            overlap = volume(BRepAlgoAPI_Common(shape, proxy).Shape())
+            distance = BRepExtrema_DistShapeShape(shape, proxy)
+            distance.Perform()
+            assert distance.IsDone() and overlap < 1e-6, (ref, name, overlap)
+            row[f"{name}_clearance_mm"] = distance.Value()
+        assert row["revised_clearance_mm"] >= row["original_clearance_mm"] - 1e-5, ref
+        rows.append(row)
+    assert len(rows) == 36
+    report = {
+        "footprint_mm": [17.5, 16.5],
+        "footprint_source": "User-specified nominal CS 1U size, centred on each switch",
+        "swept_z_bounds_mm": [1.6, 20],
+        "coordinate_datum": "PCB bottom Z=0; no assumed resting skirt height",
+        "all_36_nominal_1u_envelopes_clear": True,
+        "minimum_clearance_mm": min(r["revised_clearance_mm"] for r in rows),
+        "original_clearance_preserved": True,
+        "physical_print_or_wider_thumb_caps_verified": False,
+        "positions": rows,
+    }
+    out = ROOT / "docs/validation/nice-nano-case/cs-clearance.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(report, indent=2) + "\n")
+    return report["minimum_clearance_mm"]
+
+
 def main():
     reader = STEPControl_Reader()
     assert int(reader.ReadFile(str(SOURCE))) == 1
@@ -297,14 +346,13 @@ def main():
     # projection stands 1.0 mm above host PCB top Z=1.6 and its full module
     # envelope is no more than 3.4 mm high. A jig/spacer must control this
     # before short individual posts are soldered. Socket height alone does
-    # not establish the complete module envelope. The 6.5 mm cavity gives 0.5 mm
-    # headroom, and the local cover leaves at least 1.25 mm top roof. Its 20.0 mm
-    # width leaves 0.8 mm nominal side walls and clears SW16/SW20 bodies.
-    hood = rounded_prism(-10.0, 42.2, 10.0, 78.6, 1.5, 6.2, 7.75)
-    revised = fuse(revised, hood)
+    # not establish the complete module envelope. The 6.5 mm cavity gives
+    # 0.5 mm headroom. Preserve the stock key-opening edges: an added 20 mm
+    # hood cleared switch bodies but intruded into the moving cap footprint.
+    # The original roof covers the recess; its edges follow the stock profile.
     revised = cut(revised, rounded_prism(-9.2, 43.2, 9.2, 77.8, 1.0, 0.0, 6.5))
     # USB-C at negative PCB Y (positive case Y). Entry reaches beyond the
-    # old case edge at Y≈80.44 and is open through the hood's end wall.
+    # old case edge at Y≈80.44 and is open through the original case end wall.
     # The source sloped roof already encloses this cover envelope. Retain
     # at least 1.25 mm over the Z=7.3 passage without increasing case height.
     usb_crown = rounded_prism(-7.4, 69.6, 7.4, 79.7, 1.0, 7.2, 8.55)
@@ -343,10 +391,9 @@ def main():
     assert BRepCheck_Analyzer(revised).IsValid() and solids(revised) == 1
     assert BRepCheck_Analyzer(tray).IsValid() and solids(tray) == 1
     assert volume(BRepAlgoAPI_Common(revised, tray).Shape()) < 1e-5
-    # No new material outside the permitted controller bump and the two
-    # internal tray mounts; the rest of the original exterior is retained.
+    # Only the two internal tray mounts add material. Keep the original
+    # exterior and key-opening edges, including the controller's narrow waist.
     additions = cut(revised, original)
-    additions = cut(additions, box(-10.01, 42.19, 6.19, 10.01, 79.71, 8.56))
     for x, y in mounts:
         additions = cut(additions, cylinder(x, y, 4.51, 1.59, 2.91))
     assert abs(volume(additions)) < 1e-5
@@ -381,8 +428,16 @@ def main():
     assert abs(volume(final_roof) - 22.2 * 35.2 * 1.25) < 1e-5
     led_roof = box(-2.5, 34.0, 3.55, 2.5, 39.0, 6.6)
     assert abs(volume(BRepAlgoAPI_Common(revised, led_roof).Shape()) - volume(led_roof)) < 1e-5
-    nano_roof = box(-9.0, 44.0, 6.5, 9.0, 69.0, 7.75)
+    # Check the central roof; its narrow side edges retain the original
+    # key-opening contour rather than extending into the keycap footprint.
+    nano_roof = box(-8.0, 44.0, 6.5, 8.0, 69.0, 7.75)
     assert abs(volume(BRepAlgoAPI_Common(revised, nano_roof).Shape()) - volume(nano_roof)) < 1e-5
+    roof_region = box(-10, 43.2, 6.5, 10, 69.6, 12)
+    original_roof_volume = volume(BRepAlgoAPI_Common(original, roof_region).Shape())
+    revised_roof_volume = volume(BRepAlgoAPI_Common(revised, roof_region).Shape())
+    # Repeated curved-surface Boolean integration differs by ~0.00055 mm3.
+    # The independent additions check above also forbids new roof material.
+    assert abs(original_roof_volume - revised_roof_volume) < 0.002, (original_roof_volume, revised_roof_volume)
     usb_roof = box(-5.5, 71.0, 7.3, 5.5, 77.0, 8.55)
     assert abs(volume(BRepAlgoAPI_Common(revised, usb_roof).Shape()) - volume(usb_roof)) < 1e-5
     for x, y in mounts:
@@ -397,6 +452,7 @@ def main():
         assert volume(BRepAlgoAPI_Common(tray, screw_head).Shape()) < 1e-5
     assert -1.8 - (-2.4) >= 0.6 - 1e-9
     switch_clearance = switch_body_clearance(revised)
+    cap_clearance = cs_keycap_clearance(original, revised)
 
     OUTPUT.mkdir(parents=True, exist_ok=True)
     write_step(revised, OUTPUT / "TheENDGAME2024_NICE_NANO_CASE.step")
@@ -409,10 +465,11 @@ def main():
     print(f"Revised case: {volume(revised):.1f} mm³; valid single solid")
     print(f"Lower tray: {volume(tray):.1f} mm³; valid single solid")
     print("Verified roof over enlarged battery pocket: >=1.25 mm to Z=6.6")
-    print("Nominal controller/USB roofs: >=1.25 mm; LED roof: >=3.05 mm")
+    print("Central 16 mm controller roof and USB roof: >=1.25 mm; LED roof: >=3.05 mm")
     print("Two added D4.6×4 mm heat-set bores have >=1.0 mm local top roof")
     print("Recessed M3×6 DIN965 heads: >=0.6 mm desk clearance with 1 mm feet")
     print(f"36 switch-body envelopes clear case; minimum {switch_clearance:.4f} mm")
+    print(f"36 nominal CS 1U cap envelopes clear through case height; minimum {cap_clearance:.4f} mm")
     print(f"Written to {OUTPUT}")
 
 
