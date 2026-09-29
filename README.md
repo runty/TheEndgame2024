@@ -1,3 +1,7 @@
+## XIAO wireless development
+
+This branch starts the Seeed Studio XIAO nRF52840 and central-battery adaptation of the Choc V1/V2 board. See the [development plan](docs/xiao-nrf52840-plan.md) and [thin battery comparison](docs/xiao-battery-options.md). It is not a completed wireless PCB; the manufacturing ZIP below is the previous **wired RP2040** revision.
+
 ## Choc V1/V2 fork
 
 This fork adds **Kailh Choc V2 (PG1353) hot-swap support alongside Choc V1** while preserving the original Endgame PCB mounting geometry and 1.6 mm thickness for the existing case.
@@ -131,4 +135,3 @@ Just a heads-up: I can’t help with technical issues or soldering nightmares be
 
     "The worst thing that can happen is someone calling me a keyboard designer."
     -OLDMAN6955
-

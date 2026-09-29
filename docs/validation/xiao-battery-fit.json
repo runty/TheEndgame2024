@@ -1,0 +1,55 @@
+{
+  "study_date": "2026-09-28",
+  "status": "candidate only; PCB and case unmodified",
+  "source_pcb": "001 PCB/KICAD/SILKSCREEN KICAD/TheENDGAME2024_SILKSCREEN.kicad_pcb",
+  "source_case": "002 CASE/TheENDGAME2024_CASE001.step",
+  "battery": {
+    "model": "Adafruit 1317 protected 150 mAh LiPo",
+    "nominal_size_mm": [19.75, 26.02, 3.8],
+    "reserved_envelope_mm": [22.0, 28.0, 5.0],
+    "source": "https://www.adafruit.com/product/1317"
+  },
+  "proposed_pcb_opening": {
+    "shape": "rectangle",
+    "bounds_xy_mm": [139.0, 116.0, 161.0, 144.0],
+    "center_xy_mm": [150.0, 130.0],
+    "area_mm2": 616.0,
+    "case_bounds_xy_mm": [-11.0, -4.0, 11.0, 24.0],
+    "board_outline_clearance_mm": 12.6685,
+    "existing_discrete_pad_intersections": 0,
+    "existing_track_or_via_intersections": 0,
+    "ground_zone_spans_area": true
+  },
+  "component_clearances_mm": {
+    "rotated_15x15_switch_body_min": 6.6075,
+    "nearest_switches": ["SW18", "SW22"],
+    "bz2_courtyard": 3.05,
+    "lower_mount_radius_5_min": 5.17
+  },
+  "case_interference": {
+    "board_bottom_z_mm": 0.0,
+    "board_top_z_mm": 1.6,
+    "battery_envelope_z_mm": [0.2, 5.2],
+    "case_pocket_z_mm": [1.6, 5.2],
+    "case_intersection_with_22x28x5_box_mm3": 2217.6,
+    "full_battery_box_volume_mm3": 3080.0,
+    "full_roof_material_through_z_mm": 6.7,
+    "first_outer_surface_loss_between_z_mm": [6.7, 6.75],
+    "min_nominal_roof_after_inset_pocket_mm": 1.5,
+    "conclusion": "Cut a 3.6 mm nominal case pocket; inset stack preserves at least 1.5 mm roof over the exact 22x28 mm window. Add an insulating bottom tray and recheck any expanded or deeper cavity."
+  },
+  "provisional_direct_wire_landing": {
+    "b_plus_pad_center_xy_mm": [148.0, 148.0],
+    "b_minus_pad_center_xy_mm": [152.0, 148.0],
+    "pad_nominal_diameter_mm": 2.0,
+    "strain_relief_hole_centers_xy_mm": [[148.0, 151.0], [152.0, 151.0]],
+    "strain_relief_nominal_drill_mm": 1.0,
+    "existing_pad_or_track_within_1mm_of_centers": false,
+    "status": "geometric reservation; electrical copper clearances and case channel not implemented"
+  },
+  "validation_limits": [
+    "No actual pouch, tape, leads, or printed case measured",
+    "XIAO footprint, charger routing, copper zone refill, and DRC not implemented",
+    "Bottom tray, expanded-pocket roof, desk clearance, and stiffness require revised STEP and physical validation"
+  ]
+}
