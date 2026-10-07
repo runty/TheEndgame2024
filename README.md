@@ -4,7 +4,9 @@ This fork adds **Kailh Choc V2 (PG1353) hot-swap support alongside Choc V1** whi
 
 See [the compatibility and manufacturing notes](docs/choc-v1-v2.md) for the exact switch drawing, case-fit check, keycap spacing limits, and assembly changes. The conversion uses hot-swap sockets; the original optional direct-solder pattern is no longer supported.
 
-[Download the JLCPCB manufacturing ZIP](001%20PCB/GERBER/CHOC%20V1%20V2/TheEndgame2024_Choc_V1_V2_JLCPCB.zip). Order a **2-layer, 1.6 mm FR-4** board. The new revision passes KiCad DRC and CAD case-fit checks, but has not been physically prototyped.
+[Download the JLCPCB manufacturing ZIP](001%20PCB/GERBER/CHOC%20V1%20V2/TheEndgame2024_Choc_V1_V2_JLCPCB.zip). Order a **2-layer, 1.6 mm FR-4** board. The new revision passes KiCad DRC and CAD case-fit checks.
+
+**Choc V2 plates:** optional [3-D printable plates](001%20PCB/PLATE%20CHOC%20V2/3D%20PRINT/) drop into the original case wells to hold Choc V2 switches more securely. A 1.2 mm FR-4/metal version is also included. See [the plate notes](docs/choc-v1-v2.md#choc-v2-switch-plates).
 
 The original project description follows.
 

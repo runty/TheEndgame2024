@@ -52,7 +52,12 @@ The new ZIP contains seven RS-274X Gerber layers (front/back copper, front/back 
 | Surface finish | HASL or ENIG as preferred |
 | Assembly | Bare PCB; solder components and Choc sockets separately |
 
-The slot tooling is 1.5 mm wide with 0.5 mm centerline travel, producing a 1.5 × 2.0 mm slot. Confirm that the manufacturer's preview recognises all 36 slots and 36 large center holes. The PCB is a new, **physically untested** revision; prototype fit and keycap clearance have not been verified on assembled hardware.
+The slot tooling is 1.5 mm wide with 0.5 mm centerline travel, producing a 1.5 × 2.0 mm slot. Confirm that the manufacturer's preview recognises all 36 slots and 36 large center holes. A prototype of this revision has been built, and all 36 keys work with the RP2040-Zero and ZMK firmware. Keycap clearance has not been checked on assembled hardware.
+
+Build notes from the prototype:
+
+- The RP2040-Zero's 5V and GND pads are 0.84 mm apart. A solder bridge between them leaves the controller unpowered; it then won't even enter its ROM bootloader. Check 5V–GND for a short before plugging in.
+- Each column passes from the back copper to the front through a 0.3 mm plated hole beside its top-row switch. If a whole column is dead, beep GP-pin → column socket tab to find the break.
 
 ## Validation record
 
@@ -78,3 +83,50 @@ python3 tools/export_jlcpcb.py --output /tmp/endgame-export
 ```
 
 The standalone PDF linked above is the dimensional source; it is not redistributed in this repository.
+
+## Choc V2 switch plates
+
+Optional plates hold Choc V2 switches more securely in the original case. They drop into the case's switch wells; the case and PCB are unchanged. The case rests directly on the PCB, so there is no room for a plate under it. Instead, each side has three pieces, one per well: the 15 alphas, the two inner thumbs, and the outer thumb. Left and right are exact mirror images. Clips latch at 2.2 mm above the PCB (the Choc V2 bottom-housing height), case Z 3.8.
+
+Both versions are generated from the KiCad switch positions and the case STEP. A 3-D check against the unmodified case shows zero intersection. Kailh does not publish a Choc V2 plate cutout; the 14 mm cutouts come from the drawing's 13.95 ± 0.05 mm housing.
+
+### 3-D printed plate (recommended, test-fitted)
+
+Files: [`001 PCB/PLATE CHOC V2/3D PRINT/`](../001%20PCB/PLATE%20CHOC%20V2/3D%20PRINT/)
+
+- 2.2 mm thick, filling the well from the PCB top to the switch flange, so it rests on the bare PCB at the correct height. All PCB components are on the back.
+- A 16 mm pocket under each cutout leaves a 1.2 mm lip for the switch clips.
+- 14.1 mm cutouts and 0.4 mm clearance to the case walls, allowing for FDM shrinkage.
+- The STLs are oriented top face down and need no supports. Each side's STL holds its three pieces.
+
+Print `endgame_choc_v2_print_plate_test_1key.stl` (the outer thumb piece) first. If a switch is too tight or too loose, regenerate with a different `--cutout`; adjust `--clearance` if the piece doesn't drop into the case well.
+
+Suggested settings: PETG, 0.2 mm layers (matching the 1.2 mm lip and 2.2 mm body), solid infill, and elephant's-foot compensation. The top face prints first, so a squished first layer narrows the switch openings.
+
+Assembly: screw the PCB into the case, drop the plates into the wells, then press the switches through the plate into the hot-swap sockets.
+
+### 1.2 mm sheet plate (FR-4 or metal, untested)
+
+Files: [`001 PCB/PLATE CHOC V2/`](../001%20PCB/PLATE%20CHOC%20V2/)
+
+- 1.2 mm thick, case Z 2.6–3.8; it floats on the switch clips.
+- 14.0 mm cutouts with 0.5 mm corner reliefs for a 1.0 mm router bit.
+- 0.3 mm clearance to the case walls; the narrowest web is 1.65 mm.
+- `*_JLCPCB.zip`: copper-free Gerbers. Order 1.2 mm FR-4. Each ZIP has three separate outlines, so JLCPCB may count it as multiple designs.
+- `.dxf` for laser/CNC, `.step` in case coordinates, and `.stl`.
+
+Assembly: clip the switches into the plate first, then press the plate and switches into the sockets through the case wells. A loose sheet plate dropped in first falls onto the PCB, below the clip height.
+
+### Regenerating
+
+```sh
+# KiCad's bundled Python provides pcbnew:
+KPY=/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3
+$KPY tools/export_switches.py /tmp/switches.json
+# Requires cadquery, shapely, ezdxf:
+python3 tools/make_choc_v2_print_plate.py --switches /tmp/switches.json --output /tmp/print-plate
+python3 tools/make_choc_v2_plate.py --switches /tmp/switches.json --output /tmp/plate
+$KPY tools/export_plate_gerbers.py /tmp/plate
+```
+
+Each generator writes a JSON report with the case-intersection, clearance and mirror checks.
