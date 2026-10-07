@@ -1,0 +1,112 @@
+{
+  "cutout_mm": 14.1,
+  "clearance_mm": 0.4,
+  "lip_mm": 1.2,
+  "pocket_mm": 16.0,
+  "body_z_case": [
+    1.6,
+    3.8000000000000003
+  ],
+  "keepouts": [
+    "J1",
+    "LED1",
+    "C1",
+    "R2",
+    "U2",
+    "R1",
+    "SW38"
+  ],
+  "pieces": [
+    {
+      "side": "left",
+      "switches": [
+        "SW10",
+        "SW11",
+        "SW12",
+        "SW13",
+        "SW14",
+        "SW16",
+        "SW17",
+        "SW18",
+        "SW2",
+        "SW3",
+        "SW4",
+        "SW6",
+        "SW7",
+        "SW8",
+        "SW9"
+      ],
+      "open_sided_well": true,
+      "lip_area_mm2": 1918.7,
+      "base_area_mm2": 964.6
+    },
+    {
+      "side": "right",
+      "switches": [
+        "SW20",
+        "SW21",
+        "SW22",
+        "SW24",
+        "SW25",
+        "SW26",
+        "SW28",
+        "SW29",
+        "SW30",
+        "SW31",
+        "SW32",
+        "SW33",
+        "SW34",
+        "SW35",
+        "SW36"
+      ],
+      "open_sided_well": true,
+      "lip_area_mm2": 1918.7,
+      "base_area_mm2": 964.6
+    },
+    {
+      "side": "right",
+      "switches": [
+        "SW37"
+      ],
+      "open_sided_well": false,
+      "lip_area_mm2": 276.8,
+      "base_area_mm2": 197.8
+    },
+    {
+      "side": "right",
+      "switches": [
+        "SW23",
+        "SW27"
+      ],
+      "open_sided_well": false,
+      "lip_area_mm2": 397.9,
+      "base_area_mm2": 239.8
+    },
+    {
+      "side": "left",
+      "switches": [
+        "SW15",
+        "SW19"
+      ],
+      "open_sided_well": false,
+      "lip_area_mm2": 397.9,
+      "base_area_mm2": 239.8
+    },
+    {
+      "side": "left",
+      "switches": [
+        "SW5"
+      ],
+      "open_sided_well": false,
+      "lip_area_mm2": 276.8,
+      "base_area_mm2": 197.8
+    }
+  ],
+  "left_case_intersection_mm3": 0.0,
+  "left_case_min_distance_mm": 0.398,
+  "left_volume_mm3": 4514.2,
+  "right_case_intersection_mm3": 0.0,
+  "right_case_min_distance_mm": 0.398,
+  "right_volume_mm3": 4514.3,
+  "mirror_symmetric_diff_mm2": 0.0862
+}

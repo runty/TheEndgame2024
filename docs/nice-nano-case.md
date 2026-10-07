@@ -21,3 +21,26 @@ The generator verifies valid single solids, no case/tray overlap, component prox
 The earlier static 17 × 17 mm keycap proxy at PCB-bottom `Z=8…13` did not test press clearance: it missed that the controller hood intruded into adjacent keycap space. After removing the hood and restoring the stock roof/opening contours, a full-height sweep of nominal 1U Chicago Stenographer envelopes (17.5 × 16.5 mm, centered on each switch after the 2 mm outward half-shift and rotated with it) from PCB-top `Z=1.6` through `Z=20` clears all 36 locations. Minimum gap is **0.70 mm**, including both circled positions, SW16 and SW20. The widened baseline and finished case give the same reported clearances. The original 227 mm-wide case does not fit the shifted key field; use the new 231 mm-wide case with this PCB. See the [CS clearance preview](validation/nice-nano-case/cs-clearance.png) and [clearance data](validation/nice-nano-case/cs-clearance.json). This is a nominal rectangular-envelope CAD check, not physical print proof or validation of larger thumb caps and sculpted skirts. Choc V2 requires the MX-stem CS variant; the linked [Asymplex CS Choc page](https://www.asymplex.xyz/product/cs-chicago-stenographer-profile) describes Choc V1 stems. Verify actual keycap travel, hot-swap sockets, installed controller height, USB plug, pack, screw seating, and PLA print tolerances on a physical prototype before manufacturing or use.
 
 The [centreline side profile](../002%20CASE/NICE%20NANO%20WIRELESS/case-side-profile.png) overlays the revised section with the original case. Both have the same maximum Z; the original top slopes from roughly 6.6 mm at the front to 10.13 mm at the back. All quoted Z values use the PCB-bottom datum, not thickness measured normal to that sloping surface.
+
+## Choc V2 switch plates
+
+Optional plates hold Choc V2 switches more securely in this case. They are the same design as the [original-case plates](choc-v1-v2.md#choc-v2-switch-plates), regenerated for this case and the 2 mm outward key shift. Files: [`001 PCB/PLATE CHOC V2/NICE NANO WIRELESS/`](../001%20PCB/PLATE%20CHOC%20V2/NICE%20NANO%20WIRELESS/) ([preview](../001%20PCB/PLATE%20CHOC%20V2/NICE%20NANO%20WIRELESS/plate_preview.png)). The plates made for the original case do not fit here.
+
+- **3-D printed (recommended):** `3D PRINT/`. 2.2 mm thick, resting on the PCB top, with a 1.2 mm clip lip, 14.1 mm cutouts and 0.4 mm wall clearance. Print top face down, without supports. The outer-thumb test piece has the same shape as the original-case test piece, so a fit already confirmed with that piece carries over.
+- **1.2 mm sheet (FR-4 or metal, untested):** JLCPCB Gerber ZIPs, DXF, STEP and STL; 14.0 mm cutouts and 0.3 mm wall clearance.
+
+Each side has three pieces, and left and right are mirror images. Unlike the original case, the alpha well here opens into the central controller cavity at plate height. The alpha pieces' inner edge is therefore not set by a wall. It runs 2 mm beyond the inner column's 15 mm switch housings, at case X = ±10.2 mm, about 1.3 mm outside the nice!nano. The plate is located by the outer walls and the switches.
+
+Every piece also stays at least the wall clearance away from the top-side parts' courtyards: U2 (including the USB end), LED1, C1, R1, R2, J1 and SW38. A 3-D check against this case STEP shows zero intersection. The narrowest web is 1.65 mm (sheet plate). See `plate-report.json` and `3D PRINT/print-plate-report.json`.
+
+Regenerate with:
+
+```sh
+KPY=/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3
+$KPY tools/export_switches.py /tmp/nn-switches.json \
+    --board "001 PCB/KICAD/NICE NANO WIRELESS/TheEndgame2024_NiceNano.kicad_pcb" --keepouts /tmp/nn-keepouts.json
+CASE="$PWD/002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_CASE.step"
+cd tools && python3 make_choc_v2_print_plate.py --switches /tmp/nn-switches.json --keepouts /tmp/nn-keepouts.json --case "$CASE" --output /tmp/nn-print-plate
+python3 make_choc_v2_plate.py --switches /tmp/nn-switches.json --keepouts /tmp/nn-keepouts.json --case "$CASE" --output /tmp/nn-plate
+cd .. && $KPY tools/export_plate_gerbers.py /tmp/nn-plate
+```

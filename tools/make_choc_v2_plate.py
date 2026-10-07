@@ -6,6 +6,9 @@ A Choc V2 top housing sits 2.20 mm above the PCB (Kailh CPG135301D02), so a
 1.2 mm plate occupies case Z 2.6..3.8, inside the case's switch wells. Each
 plate piece is the well outline (narrowest over that Z range) inset by a
 clearance, with a 14.0 mm square cutout per switch (13.95 +/- 0.05 housing).
+A well that opens into another cavity (as in the nice!nano case) is also
+bounded 2 mm beyond its switch housings, and top-side components given with
+--keepouts are cleared by the same clearance.
 
 Requires cadquery, shapely and ezdxf. Switch centres come from the KiCad board
 via tools/export_switches.py (run with KiCad's bundled Python).
@@ -32,21 +35,67 @@ CUTOUT = 14.0               # housing 13.95 +/- 0.05
 DOGBONE_R = 0.5             # lets a 1.0 mm router bit clear square corners
 
 
+def sample_wire(wire):
+    # Sample the wire as one composite curve so edges join exactly; chords
+    # only cut inside corners, which shrinks the plate safely.
+    n = max(64, int(wire.Length() / 0.05))
+    pts = [wire.positionAt(i / n) for i in range(n)]
+    return [(p.x, p.y) for p in pts]
+
+
 def well_polygons(case, z_values):
-    """Openings in the case section, intersected over all sampled heights."""
+    """Open space in the case section within its XY frame, intersected over all
+    sampled heights. Closed switch wells come out as separate polygons; a well
+    that opens into another cavity or the outside merges with that space."""
+    bb = case.val().BoundingBox()
+    frame = box(bb.xmin - 5, bb.ymin - 5, bb.xmax + 5, bb.ymax + 5)
     result = None
     for z in z_values:
-        holes = []
-        for face in case.section(z).faces().vals():
-            for wire in face.innerWires():
-                # Sample the wire as one composite curve so edges join exactly;
-                # chords only cut inside corners, which shrinks the plate safely.
-                n = max(64, int(wire.Length() / 0.05))
-                pts = [wire.positionAt(i / n) for i in range(n)]
-                holes.append(Polygon([(p.x, p.y) for p in pts]).buffer(0))
-        layer = unary_union(holes)
+        material = unary_union([
+            Polygon(sample_wire(face.outerWire()), [sample_wire(w) for w in face.innerWires()]).buffer(0)
+            for face in case.section(z).faces().vals()])
+        layer = frame.difference(material)
         result = layer if result is None else result.intersection(layer)
-    return result
+    return result, frame
+
+
+def polys(geom):
+    if geom.is_empty:
+        return []
+    return [geom] if geom.geom_type == 'Polygon' else [g for g in geom.geoms if g.geom_type == 'Polygon']
+
+
+def plate_regions(case, z_values, switches, clearance, margin=2.0, keepouts=()):
+    """Plate outline per switch group, inset from the case by `clearance`.
+
+    A well that is a closed hole keeps the case outline. A well that is open to
+    another cavity or the outside is also bounded by the convex hull of its
+    switches' 15 mm housings grown by `margin`. Top-side component keepouts are
+    removed with the same clearance.
+    """
+    space, frame = well_polygons(case, z_values)
+    blocked = unary_union([Polygon(k).buffer(clearance) for k in keepouts]) if keepouts else None
+    regions = []
+    for region in polys(space):
+        inside = [s for s in switches if region.contains(Point(s['x'], s['y']))]
+        if not inside:
+            continue
+        open_sided = region.intersects(frame.exterior.buffer(1))
+        for side, group in (('left', [s for s in inside if s['x'] < 0]), ('right', [s for s in inside if s['x'] >= 0])):
+            if not group:
+                continue
+            outline = region.buffer(-clearance, join_style='mitre')
+            if open_sided:
+                hull = unary_union([square(s, 15 + 2 * margin) for s in group]).convex_hull
+                outline = outline.intersection(hull)
+            if blocked is not None:
+                outline = outline.difference(blocked)
+            parts = [p for p in polys(outline) if any(p.contains(Point(s['x'], s['y'])) for s in group)]
+            assert len(parts) == 1, f'{side} switch group split across {len(parts)} pieces'
+            regions.append({'side': side, 'outline': parts[0].simplify(0.002), 'switches': group,
+                            'open_sided': open_sided})
+    assert sum(len(r['switches']) for r in regions) == len(switches), 'switch outside every well'
+    return regions
 
 
 def cutout(sw, size=CUTOUT):
@@ -94,38 +143,37 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--switches', type=Path, required=True, help='JSON from export_switches.py')
     ap.add_argument('--output', type=Path, required=True)
+    ap.add_argument('--case', type=Path, default=CASE, help='case STEP the plates must fit')
+    ap.add_argument('--keepouts', type=Path, help='top-side component outlines from export_switches.py --keepouts')
     ap.add_argument('--thickness', type=float, default=1.2)
     ap.add_argument('--clearance', type=float, default=0.3, help='gap to case well walls')
     args = ap.parse_args()
 
     switches = json.loads(args.switches.read_text())
     assert len(switches) == 36
-    case = cq.importers.importStep(str(CASE))
+    case = cq.importers.importStep(str(args.case))
 
     plate_top = PCB_TOP + PLATE_TOP_ABOVE_PCB
     plate_bottom = plate_top - args.thickness
     zs = [plate_bottom + 0.05 + i * (args.thickness - 0.1) / 12 for i in range(13)]
-    wells = well_polygons(case, zs)
-    wells = [wells] if wells.geom_type == 'Polygon' else list(wells.geoms)
+    keepouts = json.loads(args.keepouts.read_text()) if args.keepouts else []
+    regions = plate_regions(case, zs, switches, args.clearance, keepouts=[k['pts'] for k in keepouts])
 
     pieces = {'left': [], 'right': []}
     report = {'thickness_mm': args.thickness, 'clearance_mm': args.clearance,
-              'plate_z_case': [plate_bottom, plate_top], 'pieces': []}
-    for well in wells:
-        inside = [s for s in switches if well.contains(Point(s['x'], s['y']))]
-        if not inside:
-            continue
-        outline = well.buffer(-args.clearance, join_style='mitre').simplify(0.002)
+              'plate_z_case': [plate_bottom, plate_top], 'keepouts': [k['ref'] for k in keepouts], 'pieces': []}
+    for r in regions:
+        inside, outline, side = r['switches'], r['outline'], r['side']
         plate = outline.difference(unary_union([cutout(s) for s in inside]))
         assert plate.geom_type == 'Polygon', 'cutout splits a plate piece'
         # Every 13.95 housing (plus tolerance) must lie fully within its cutout.
         for s in inside:
             assert not plate.intersects(housing(s, 14.0).buffer(-1e-6)), s['ref']
-        side = 'left' if well.centroid.x < 0 else 'right'
         pieces[side].append(plate)
         web = min(outline.exterior.distance(cutout(s)) for s in inside)
         pair = [cutout(a).distance(cutout(b)) for a in inside for b in inside if a['ref'] < b['ref']]
         report['pieces'].append({'side': side, 'switches': sorted(s['ref'] for s in inside),
+                                 'open_sided_well': r['open_sided'],
                                  'outline_mm': [round(v, 2) for v in outline.bounds],
                                  'min_edge_web_mm': round(web, 3),
                                  'min_between_cutouts_mm': round(min(pair), 3) if pair else None})

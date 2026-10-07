@@ -1,0 +1,144 @@
+{
+  "thickness_mm": 1.2,
+  "clearance_mm": 0.3,
+  "plate_z_case": [
+    2.6000000000000005,
+    3.8000000000000003
+  ],
+  "keepouts": [
+    "J1",
+    "LED1",
+    "C1",
+    "R2",
+    "U2",
+    "R1",
+    "SW38"
+  ],
+  "pieces": [
+    {
+      "side": "left",
+      "switches": [
+        "SW10",
+        "SW11",
+        "SW12",
+        "SW13",
+        "SW14",
+        "SW16",
+        "SW17",
+        "SW18",
+        "SW2",
+        "SW3",
+        "SW4",
+        "SW6",
+        "SW7",
+        "SW8",
+        "SW9"
+      ],
+      "open_sided_well": true,
+      "outline_mm": [
+        -110.05,
+        8.73,
+        -10.23,
+        73.97
+      ],
+      "min_edge_web_mm": 1.652,
+      "min_between_cutouts_mm": 2.707
+    },
+    {
+      "side": "right",
+      "switches": [
+        "SW20",
+        "SW21",
+        "SW22",
+        "SW24",
+        "SW25",
+        "SW26",
+        "SW28",
+        "SW29",
+        "SW30",
+        "SW31",
+        "SW32",
+        "SW33",
+        "SW34",
+        "SW35",
+        "SW36"
+      ],
+      "open_sided_well": true,
+      "outline_mm": [
+        10.23,
+        8.73,
+        110.05,
+        73.97
+      ],
+      "min_edge_web_mm": 1.653,
+      "min_between_cutouts_mm": 2.707
+    },
+    {
+      "side": "right",
+      "switches": [
+        "SW37"
+      ],
+      "open_sided_well": false,
+      "outline_mm": [
+        82.45,
+        -5.97,
+        110.05,
+        11.63
+      ],
+      "min_edge_web_mm": 1.653,
+      "min_between_cutouts_mm": null
+    },
+    {
+      "side": "right",
+      "switches": [
+        "SW23",
+        "SW27"
+      ],
+      "open_sided_well": false,
+      "outline_mm": [
+        11.62,
+        -15.15,
+        61.55,
+        11.21
+      ],
+      "min_edge_web_mm": 1.653,
+      "min_between_cutouts_mm": 8.207
+    },
+    {
+      "side": "left",
+      "switches": [
+        "SW15",
+        "SW19"
+      ],
+      "open_sided_well": false,
+      "outline_mm": [
+        -61.55,
+        -15.15,
+        -11.62,
+        11.21
+      ],
+      "min_edge_web_mm": 1.653,
+      "min_between_cutouts_mm": 8.207
+    },
+    {
+      "side": "left",
+      "switches": [
+        "SW5"
+      ],
+      "open_sided_well": false,
+      "outline_mm": [
+        -110.05,
+        -5.97,
+        -82.45,
+        11.63
+      ],
+      "min_edge_web_mm": 1.654,
+      "min_between_cutouts_mm": null
+    }
+  ],
+  "mirror_symmetric_diff_mm2": 0.0886,
+  "left_case_intersection_mm3": 0.0,
+  "left_case_min_distance_mm": 0.298,
+  "right_case_intersection_mm3": 0.0,
+  "right_case_min_distance_mm": 0.298
+}

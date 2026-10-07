@@ -129,4 +129,4 @@ python3 tools/make_choc_v2_plate.py --switches /tmp/switches.json --output /tmp/
 $KPY tools/export_plate_gerbers.py /tmp/plate
 ```
 
-Each generator writes a JSON report with the case-intersection, clearance and mirror checks.
+Each generator writes a JSON report with the case-intersection, clearance and mirror checks. `--case` and `export_switches.py --board/--keepouts` target other variants; see the [nice!nano plates](nice-nano-case.md#choc-v2-switch-plates). Regenerating these original-case plates with the current tools reproduces the committed outlines to within 0.001 mm².
