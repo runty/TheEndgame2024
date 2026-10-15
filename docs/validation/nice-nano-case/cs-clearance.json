@@ -97,7 +97,7 @@
     },
     {
       "reference": "SW21",
-      "source_original_clearance_mm": 2.8062859492269507,
+      "source_original_clearance_mm": 2.8062859492269503,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.8499907477593895,
       "widened_baseline_overlap_mm3": 0.0,
@@ -107,7 +107,7 @@
     {
       "reference": "SW27",
       "source_original_clearance_mm": 0.0,
-      "source_original_overlap_mm3": 98.73334536618725,
+      "source_original_overlap_mm3": 98.73334536618727,
       "widened_baseline_clearance_mm": 0.7043329123969139,
       "widened_baseline_overlap_mm3": 0.0,
       "revised_clearance_mm": 0.7043329123969139,
@@ -135,9 +135,9 @@
       "reference": "SW17",
       "source_original_clearance_mm": 2.8063490656389645,
       "source_original_overlap_mm3": 0.0,
-      "widened_baseline_clearance_mm": 0.8500538641714008,
+      "widened_baseline_clearance_mm": 0.8500538641714009,
       "widened_baseline_overlap_mm3": 0.0,
-      "revised_clearance_mm": 0.8500538641714008,
+      "revised_clearance_mm": 0.8500538641714009,
       "revised_overlap_mm3": 0.0
     },
     {
@@ -278,7 +278,7 @@
     {
       "reference": "SW14",
       "source_original_clearance_mm": 0.0,
-      "source_original_overlap_mm3": 18.271954687147847,
+      "source_original_overlap_mm3": 18.27195468714785,
       "widened_baseline_clearance_mm": 0.7323513948520368,
       "widened_baseline_overlap_mm3": 0.0,
       "revised_clearance_mm": 0.7323513948520368,
@@ -297,9 +297,9 @@
       "reference": "SW6",
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 1.5612116868494639,
-      "widened_baseline_clearance_mm": 0.8174753872944108,
+      "widened_baseline_clearance_mm": 0.8174753872944107,
       "widened_baseline_overlap_mm3": 0.0,
-      "revised_clearance_mm": 0.8174753872944108,
+      "revised_clearance_mm": 0.8174753872944107,
       "revised_overlap_mm3": 0.0
     },
     {

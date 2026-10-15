@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build the nice!nano / 401730 prototype case and serviceable lower tray.
 
-Requires cadquery-ocp 8.0.1.0.0. Source STEP is read only. All coordinates are
+Validated with cadquery-ocp 7.9.3.1.1 and 8.0.1.0.0. Source STEP is read only. All coordinates are
 in the case frame: (PCB X - 150, 140 - PCB Y, Z). The PCB occupies Z=0..1.6.
 Run from any directory: python tools/build_nice_nano_case.py
 """
@@ -12,7 +12,7 @@ import math
 import re
 from OCP.BRepAlgoAPI import BRepAlgoAPI_Common, BRepAlgoAPI_Cut, BRepAlgoAPI_Fuse
 from OCP.BRep import BRep_Tool
-from OCP.BRepBuilderAPI import BRepBuilderAPI_Transform
+from OCP.BRepBuilderAPI import BRepBuilderAPI_Transform, BRepBuilderAPI_MakePolygon, BRepBuilderAPI_MakeFace
 from OCP.BRepCheck import BRepCheck_Analyzer
 from OCP.BRepGProp import BRepGProp
 from OCP.BRepExtrema import BRepExtrema_DistShapeShape
@@ -34,6 +34,11 @@ SOURCE = ROOT / "002 CASE/TheENDGAME2024_CASE001.step"
 PCB = ROOT / "001 PCB/KICAD/NICE NANO WIRELESS/TheEndgame2024_NiceNano.kicad_pcb"
 SOURCE_PCB = ROOT / "001 PCB/KICAD/SILKSCREEN KICAD/TheENDGAME2024_SILKSCREEN.kicad_pcb"
 OUTPUT = ROOT / "002 CASE/NICE NANO WIRELESS"
+USB_HALF_WIDTH = 7.5
+USB_REAR_Y = 80.4374
+USB_BEVEL_START_Y = 78.8
+USB_MOUTH_TOP = 7.9
+THUMB_RELIEF_TOP = 4.0  # Existing plates end at Z=3.8; retain 0.2 mm headroom.
 AXIAL_RESISTORS = (("R1", 142.85, 99.4), ("R2", 157.15, 107.6))
 
 
@@ -120,6 +125,94 @@ def widened_source_case(original):
             roof = box(x0, y0, z0, x1, y1, z1)
             assert abs(volume(BRepAlgoAPI_Common(widened, roof).Shape()) - volume(roof)) < 1e-5
     return widened
+
+
+def thumb_fill_regions():
+    return [box(11 if side == 1 else -14, -2.14, THUMB_RELIEF_TOP,
+                14 if side == 1 else -11, 3.5, 12) for side in (-1, 1)]
+
+
+def yz_prism(points, x0=-USB_HALF_WIDTH, x1=USB_HALF_WIDTH):
+    polygon = BRepBuilderAPI_MakePolygon()
+    for y, z in points:
+        polygon.Add(gp_Pnt(x0, y, z))
+    polygon.Close()
+    return BRepPrimAPI_MakePrism(
+        BRepBuilderAPI_MakeFace(polygon.Wire()).Face(), gp_Vec(x1 - x0, 0, 0)
+    ).Shape()
+
+
+def refine_case(case):
+    """Smooth upper thumb divots and relieve the printed USB contact points.
+
+    Copy the existing rounded thumb corner 2 mm outward. Clipping it to
+    the old widening bridge joins the adjoining wall and retains its roof
+    slope/fillet. Relief below Z=4 keeps the existing 3.8 mm-high plates.
+    USB removal reaches below the base to eliminate both original ledges.
+    Only the last 1.64 mm of the roof is bevelled; the inner roof stays put.
+    """
+    donor = case
+    for side, region in zip((-1, 1), thumb_fill_regions()):
+        patch = BRepAlgoAPI_Common(translated(donor, side * 2), region).Shape()
+        case = fuse(case, patch)
+    case = cut(case, rounded_prism(-USB_HALF_WIDTH, 70, USB_HALF_WIDTH, 82,
+                                  0.8, -2.0, 7.3))
+    slope = (USB_MOUTH_TOP - 7.3) / (USB_REAR_Y - USB_BEVEL_START_Y)
+    bevel = yz_prism([(USB_BEVEL_START_Y, 7.3), (82, 7.3),
+                      (82, 7.3 + slope * (82 - USB_BEVEL_START_Y))])
+    return cut(case, bevel)
+
+
+def verify_refinements(case, previous):
+    # The visibly smoothed walls must add material only above the plates.
+    added = cut(case, previous)
+    additions = []
+    for region in thumb_fill_regions():
+        part = BRepAlgoAPI_Common(added, region).Shape()
+        additions.append(volume(part))
+        added = cut(added, region)
+    assert all(20 < v < 23 for v in additions), additions
+    assert abs(volume(added)) < 1e-5
+    assert abs(additions[0] - additions[1]) < 0.001
+    # Continuous 15 mm entrance including former bottom-corner ledges.
+    entry = box(-USB_HALF_WIDTH, 78.8, -1.4, USB_HALF_WIDTH, USB_REAR_Y, 7.3)
+    assert volume(BRepAlgoAPI_Common(case, entry).Shape()) < 1e-5
+    # A full 1.25 mm vertical roof remains above the entire new bevel.
+    roof = yz_prism([(USB_BEVEL_START_Y, 7.3), (USB_REAR_Y, USB_MOUTH_TOP),
+                     (USB_REAR_Y, USB_MOUTH_TOP + 1.25),
+                     (USB_BEVEL_START_Y, 8.55)])
+    assert abs(volume(BRepAlgoAPI_Common(case, roof).Shape()) - volume(roof)) < 1e-4
+    # Existing STEP plates use assembled coordinates (the printing STLs
+    # are flipped). Check all four supplied plate solids without changing them.
+    plate_dir = ROOT / "001 PCB/PLATE CHOC V2/NICE NANO WIRELESS"
+    plates = []
+    for path in sorted(plate_dir.rglob("*.step")):
+        reader = STEPControl_Reader()
+        assert int(reader.ReadFile(str(path))) == 1
+        reader.TransferRoots()
+        plate = reader.OneShape()
+        overlap = volume(BRepAlgoAPI_Common(case, plate).Shape())
+        distance = BRepExtrema_DistShapeShape(case, plate)
+        distance.Perform()
+        assert overlap < 1e-5 and distance.IsDone(), path
+        assert distance.Value() >= 0.199, (path, distance.Value())
+        plates.append({"path": str(path.relative_to(ROOT)),
+                       "overlap_mm3": round(overlap, 8),
+                       "clearance_mm": round(distance.Value(), 6)})
+    assert len(plates) == 4
+    return {"thumb_upper_divots_smoothed": True,
+            "thumb_fill_volume_mm3": additions,
+            "existing_plate_relief_top_z_mm": THUMB_RELIEF_TOP,
+            "usb_width_mm": 2 * USB_HALF_WIDTH,
+            "usb_previous_width_mm": 12.8,
+            "usb_bottom_ledges_removed": True,
+            "usb_inner_ceiling_z_mm": 7.3,
+            "usb_mouth_ceiling_z_mm": USB_MOUTH_TOP,
+            "usb_bevel_start_y_mm": USB_BEVEL_START_Y,
+            "usb_rear_y_mm": USB_REAR_Y,
+            "usb_bevel_vertical_roof_minimum_mm": 1.25,
+            "existing_plates": plates,
+            "revised_print_fit_verified": False}
 
 
 def rounded_prism(x0, y0, x1, y1, radius, z0, z1):
@@ -212,7 +305,7 @@ def write_stl(shape, path):
     assert writer.Write(shape, str(path)), f"STL export failed: {path}"
 
 
-def verify_exports_and_preview(case_volume, tray_volume, switch_clearance, original, widened_base, resistor_report):
+def verify_exports_and_preview(case_volume, tray_volume, switch_clearance, original, widened_base, resistor_report, previous, refinement_report):
     """Reimport neutral CAD and mesh exports, then render projected mesh views."""
     import matplotlib
     matplotlib.use("Agg")
@@ -255,6 +348,7 @@ def verify_exports_and_preview(case_volume, tray_volume, switch_clearance, origi
         }
     report.update({
         "original_key_openings_translated_with_each_half": True,
+        "case_fit_refinements": refinement_report,
         "source_case_width_mm": 227.0,
         "revised_case_width_mm": 231.0,
         "split_x_case_mm": [-12.0, 12.0],
@@ -321,6 +415,30 @@ def verify_exports_and_preview(case_volume, tray_volume, switch_clearance, origi
     projection(ax, meshes["tray"], "top", "Removable insulating battery tray", (-18, 18), (-20, 34))
     fig.suptitle("Endgame nice!nano / 401730 case prototype", fontsize=17)
     fig.savefig(OUTPUT / "case-and-tray-preview.png", dpi=170, facecolor="white")
+    plt.close(fig)
+
+    # Compare the exact previous generation with the local fit refinements.
+    with tempfile.TemporaryDirectory() as tmp:
+        before_path = Path(tmp) / "previous.stl"
+        write_stl(previous, before_path)
+        before_mesh = trimesh.load_mesh(before_path, process=True)
+    fig, axs = plt.subplots(1, 3, figsize=(16, 5), layout="constrained")
+    views = [
+        (axs[0], [0, 0, 1], [0, 0, 6], [0, 1], [-22, 22, -8, 8], "Inner thumb edges (upper section)"),
+        (axs[1], [0, 1, 0], [0, 80, 0], [0, 2], [-12, 12, -2, 11], "Wider USB opening; bottom ledges removed"),
+        (axs[2], [1, 0, 0], [0, 0, 0], [1, 2], [75, 82, 5, 11], "USB rear lip bevel (side section)"),
+    ]
+    for mesh, colour, label, style in ((before_mesh, "#c94c4c", "Previous", "--"),
+                                     (meshes["case"], "#146f9a", "Revised", "-")):
+        for ax, normal, origin, indices, limits, title in views:
+            segments = trimesh.intersections.mesh_plane(mesh, normal, origin)
+            ax.add_collection(LineCollection(segments[:, :, indices], colors=colour,
+                              linestyles=style, linewidths=2, label=label))
+            ax.set(xlim=limits[:2], ylim=limits[2:], title=title)
+            ax.set_aspect("equal")
+            ax.grid(alpha=0.2)
+    axs[0].legend()
+    fig.savefig(OUTPUT / "case-fit-refinements.png", dpi=160, facecolor="white")
     plt.close(fig)
 
     # Centreline section makes the small local height change visible.
@@ -646,6 +764,10 @@ def main():
         revised = fuse(revised, cylinder(x, y, 4.5, 1.6, 2.9))
         revised = cut(revised, cylinder(x, y, 2.3, 1.5, 5.6))
 
+    previous_case = revised
+    revised = refine_case(revised)
+    refinement_report = verify_refinements(revised, previous_case)
+
     # Insulating lower tray: 1.0 mm plate under the opening, with 1.8 mm
     # thick ears at the existing PCB holes. A 90-degree D6.2 countersink
     # seats M3×6 DIN965 heads flush at Z=-1.8. Feet projecting >=1.0 mm
@@ -663,10 +785,12 @@ def main():
     assert BRepCheck_Analyzer(revised).IsValid() and solids(revised) == 1
     assert BRepCheck_Analyzer(tray).IsValid() and solids(tray) == 1
     assert volume(BRepAlgoAPI_Common(revised, tray).Shape()) < 1e-5
-    # Only the two internal tray mounts add material beyond the widened
-    # baseline. The original openings and exterior profile move with their
+    # Only the internal tray mounts and the bounded upper thumb patches
+    # add material beyond the widened baseline. The original openings and exterior profile move with their
     # respective halves while the central controller waist stays fixed.
     additions = cut(revised, widened_base)
+    for region in thumb_fill_regions():
+        additions = cut(additions, region)
     for x, y in mounts:
         additions = cut(additions, cylinder(x, y, 4.51, 1.59, 2.91))
     assert abs(volume(additions)) < 1e-5
@@ -748,7 +872,7 @@ def main():
     if not same_tray:
         write_step(tray, tray_step)
         write_stl(tray, tray_stl)
-    verify_exports_and_preview(volume(revised), volume(tray), switch_clearance, original, widened_base, resistor_report)
+    verify_exports_and_preview(volume(revised), volume(tray), switch_clearance, original, widened_base, resistor_report, previous_case, refinement_report)
 
     print(f"Original case: {volume(original):.1f} mm³")
     print(f"Widened baseline: {volume(widened_base):.1f} mm³; 227 -> 231 mm width")
@@ -761,6 +885,8 @@ def main():
     print("Recessed M3×6 DIN965 heads: >=0.6 mm desk clearance with 1 mm feet")
     print(f"36 switch-body envelopes clear case; minimum {switch_clearance:.4f} mm")
     print(f"36 nominal CS 1U cap envelopes clear through case height; minimum {cap_clearance:.4f} mm")
+    print("Thumb divots smoothed above Z=4; all four existing STEP plates clear")
+    print("USB: 15 mm wide, ledges removed, rear ceiling 7.9 mm; bevel roof >=1.25 mm")
     print(f"Written to {OUTPUT}")
 
 
