@@ -3,11 +3,11 @@
   "parts": {
     "case": {
       "step_valid_single_solid": true,
-      "step_volume_mm3": 62287.599,
+      "step_volume_mm3": 62315.879,
       "stl_watertight": true,
       "stl_winding_consistent": true,
-      "stl_faces": 16798,
-      "stl_volume_mm3": 62288.987
+      "stl_faces": 16750,
+      "stl_volume_mm3": 62317.253
     },
     "tray": {
       "step_valid_single_solid": true,
@@ -22,9 +22,16 @@
   "case_fit_refinements": {
     "thumb_upper_divots_smoothed": true,
     "thumb_fill_volume_mm3": [
-      21.36227723063852,
-      21.36230103588081
+      35.50270948904203,
+      35.50270948907095
     ],
+    "thumb_roof_surface": {
+      "reference": "pristine original case, translated 2 mm outward per half",
+      "sampled_surface_points": 8990,
+      "maximum_top_surface_error_mm": 3.552713678800501e-15,
+      "patch_seams_checked": true
+    },
+    "battery_pocket_preserved": true,
     "existing_plate_relief_top_z_mm": 4.0,
     "usb_width_mm": 15.0,
     "usb_previous_width_mm": 12.8,

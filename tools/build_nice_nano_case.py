@@ -24,7 +24,8 @@ from OCP.StlAPI import StlAPI_Writer
 from OCP.TopAbs import TopAbs_FACE, TopAbs_SOLID, TopAbs_VERTEX
 from OCP.TopExp import TopExp_Explorer
 from OCP.TopoDS import TopoDS
-from OCP.gp import gp_Ax1, gp_Ax2, gp_Dir, gp_Pnt, gp_Trsf, gp_Vec
+from OCP.IntCurvesFace import IntCurvesFace_ShapeIntersector
+from OCP.gp import gp_Lin, gp_Ax1, gp_Ax2, gp_Dir, gp_Pnt, gp_Trsf, gp_Vec
 
 from verify_choc_compatibility import blocks, coords
 
@@ -83,9 +84,10 @@ def translated(shape, dx):
 def widened_source_case(original):
     """Separate the key halves by 4 mm while keeping the centre fixed.
 
-    The source section at X=±12 misses all key openings. Extruding each
-    planar section fills the 2 mm stretch between its fixed centre and
-    translated outer half without changing the Y/Z roof profile.
+    Extruding the source sections at X=±12 fills the 2 mm stretch
+    between the fixed centre and translated outer halves. These sections
+    intersect the inner thumb chamfers; refine_case restores their roofs
+    from the pristine source after the internal cavities are cut.
     """
     split = 12.0
     left = translated(cut(original, box(-split, -100, -20, 200, 100, 20)), -2.0)
@@ -128,8 +130,8 @@ def widened_source_case(original):
 
 
 def thumb_fill_regions():
-    return [box(11 if side == 1 else -14, -2.14, THUMB_RELIEF_TOP,
-                14 if side == 1 else -11, 3.5, 12) for side in (-1, 1)]
+    return [box(10 if side == 1 else -14, -7.1, THUMB_RELIEF_TOP,
+                14 if side == 1 else -10, 3.6, 12) for side in (-1, 1)]
 
 
 def yz_prism(points, x0=-USB_HALF_WIDTH, x1=USB_HALF_WIDTH):
@@ -142,18 +144,19 @@ def yz_prism(points, x0=-USB_HALF_WIDTH, x1=USB_HALF_WIDTH):
     ).Shape()
 
 
-def refine_case(case):
+def refine_case(case, original, battery_pocket):
     """Smooth upper thumb divots and relieve the printed USB contact points.
 
-    Copy the existing rounded thumb corner 2 mm outward. Clipping it to
-    the old widening bridge joins the adjoining wall and retains its roof
-    slope/fillet. Relief below Z=4 keeps the existing 3.8 mm-high plates.
+    Restore the original roof and rounded opening edge, translated with
+    each key half, across the entire affected strip. The donor must be the
+    pristine source, not the widened case with its existing recesses.
+    Preserve the battery pocket and relief below Z=4 for existing plates.
     USB removal reaches below the base to eliminate both original ledges.
     Only the last 1.64 mm of the roof is bevelled; the inner roof stays put.
     """
-    donor = case
     for side, region in zip((-1, 1), thumb_fill_regions()):
-        patch = BRepAlgoAPI_Common(translated(donor, side * 2), region).Shape()
+        patch = BRepAlgoAPI_Common(translated(original, side * 2), region).Shape()
+        patch = cut(patch, battery_pocket)
         case = fuse(case, patch)
     case = cut(case, rounded_prism(-USB_HALF_WIDTH, 70, USB_HALF_WIDTH, 82,
                                   0.8, -2.0, 7.3))
@@ -163,7 +166,42 @@ def refine_case(case):
     return cut(case, bevel)
 
 
-def verify_refinements(case, previous):
+def verify_thumb_roof(case, original):
+    """Compare the repaired roof to the original, including patch seams.
+
+    Ray intersections test the actual top surface: solid validity alone
+    failed to detect the previous approximately 1 mm step. The reference
+    includes the intentional rounded/chamfered key-opening edge.
+    """
+    def top(intersector, x, y):
+        intersector.Perform(gp_Lin(gp_Pnt(x, y, -10), gp_Dir(0, 0, 1)), 0, 30)
+        return max((intersector.Pnt(i).Z() for i in range(1, intersector.NbPnt()+1)), default=None)
+
+    actual = IntCurvesFace_ShapeIntersector()
+    actual.Load(case, 1e-7)
+    checked, max_error = 0, 0.0
+    for side in (-1, 1):
+        reference = IntCurvesFace_ShapeIntersector()
+        reference.Load(translated(original, side * 2), 1e-7)
+        xs = [9.99, 10.01] + [10.1 + i * 0.1 for i in range(39)] + [13.99, 14.01]
+        ys = [-7.11, -7.09] + [-7.0 + i * 0.1 for i in range(106)] + [3.59, 3.61]
+        for x in xs:
+            for y in ys:
+                expected = top(reference, side*x, y)
+                observed = top(actual, side*x, y)
+                assert (expected is None) == (observed is None), (side*x, y, expected, observed)
+                if expected is not None:
+                    error = abs(observed - expected)
+                    assert error < 1e-5, (side*x, y, expected, observed)
+                    max_error = max(max_error, error)
+                    checked += 1
+    return {"reference": "pristine original case, translated 2 mm outward per half",
+            "sampled_surface_points": checked,
+            "maximum_top_surface_error_mm": max_error,
+            "patch_seams_checked": True}
+
+
+def verify_refinements(case, previous, original, battery_pocket):
     # The visibly smoothed walls must add material only above the plates.
     added = cut(case, previous)
     additions = []
@@ -171,7 +209,9 @@ def verify_refinements(case, previous):
         part = BRepAlgoAPI_Common(added, region).Shape()
         additions.append(volume(part))
         added = cut(added, region)
-    assert all(20 < v < 23 for v in additions), additions
+    assert all(v > 0 for v in additions), additions
+    roof_report = verify_thumb_roof(case, original)
+    assert volume(BRepAlgoAPI_Common(case, battery_pocket).Shape()) < 1e-5
     assert abs(volume(added)) < 1e-5
     assert abs(additions[0] - additions[1]) < 0.001
     # Continuous 15 mm entrance including former bottom-corner ledges.
@@ -202,6 +242,8 @@ def verify_refinements(case, previous):
     assert len(plates) == 4
     return {"thumb_upper_divots_smoothed": True,
             "thumb_fill_volume_mm3": additions,
+            "thumb_roof_surface": roof_report,
+            "battery_pocket_preserved": True,
             "existing_plate_relief_top_z_mm": THUMB_RELIEF_TOP,
             "usb_width_mm": 2 * USB_HALF_WIDTH,
             "usb_previous_width_mm": 12.8,
@@ -765,8 +807,8 @@ def main():
         revised = cut(revised, cylinder(x, y, 2.3, 1.5, 5.6))
 
     previous_case = revised
-    revised = refine_case(revised)
-    refinement_report = verify_refinements(revised, previous_case)
+    revised = refine_case(revised, original, pocket)
+    refinement_report = verify_refinements(revised, previous_case, original, pocket)
 
     # Insulating lower tray: 1.0 mm plate under the opening, with 1.8 mm
     # thick ears at the existing PCB holes. A 90-degree D6.2 countersink

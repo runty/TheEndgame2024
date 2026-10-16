@@ -1,0 +1,194 @@
+{
+  "scope": "Read-only review of final /tmp/endgame-thumb-package exports as of 2026-10-15 16:55 PDT",
+  "source_binding": {
+    "single_scad": "Stem=1; vendor files define MX=1, so all exports select the MX branch",
+    "sculpted_long": "keyID3 body rotated 90 degrees; StemRot90 produces a net 180-degree cross orientation, equivalent for an MX cross",
+    "sculpted_small": "keyID2, StemRot0",
+    "convex_long": "keyID3, StemRot0",
+    "convex_small": "keyID1, StemRot0",
+    "mx_cross_nominal_mm": {
+      "horizontal_span": 4.03,
+      "horizontal_thickness": 1.15,
+      "vertical_span": 4.23,
+      "vertical_thickness": 1.25,
+      "Tol": 0.0
+    },
+    "note": "The MX socket is a recessed cross in a d5.4 x 3.0 mm sculpted boss or d5.5 x 3.75 mm convex boss. The removed legacy Choc bed is absent from the MX branch. Physical Choc V2 stem-fit remains untested."
+  },
+  "singles": {
+    "convex-long.stl": {
+      "bounds_mm": [
+        [
+          -13.1496,
+          -7.8574,
+          -1.2
+        ],
+        [
+          13.1496,
+          7.8574,
+          4.41
+        ]
+      ],
+      "watertight": true,
+      "bodies": 1,
+      "euler": 2,
+      "measured_socket_depth_mm": 3.649
+    },
+    "convex-small.stl": {
+      "bounds_mm": [
+        [
+          -8.6495,
+          -8.0496,
+          -1.3
+        ],
+        [
+          8.6495,
+          8.0496,
+          4.312
+        ]
+      ],
+      "watertight": true,
+      "bodies": 1,
+      "euler": 2,
+      "measured_socket_depth_mm": 3.651
+    },
+    "sculpted-long-left.stl": {
+      "bounds_mm": [
+        [
+          -13.3463,
+          -7.9821,
+          -0.9
+        ],
+        [
+          13.3463,
+          8.0104,
+          4.8929
+        ]
+      ],
+      "watertight": true,
+      "bodies": 1,
+      "euler": 2,
+      "measured_socket_depth_mm": 2.778
+    },
+    "sculpted-long-right.stl": {
+      "bounds_mm": [
+        [
+          -13.3463,
+          -7.9821,
+          -0.9
+        ],
+        [
+          13.3463,
+          8.0104,
+          4.8929
+        ]
+      ],
+      "watertight": true,
+      "bodies": 1,
+      "euler": 2
+    },
+    "sculpted-small-left.stl": {
+      "bounds_mm": [
+        [
+          -8.6595,
+          -8.0495,
+          -0.6
+        ],
+        [
+          8.6912,
+          8.0495,
+          5.1468
+        ]
+      ],
+      "watertight": true,
+      "bodies": 1,
+      "euler": 2,
+      "measured_socket_depth_mm": 2.779
+    },
+    "sculpted-small-right.stl": {
+      "bounds_mm": [
+        [
+          -8.6912,
+          -8.0495,
+          -0.6
+        ],
+        [
+          8.6595,
+          8.0495,
+          5.1468
+        ]
+      ],
+      "watertight": true,
+      "bodies": 1,
+      "euler": 2
+    }
+  },
+  "case_clearance": {
+    "method": "Full-height axis-aligned cap-bounds rectangles, rotated to six PCB footprint angles, swept over case Z=1.6..20 mm and intersected with wired, XIAO, and nice!nano STEP cases; nice!nano keys shifted 2 mm outward per half.",
+    "minimum_gap_all_cases_mm": {
+      "sculpted_long": 0.73,
+      "sculpted_small": 0.87,
+      "convex_long": 0.95,
+      "convex_small": 0.9
+    },
+    "minimum_adjacent_thumb_cap_gap_mm": {
+      "sculpted": 0.46,
+      "convex": 0.7
+    },
+    "intersection_count": 0,
+    "limits": "CAD envelope check; assembled switch, print tolerance, cap travel, and stem fit require a physical prototype."
+  },
+  "grids": {
+    "gate_design": "Twelve 1.8 x 1.8 mm gates at local cap X=+/-4 mm, entering lower skirt from its inner Y edge; rail is 76 x 3 x 3 mm. Gate top is local Z=1.9 mm, below typing faces. Closest gate X edge is 3.1 mm from cap centre and its Y position is near the perimeter, outside the central d5.5 mm MX boss/socket region.",
+    "Endgame-convex-thumbs-4long-2small-grid.stl": {
+      "watertight": true,
+      "bodies": 1,
+      "euler": -10,
+      "bounds_mm": [
+        [
+          0.8504,
+          0.9504,
+          0.0
+        ],
+        [
+          86.6495,
+          45.0496,
+          5.71
+        ]
+      ],
+      "faces": 295108
+    },
+    "Endgame-sculpted-thumbs-4long-2small-grid.stl": {
+      "watertight": true,
+      "bodies": 1,
+      "euler": -10,
+      "bounds_mm": [
+        [
+          0.6537,
+          0.9505,
+          0.4
+        ],
+        [
+          86.6912,
+          45.0495,
+          6.4468
+        ]
+      ],
+      "format": "Binary STL, 14 MB",
+      "faces": 292578,
+      "cleanup": "After Manifold binary export, source/build.py retained the one positive-area, watertight grid component and removed two complete zero-area, two-facet sheet components caused by float32 rounding. No shape smoothing or decimation was applied."
+    },
+    "final_topology_check": "Both binary STL grids are one watertight positive-volume body, Euler -10, with exactly two incident faces on every edge (sculpted 438867 edges; convex 442662 edges). All six single STLs are one watertight Euler-2 body each.",
+    "gate_to_typing_surface_check": {
+      "method": "Sampled vertical ray intersections on each repaired single STL over four potential gate-contact patches per cap, local abs(X)=3.1..4.9 mm and abs(Y)=6.8..7.2 mm, 5x5 grid per patch; compared outer surface Z with gate top local Z=1.9 mm.",
+      "minimum_surface_height_above_gate_top_mm": {
+        "sculpted_long": 0.532,
+        "sculpted_small": 0.854,
+        "convex_long": 1.328,
+        "convex_small": 1.197
+      },
+      "minimum_gate_to_boss_radial_separation_mm": 4.72,
+      "limit": "Sampled geometry check; physical cut quality and fit remain untested."
+    }
+  }
+}

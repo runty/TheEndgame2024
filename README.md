@@ -9,9 +9,9 @@ A 36-key [Endgame](https://github.com/OldMan6955/TheEndgame2024) repository with
 
 **Case fit warning for nice!nano:** this PCB is 4 mm wider than the original and requires the matching **231 mm-wide nice!nano case** linked above. It does **not** fit the original Endgame case or the XIAO case. Use the nice!nano-specific case files and plates.
 
-The nice!nano version is **4 mm wider than the original PCB**. Each key half moves outward 2 mm, giving the inner keys more clearance from the controller while preserving the original outer borders. The controller, battery opening, and LED remain on the board's centreline. Its matching case retains the original height and sloped profile. The case USB opening and inner thumb edges have recently been adjusted; see the [case fit preview](002%20CASE/NICE%20NANO%20WIRELESS/case-fit-refinements.png).
+The nice!nano version is **4 mm wider than the original PCB**. Each key half moves outward 2 mm, giving the inner keys more clearance from the controller while preserving the original outer borders. The controller, battery opening, and LED remain on the board's centreline. Its matching case retains the original height and sloped profile. The case has a relieved USB opening and corrected inner thumb edges that restore the original continuous roof; see the [thumb repair comparison](002%20CASE/NICE%20NANO%20WIRELESS/thumb-roof-repair-preview.png).
 
-**Prototype status:** both wireless variants have digital design, manufacturing-file, and CAD checks documented in their handoffs. Neither has been physically assembled or verified in JLCPCB’s upload preview.
+**Prototype status:** both wireless variants have documented digital design, manufacturing-file, and CAD checks. The nice!nano has reached user assembly testing, with LED operation reported; the latest case repair, six-profile pairing migration, and printed thumb caps still need physical validation. Full system qualification and JLCPCB upload-preview verification remain incomplete. See the [2026-10-15 update](docs/updates-2026-10-15.md).
 
 **XIAO PCB, front**
 
@@ -32,7 +32,8 @@ Use the PCB, case, and firmware from this table together. The XIAO and nice!nano
 | Removable battery tray | [STL](002%20CASE/NICE%20NANO%20WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.stl) · [STEP](002%20CASE/NICE%20NANO%20WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.step) |
 | Optional Choc V2 switch plates | [3-D print (recommended)](001%20PCB/PLATE%20CHOC%20V2/NICE%20NANO%20WIRELESS/3D%20PRINT/) · [1.2 mm FR-4/metal](001%20PCB/PLATE%20CHOC%20V2/NICE%20NANO%20WIRELESS/) · [notes](docs/nice-nano-case.md#choc-v2-switch-plates) |
 | Editable KiCad project | [PCB](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano.kicad_pcb) · [schematic](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano.kicad_sch) · [project and local libraries](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/) |
-| nice!nano v2 firmware | [UF2](003%20FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-v2.uf2) · [ZMK source](003%20FIRMWARE/zmk-endgame-nice-nano/) |
+| nice!nano original QWERTY firmware | [UF2](003%20FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-v2.uf2) · [ZMK source](003%20FIRMWARE/zmk-endgame-nice-nano/) |
+| nice!nano Philyoku firmware | [Six-profile UF2, 500 ms LED flashes](003%20FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-philyoku-6profiles.uf2) · [controls and update instructions](docs/nice-nano-firmware.md#current-philyoku-firmware-2026-10-15) |
 | Build details | [Full BOM and assembly notes](docs/nice-nano-wireless.md) · [electrical](docs/nice-nano-electrical.md) · [case](docs/nice-nano-case.md) · [firmware](docs/nice-nano-firmware.md) |
 
 ## nice!nano JLCPCB order settings
@@ -56,13 +57,13 @@ The measured Gerber outline is **223.000032 × 96.106067 mm**. Upload the ZIP in
 | Keycap-to-controller clearance | **2.16 mm minimum** to the conservative 18 × 33 mm nice!nano envelope in CAD |
 | Printed case width | **231 mm**, with the original overall height retained |
 | USB opening | **15 mm wide**; lower side ledges removed; rear lip bevel adds 0.6 mm headroom while keeping at least 1.25 mm roof |
-| Inner thumb edges | Divots smoothed above Z=4 mm; existing switch plates retain 0.2 mm vertical clearance |
+| Inner thumb edges | Complete original roof restored over both former divots; existing switch plates retain 0.2 mm vertical clearance |
 | Battery opening | **22 × 35 mm**, with 1 mm corner radii |
 | Battery allowance checked | **18.5 × 33 × 5 mm** complete-pack envelope |
 
 A centred **17 × 30 mm** battery leaves **2.5 mm on each side of the PCB opening**. The larger checked pack envelope leaves **1.75 mm per side and 1.0 mm at each end**, with **0.15 mm above the 5 mm-thick envelope** inside the case after the planned 0.2 mm support allowance. The actual wrapped battery and its lead exit still need measurement.
 
-All 36 nominal **17.5 × 16.5 mm Chicago Steno 1U keycap envelopes** clear the case throughout a full-height CAD sweep, with a **0.70 mm minimum gap**. Choc V2 requires **MX-stem** keycaps. Larger thumb caps and actual print tolerances are not established by this rectangular-envelope check.
+All 36 nominal **17.5 × 16.5 mm Chicago Steno 1U keycap envelopes** clear the case throughout a full-height CAD sweep, with a **0.70 mm minimum gap**. Choc V2 requires **MX-stem** keycaps. The separate [thumb-cap package](006%20KEYCAPS/CHOC%20V2%20THUMBS/) includes larger-cap CAD checks; actual print tolerances and physical fit remain untested.
 
 See the [measured layout and centreline](docs/validation/nice-nano-pcb/outer-key-symmetry.png), [keycap clearance comparison](docs/validation/nice-nano-case/cs-clearance.png), and [case preview](002%20CASE/NICE%20NANO%20WIRELESS/case-and-tray-preview.png).
 
@@ -81,9 +82,17 @@ The [full parts list](docs/nice-nano-wireless.md#parts-and-assembly) includes co
 - **KiCad ERC, DRC, and schematic parity:** zero reported violations or unconnected items under the recorded rules. [ERC](docs/validation/nice-nano-schematic/erc.json) · [DRC](docs/validation/nice-nano-pcb/drc.json)
 - **Independent Gerber parsing:** seven board layers, **226 plated and 148 non-plated holes/slots**, both contours closed, and drill registration checked against the PCB source. [Report](docs/validation/nice-nano-pcb/gerbers.json)
 - **Mechanical checks:** mirrored key placement, preserved outer borders, centred electronics, valid single-solid STEP parts, watertight STL files, and component/keycap clearance checks. [Spacing](docs/validation/nice-nano-pcb/spacing.json) · [case](docs/validation/nice-nano-case/geometry.json)
-- **Firmware:** pinned ZMK build and LED encoder host checks pass. Hardware timing, charging, RF, and full keyboard operation remain untested. [Build and bring-up notes](docs/nice-nano-firmware.md)
+- **Firmware:** pinned ZMK build and LED encoder host checks pass. The user reports working LED indications; hardware timing, charging, RF, and full keyboard operation remain unqualified. [Build and bring-up notes](docs/nice-nano-firmware.md)
 
 The committed PCB is the authoritative manufacturing source. The scratch PCB generator is not a replacement for the finished routing. The [artifact manifest](docs/validation/nice-nano-artifacts.json) records source and output checksums.
+
+## Choc V2 thumb keycaps
+
+[Printable thumb caps and ordering notes](006%20KEYCAPS/CHOC%20V2%20THUMBS/) include **two separate connected 2 × 3 sets**: sculpted Chicago Steno thumbs and convex thumbs. Each contains **four long (1.5u) and two small (1u) caps**, with MX-style sockets for Choc V2 and removable connecting gates. These keycaps do not fit Choc V1 switches.
+
+The cap envelopes clear the wired, XIAO and nice!nano cases in CAD. The meshes are verified locally; physical stem fit, print quality and JLC3DP acceptance remain untested. Upload the two files from the keycap folder's `upload` directory, quantity 1 each to try both profiles on one keyboard.
+
+![Connected thumb-cap sets](006%20KEYCAPS/CHOC%20V2%20THUMBS/connected-sets-preview.png)
 
 ## Wired designs and upstream documentation
 

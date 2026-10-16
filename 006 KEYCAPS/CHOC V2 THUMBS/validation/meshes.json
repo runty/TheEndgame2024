@@ -1,0 +1,210 @@
+{
+  "single-caps/convex-long.stl": {
+    "sha256": "1950de38b16d548b9e280a17501a3e9b6f5eb56b028db8dee96c28e7e01b3e9f",
+    "watertight": true,
+    "consistent_winding": true,
+    "connected_components": 1,
+    "euler_number": 2,
+    "triangles": 49012,
+    "bounds_mm": [
+      [
+        -13.14958381652832,
+        -7.857377052307129,
+        -1.2000000476837158
+      ],
+      [
+        13.14958381652832,
+        7.857377052307129,
+        4.409999847412109
+      ]
+    ],
+    "size_mm": [
+      26.29916763305664,
+      15.714754104614258,
+      5.609999895095825
+    ],
+    "volume_mm3": 1001.8088690883293
+  },
+  "single-caps/convex-small.stl": {
+    "sha256": "8d3ad986147fd8f9881f969ed235e96dbfdddb742bb1b3478aa3cf14d0dee624",
+    "watertight": true,
+    "consistent_winding": true,
+    "connected_components": 1,
+    "euler_number": 2,
+    "triangles": 49012,
+    "bounds_mm": [
+      [
+        -8.649541854858398,
+        -8.049552917480469,
+        -1.2999999523162842
+      ],
+      [
+        8.649541854858398,
+        8.049552917480469,
+        4.311999320983887
+      ]
+    ],
+    "size_mm": [
+      17.299083709716797,
+      16.099105834960938,
+      5.611999273300171
+    ],
+    "volume_mm3": 686.1821092963418
+  },
+  "single-caps/sculpted-long-left.stl": {
+    "sha256": "10c3c8e16ea08a4bd2e15824d261794119652b8264db9aea9ac2c43bc67f7cb1",
+    "watertight": true,
+    "consistent_winding": true,
+    "connected_components": 1,
+    "euler_number": 2,
+    "triangles": 48346,
+    "bounds_mm": [
+      [
+        -13.346343994140625,
+        -7.982131004333496,
+        -0.8999999761581421
+      ],
+      [
+        13.346343994140625,
+        8.010392189025879,
+        4.892897129058838
+      ]
+    ],
+    "size_mm": [
+      26.69268798828125,
+      15.992523193359375,
+      5.79289710521698
+    ],
+    "volume_mm3": 844.9795407496772
+  },
+  "single-caps/sculpted-long-right.stl": {
+    "sha256": "6f89acf245a7e9b7235a5f6090bf8ce9dc549aa966f6dd1a5442796943d98e3f",
+    "watertight": true,
+    "consistent_winding": true,
+    "connected_components": 1,
+    "euler_number": 2,
+    "triangles": 48346,
+    "bounds_mm": [
+      [
+        -13.346343994140625,
+        -7.982131004333496,
+        -0.8999999761581421
+      ],
+      [
+        13.346343994140625,
+        8.010392189025879,
+        4.892897129058838
+      ]
+    ],
+    "size_mm": [
+      26.69268798828125,
+      15.992523193359375,
+      5.79289710521698
+    ],
+    "volume_mm3": 844.9795407496772
+  },
+  "single-caps/sculpted-small-left.stl": {
+    "sha256": "50ff29c81bd6e0961f19f2f039df2716db65a23e79e44f31722651f9a68a2c94",
+    "watertight": true,
+    "consistent_winding": true,
+    "connected_components": 1,
+    "euler_number": 2,
+    "triangles": 48880,
+    "bounds_mm": [
+      [
+        -8.659537315368652,
+        -8.049548149108887,
+        -0.6000000238418579
+      ],
+      [
+        8.691186904907227,
+        8.049548149108887,
+        5.146810054779053
+      ]
+    ],
+    "size_mm": [
+      17.35072422027588,
+      16.099096298217773,
+      5.746810078620911
+    ],
+    "volume_mm3": 618.0069314475714
+  },
+  "single-caps/sculpted-small-right.stl": {
+    "sha256": "52b1a5dcd12f656a2c984c686b7521430801a6492a283300fcbe0f34b76c5f42",
+    "watertight": true,
+    "consistent_winding": true,
+    "connected_components": 1,
+    "euler_number": 2,
+    "triangles": 48880,
+    "bounds_mm": [
+      [
+        -8.691186904907227,
+        -8.049548149108887,
+        -0.6000000238418579
+      ],
+      [
+        8.659537315368652,
+        8.049548149108887,
+        5.146810054779053
+      ]
+    ],
+    "size_mm": [
+      17.35072422027588,
+      16.099096298217773,
+      5.746810078620911
+    ],
+    "volume_mm3": 618.0069314475714
+  },
+  "upload/Endgame-convex-thumbs-4long-2small-grid.stl": {
+    "sha256": "be502a330d33ffbdc79360a7aca49316c4c3c578d41cad5d3a6aa195b20d7c5e",
+    "watertight": true,
+    "consistent_winding": true,
+    "connected_components": 1,
+    "euler_number": -10,
+    "triangles": 295108,
+    "bounds_mm": [
+      [
+        0.8504161834716797,
+        0.9504470825195312,
+        4.7683716530855236e-08
+      ],
+      [
+        86.64954376220703,
+        45.04955291748047,
+        5.710000038146973
+      ]
+    ],
+    "size_mm": [
+      85.79912757873535,
+      44.09910583496094,
+      5.709999990463256
+    ],
+    "volume_mm3": 6243.514102585167
+  },
+  "upload/Endgame-sculpted-thumbs-4long-2small-grid.stl": {
+    "sha256": "49cfa98589c6720a4036080949885653bb65971750c33d73e19c42fc814b9ff9",
+    "watertight": true,
+    "consistent_winding": true,
+    "connected_components": 1,
+    "euler_number": -10,
+    "triangles": 292578,
+    "bounds_mm": [
+      [
+        0.653656005859375,
+        0.9504518508911133,
+        0.40000003576278687
+      ],
+      [
+        86.6911849975586,
+        45.0495491027832,
+        6.446810245513916
+      ]
+    ],
+    "size_mm": [
+      86.03752899169922,
+      44.09909725189209,
+      6.046810209751129
+    ],
+    "volume_mm3": 5479.547054421971
+  }
+}
