@@ -347,6 +347,40 @@ def write_stl(shape, path):
     assert writer.Write(shape, str(path)), f"STL export failed: {path}"
 
 
+def tray_solder_clearance(tray):
+    """Check bottom-side axial-resistor joints where a flush tray can foul.
+
+    Each 1.6 mm pad gets a 3.6 mm-square planning envelope (1 mm extra
+    around its copper) extending 2 mm below the PCB. Actual hand-soldered
+    joints are unmeasured; the open-ended notches do not impose a ceiling.
+    """
+    rows = []
+    for ref, board_x, board_y in AXIAL_RESISTORS:
+        for dx in (-5.08, 5.08):
+            x, y = round(board_x + dx - 150, 2), round(140 - board_y, 2)
+            joint = box(x - 1.8, y - 1.8, -2, x + 1.8, y + 1.8, 0)
+            overlap = volume(BRepAlgoAPI_Common(tray, joint).Shape())
+            distance = BRepExtrema_DistShapeShape(tray, joint)
+            distance.Perform()
+            assert overlap < 1e-5 and distance.IsDone(), (ref, x, y, overlap)
+            assert distance.Value() >= 0.3, (ref, x, y, distance.Value())
+            rows.append({"reference": ref, "pad_center_case_xy_mm": [x, y],
+                         "joint_proxy_xyz_mm": [3.6, 3.6, 2.0],
+                         "tray_overlap_mm3": round(overlap, 8),
+                         "clearance_mm": round(distance.Value(), 4)})
+    # Full nominal complete-pack footprint still has 1 mm-thick support.
+    support = box(-9.25, -3.0, -1, 9.25, 30.0, 0)
+    assert abs(volume(BRepAlgoAPI_Common(tray, support).Shape()) - volume(support)) < 1e-5
+    return {"center_notch_width_mm": 10.0, "center_notch_depth_mm": 2.0,
+            "center_notch_inner_corner_radius_mm": 0.8,
+            "center_notch_case_xy_mm": [-5, 30, 5, 32],
+            "right_corner_relief_case_xy_mm": [10, 29.5, 12, 32],
+            "full_planning_pack_footprint_supported": True,
+            "screw_mounts_changed": False, "solder_joint_proxies": rows,
+            "actual_joint_dimensions_measured": False,
+            "revised_print_fit_verified": False}
+
+
 def verify_exports_and_preview(case_volume, tray_volume, switch_clearance, original, widened_base, resistor_report, previous, refinement_report):
     """Reimport neutral CAD and mesh exports, then render projected mesh views."""
     import matplotlib
@@ -379,6 +413,8 @@ def verify_exports_and_preview(case_volume, tray_volume, switch_clearance, origi
         mesh = trimesh.load_mesh(stl_path, process=True)
         assert mesh.is_watertight and mesh.is_winding_consistent
         assert abs(mesh.volume - expected_volume) < 2.0
+        if label == "tray":
+            report["tray_solder_clearance"] = tray_solder_clearance(imported)
         meshes[label] = mesh
         report["parts"][label] = {
             "step_valid_single_solid": True,
@@ -824,6 +860,14 @@ def main():
         tray = cut(tray, conical_recess(x, y, 3.1, 1.65, -1.6, -0.15))
         tray = cut(tray, cylinder(x, y, 1.65, -0.15, 0.1))
 
+    # R2 pad 2 lies at (2.07, 32.4); pad 1 at (12.23, 32.4).
+    # The old end edge at Y=32 overlapped both underside solder joints.
+    # Open both reliefs through the end and full thickness; preserve the
+    # entire pack-support footprint, which ends at Y=30 and X=±9.25.
+    tray = cut(tray, rounded_prism(-5, 30, 5, 36, 0.8, -3, 1))
+    tray = cut(tray, rounded_prism(10, 29.5, 15, 36, 1.0, -3, 1))
+    tray_solder_clearance(tray)
+
     assert BRepCheck_Analyzer(revised).IsValid() and solids(revised) == 1
     assert BRepCheck_Analyzer(tray).IsValid() and solids(tray) == 1
     assert volume(BRepAlgoAPI_Common(revised, tray).Shape()) < 1e-5
@@ -897,8 +941,7 @@ def main():
     write_stl(revised, OUTPUT / "TheENDGAME2024_NICE_NANO_CASE.stl")
     tray_step = OUTPUT / "TheENDGAME2024_NICE_NANO_BATTERY_TRAY.step"
     tray_stl = OUTPUT / "TheENDGAME2024_NICE_NANO_BATTERY_TRAY.stl"
-    # This change affects only the case. Retain the existing tray files
-    # byte-for-byte when their STEP solid is geometrically identical.
+    # Retain existing tray exports when their geometry is unchanged.
     same_tray = False
     if tray_step.exists() and tray_stl.exists():
         tray_reader = STEPControl_Reader()
@@ -920,6 +963,7 @@ def main():
     print(f"Widened baseline: {volume(widened_base):.1f} mm³; 227 -> 231 mm width")
     print(f"Revised case: {volume(revised):.1f} mm³; valid single solid")
     print(f"Lower tray: {volume(tray):.1f} mm³; valid single solid")
+    print("Tray end notch and outer-pad relief clear all four 3.6 mm solder proxies; full pack support retained")
     print("Verified roof over enlarged battery pocket: >=1.25 mm to Z=6.6")
     print("Central 16 mm controller roof and USB roof: >=1.25 mm; LED roof: >=3.05 mm")
     print("Both axial resistor bodies and four lead runs clear; body roof >=1.95 mm")

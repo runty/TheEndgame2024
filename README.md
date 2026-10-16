@@ -29,7 +29,7 @@ Use the PCB, case, and firmware from this table together. The XIAO and nice!nano
 | --- | --- |
 | JLCPCB manufacturing package | [223 mm through-hole-resistor Gerber ZIP](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano_223mm_THT_JLCPCB.zip) |
 | Widened case | [STL](002%20CASE/NICE%20NANO%20WIRELESS/TheENDGAME2024_NICE_NANO_CASE.stl) · [STEP](002%20CASE/NICE%20NANO%20WIRELESS/TheENDGAME2024_NICE_NANO_CASE.step) |
-| Removable battery tray | [STL](002%20CASE/NICE%20NANO%20WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.stl) · [STEP](002%20CASE/NICE%20NANO%20WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.step) |
+| Removable battery tray with solder relief | [STL](002%20CASE/NICE%20NANO%20WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.stl) · [STEP](002%20CASE/NICE%20NANO%20WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.step) |
 | Optional Choc V2 switch plates | [3-D print (recommended)](001%20PCB/PLATE%20CHOC%20V2/NICE%20NANO%20WIRELESS/3D%20PRINT/) · [1.2 mm FR-4/metal](001%20PCB/PLATE%20CHOC%20V2/NICE%20NANO%20WIRELESS/) · [notes](docs/nice-nano-case.md#choc-v2-switch-plates) |
 | Editable KiCad project | [PCB](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano.kicad_pcb) · [schematic](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano.kicad_sch) · [project and local libraries](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/) |
 | nice!nano original QWERTY firmware | [UF2](003%20FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-v2.uf2) · [ZMK source](003%20FIRMWARE/zmk-endgame-nice-nano/) |
@@ -66,6 +66,8 @@ A centred **17 × 30 mm** battery leaves **2.5 mm on each side of the PCB openin
 All 36 nominal **17.5 × 16.5 mm Chicago Steno 1U keycap envelopes** clear the case throughout a full-height CAD sweep, with a **0.70 mm minimum gap**. Choc V2 requires **MX-stem** keycaps. The separate [thumb-cap package](006%20KEYCAPS/CHOC%20V2%20THUMBS/) includes larger-cap CAD checks; actual print tolerances and physical fit remain untested.
 
 See the [measured layout and centreline](docs/validation/nice-nano-pcb/outer-key-symmetry.png), [keycap clearance comparison](docs/validation/nice-nano-case/cs-clearance.png), and [case preview](002%20CASE/NICE%20NANO%20WIRELESS/case-and-tray-preview.png).
+
+The battery tray now includes an open center notch and corner relief for the underside resistor solder joints, following assembly feedback. Its screw mounts and the full planned battery support area are retained. See the [tray comparison](002%20CASE/NICE%20NANO%20WIRELESS/battery-tray-solder-clearance.png) and [case notes](docs/nice-nano-case.md).
 
 ## nice!nano electronics and assembly
 

@@ -11,12 +11,91 @@
     },
     "tray": {
       "step_valid_single_solid": true,
-      "step_volume_mm3": 1194.085,
+      "step_volume_mm3": 1170.057,
       "stl_watertight": true,
       "stl_winding_consistent": true,
-      "stl_faces": 4444,
-      "stl_volume_mm3": 1194.133
+      "stl_faces": 4564,
+      "stl_volume_mm3": 1170.11
     }
+  },
+  "tray_solder_clearance": {
+    "center_notch_width_mm": 10.0,
+    "center_notch_depth_mm": 2.0,
+    "center_notch_inner_corner_radius_mm": 0.8,
+    "center_notch_case_xy_mm": [
+      -5,
+      30,
+      5,
+      32
+    ],
+    "right_corner_relief_case_xy_mm": [
+      10,
+      29.5,
+      12,
+      32
+    ],
+    "full_planning_pack_footprint_supported": true,
+    "screw_mounts_changed": false,
+    "solder_joint_proxies": [
+      {
+        "reference": "R1",
+        "pad_center_case_xy_mm": [
+          -12.23,
+          40.6
+        ],
+        "joint_proxy_xyz_mm": [
+          3.6,
+          3.6,
+          2.0
+        ],
+        "tray_overlap_mm3": 0.0,
+        "clearance_mm": 6.8
+      },
+      {
+        "reference": "R1",
+        "pad_center_case_xy_mm": [
+          -2.07,
+          40.6
+        ],
+        "joint_proxy_xyz_mm": [
+          3.6,
+          3.6,
+          2.0
+        ],
+        "tray_overlap_mm3": 0.0,
+        "clearance_mm": 6.8933
+      },
+      {
+        "reference": "R2",
+        "pad_center_case_xy_mm": [
+          2.07,
+          32.4
+        ],
+        "joint_proxy_xyz_mm": [
+          3.6,
+          3.6,
+          2.0
+        ],
+        "tray_overlap_mm3": 0.0,
+        "clearance_mm": 0.6
+      },
+      {
+        "reference": "R2",
+        "pad_center_case_xy_mm": [
+          12.23,
+          32.4
+        ],
+        "joint_proxy_xyz_mm": [
+          3.6,
+          3.6,
+          2.0
+        ],
+        "tray_overlap_mm3": 0.0,
+        "clearance_mm": 0.43
+      }
+    ],
+    "actual_joint_dimensions_measured": false,
+    "revised_print_fit_verified": false
   },
   "original_key_openings_translated_with_each_half": true,
   "case_fit_refinements": {

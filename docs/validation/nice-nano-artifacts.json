@@ -12,13 +12,13 @@
     "001 PCB/KICAD/NICE NANO WIRELESS/TheEndgame2024_NiceNano.kicad_sch": "9bb7c06de2f98a17929662c34dbf1dbff7aed24a48cdfdddd2be9f5615f419e7",
     "003 FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-v2.uf2": "f5662f0993dc97762743c5ac36d98072a58d338cdeca31086cd5abc1d131457a",
     "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_CASE.step": "936d054a668fbb38ff0b14f078b276f83ed0b307c71a2da538c10b83180a621b",
-    "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.step": "25ae9ef95af9a3886de24d7d04de4f65fddc93355674285928c16efceb7628bc",
-    "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.stl": "b7c187ba37d6280ef2f829c727175fff5649332a0961c6e5099ae99ea8ca7e69",
+    "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.step": "00e36d821fad79f7383f0373b6dbd2427c9dc7cfad6848df6f0d7f940aad8309",
+    "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.stl": "a8d55d10956447c0be0d0132eeb359450ff8650e4f94ed90ea2abbe447298208",
     "002 CASE/NICE NANO WIRELESS/TheENDGAME2024_NICE_NANO_CASE.stl": "a2d3cb406d648badb8d9c5d9a4c074d663b94466538c9e7349558cf7e247a0fb",
     "001 PCB/GERBER/NICE NANO WIRELESS/TheEndgame2024_NiceNano_223mm_THT_JLCPCB.zip": "25c72831301f0641045401afa0cec08d2440b7e30919f5c405f65c11e87c0e7b",
     "001 PCB/KICAD/NICE NANO WIRELESS/NanoWireless.pretty/R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal.kicad_mod": "c767324fc42230f3eaba749d3ff50c2912d3387d74fd706e9f94b080fd6d7b3a",
     "001 PCB/KICAD/NICE NANO WIRELESS/NanoWireless.pretty/WS2812B_V6_5050.kicad_mod": "95b4c2795f62b8dc93fd05c3cb06bce5c29ff3f48466050095d44996f8037365",
-    "tools/build_nice_nano_case.py": "0293a5cbfbeb0ef9593824e48800d40d6621d3f93f239ee938062d831ba8938e",
+    "tools/build_nice_nano_case.py": "2e381d289e89cf464f66ec939afd2d5e62fb8e62a1d3d9c99405dd66afdc96fb",
     "tools/widen_nice_nano_pcb.py": "50c4e392e19f254340d759224fa0d095f4b028980813226be3b1084eb6626a65",
     "003 FIRMWARE/zmk-endgame-nice-nano/rgbled-widget/src/widget.c": "c5bdc7ab711ad85805de0c3c74f78302224eb05f7c6807cc11e726d1922b7dbd",
     "003 FIRMWARE/zmk-endgame-nice-nano/status-pulse/src/status_pulse.c": "28d5530b3803344282600718f54dd5c5b08a1e98ad418c539c0de2599400cdd1",
@@ -44,5 +44,6 @@
     "C1_fitted": false,
     "scope": "User report only; full electrical and assembly validation incomplete."
   },
-  "additional_philyoku_firmware": "Six profiles, 500 ms flashes, 250 ms gap; see firmware/philyoku-six-profiles-validation.json and docs/nice-nano-firmware.md."
+  "additional_philyoku_firmware": "Six profiles, 500 ms flashes, 250 ms gap; see firmware/philyoku-six-profiles-validation.json and docs/nice-nano-firmware.md.",
+  "tray_revision_note": "2026-10-16: 10 x 2 mm center end notch and right corner relief for underside R2 solder joints. Full planning pack support and screw geometry retained. All four resistor solder proxies clear. Print fit unverified."
 }
