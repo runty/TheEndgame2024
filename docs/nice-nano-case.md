@@ -47,3 +47,9 @@ cd tools && python3 make_choc_v2_print_plate.py --switches /tmp/nn-switches.json
 python3 make_choc_v2_plate.py --switches /tmp/nn-switches.json --keepouts /tmp/nn-keepouts.json --case "$CASE" --output /tmp/nn-plate
 cd .. && $KPY tools/export_plate_gerbers.py /tmp/nn-plate
 ```
+
+## Optional clear LED logo (two-filament print)
+
+[`tools/build_nice_nano_led_logo.py`](../tools/build_nice_nano_led_logo.py) splits the published case into an opaque body and a transparent logo inlay over the status LED. The logo comes from [`runty.svg`](../002%20CASE/NICE%20NANO%20WIRELESS/LED%20LOGO/runty.svg). It is 14 × 11.3 mm and centred on the LED at case `(0, 36.5)`; pass `--width` to resize it. The inlay is a full-depth column from the LED pocket ceiling (`Z=3.55`) to the roof (≈8.6 mm), so light passes only through clear filament. The two parts add up exactly to the standard case. Where the column crosses the battery or R1 pocket, it forms that pocket's ceiling. The narrowest band is 1.3 mm. About 11 mm² of the 25 mm² LED face sits directly under clear material; the outer arcs are lit only by light travelling sideways through the inlay, so they will be dimmer.
+
+For a Bambu dual-filament print, open [`TheENDGAME2024_NICE_NANO_CASE_LED_LOGO.3mf`](../002%20CASE/NICE%20NANO%20WIRELESS/LED%20LOGO/TheENDGAME2024_NICE_NANO_CASE_LED_LOGO.3mf). It loads as one object with two parts: `case body (opaque)` and `LED logo (transparent)`. Assign the transparent filament to the logo part. The separate `_BODY` and `_CLEAR` STL/STEP files are also provided; if importing the STLs, load them together as one object with multiple parts. See the [preview](../002%20CASE/NICE%20NANO%20WIRELESS/LED%20LOGO/led-logo-preview.png) and [report](validation/nice-nano-case/led-logo.json). This has not been printed.
