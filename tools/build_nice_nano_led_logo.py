@@ -3,9 +3,10 @@
 
 The logo is cut as a vertical column from the top surface down to the LED
 pocket ceiling (Z=3.55). The clear part is exactly the removed case material,
-so case + logo reproduce the published case; only the filament changes. Where
-the column crosses the LED, battery or R1 pocket it simply forms that pocket's
-ceiling. Coordinates use the case frame (PCB X - 150, 140 - PCB Y, Z).
+so case + logo reproduce the published case apart from a light chamber: below
+Z=3.55 the opaque material under the whole logo is hollowed out, joining the
+LED pocket, so light reaches every stroke from below. Where the column
+crosses the battery or R1 pocket it forms that pocket's ceiling. Coordinates use the case frame (PCB X - 150, 140 - PCB Y, Z).
 
 Needs OCP, trimesh, NumPy, Matplotlib, shapely and svgelements.
 Run: python tools/build_nice_nano_led_logo.py [--width 14]
@@ -38,6 +39,7 @@ VALIDATION = OUTPUT.parents[1] / "docs/validation/nice-nano-case/led-logo.json"
 LED_CENTER = (0.0, 36.5)  # WS2812B-V6 at PCB (150,103.5)
 LED_POCKET_TOP = 3.55
 LED_BODY = (-2.5, 34.0, 2.5, 39.0)
+CHAMBER_MARGIN = 0.5  # light chamber extends past the logo's convex hull
 
 
 def svg_outline(path):
@@ -154,7 +156,7 @@ def write_3mf(parts, path):
         archive.writestr("3D/3dmodel.model", model)
 
 
-def preview(case_mesh, logo_mesh, outline, path):
+def preview(case_mesh, logo_mesh, outline, chamber, path):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -166,11 +168,11 @@ def preview(case_mesh, logo_mesh, outline, path):
         tris = mesh.triangles[up][:, :, :2]
         top.add_collection(PolyCollection(tris, facecolors=colour, edgecolors=colour, linewidths=0.3))
     top.add_patch(plt.Rectangle((LED_BODY[0], LED_BODY[1]), 5, 5, fill=False, ec="#ff7a00", lw=1.2, ls="--"))
-    top.add_patch(plt.Rectangle((-6.7, 33.0), 12.9, 7.2, fill=False, ec="#ffb15c", lw=0.8, ls=":"))
+    top.plot(*chamber.exterior.xy, color="#ffb15c", lw=0.8, ls=":")
     top.set_xlim(-16, 16)
     top.set_ylim(24, 50)
     top.set_aspect("equal")
-    top.set_title("Top view: clear logo (light) in case; LED body dashed, pocket dotted")
+    top.set_title("Top view: clear logo in case; LED dashed, light chamber dotted")
 
     section = trimesh.intersections.mesh_plane
     for mesh, colour in ((case_mesh, "#3b3f46"), (logo_mesh, "#7cc6d9")):
@@ -183,7 +185,7 @@ def preview(case_mesh, logo_mesh, outline, path):
     side.set_ylim(-0.5, 10)
     side.set_aspect("equal")
     side.legend(loc="lower right", fontsize=8)
-    side.set_title(f"Section at Y={LED_CENTER[1]}: clear column from Z={LED_POCKET_TOP} to the roof")
+    side.set_title(f"Section at Y={LED_CENTER[1]}: open chamber below Z={LED_POCKET_TOP}, clear logo above")
     fig.tight_layout()
     fig.savefig(path, dpi=160)
     plt.close(fig)
@@ -203,13 +205,25 @@ def main():
     outline = placed_outline(args.width)
     column = prism(outline, LED_POCKET_TOP, 12.0)
     logo = BRepAlgoAPI_Common(case, column).Shape()
-    body = cut(case, column)
-    assert BRepCheck_Analyzer(body).IsValid() and solids(body) == 1
+    # Hollow out the opaque material under the logo below the LED pocket
+    # ceiling, so no stroke is shadowed. It joins the LED, R1/R2 and
+    # battery pockets; the roof above keeps its full thickness.
+    chamber_outline = outline.convex_hull.buffer(CHAMBER_MARGIN)
+    chamber = prism(chamber_outline, 0.0, LED_POCKET_TOP)
+    chamber_removed = volume(BRepAlgoAPI_Common(case, chamber).Shape())
+    body = cut(cut(case, column), chamber)
+    # The opaque island inside the logo ring now rests only on the clear
+    # walls around it; it prints bonded to them as a separate shell.
+    assert BRepCheck_Analyzer(body).IsValid()
+    assert solids(body) == 1 + len(outline.interiors), solids(body)
     assert BRepCheck_Analyzer(logo).IsValid() and solids(logo) == 1
     # Two parts reproduce the case and do not overlap. Curved-surface Boolean
     # integration of the 62 cm3 case differs by ~0.005 mm3.
-    assert abs(volume(body) + volume(logo) - volume(case)) < 0.02, (volume(body), volume(logo), volume(case))
+    assert abs(volume(body) + volume(logo) + chamber_removed - volume(case)) < 0.02, (volume(body), volume(logo), volume(case))
     assert volume(BRepAlgoAPI_Common(body, logo).Shape()) < 1e-5
+    # Nothing opaque between the PCB and the underside of any stroke.
+    under_logo = prism(outline, 1.6, LED_POCKET_TOP)
+    assert volume(BRepAlgoAPI_Common(body, under_logo).Shape()) < 1e-5
     # Clear material forms the pocket ceiling directly above the LED body.
     led_ceiling = box(LED_BODY[0], LED_BODY[1], LED_POCKET_TOP, LED_BODY[2], LED_BODY[3], LED_POCKET_TOP + 0.2)
     lit_area = volume(BRepAlgoAPI_Common(logo, led_ceiling).Shape()) / 0.2
@@ -225,7 +239,7 @@ def main():
 
     body_mesh, logo_mesh = trimesh.load(body_stl), trimesh.load(logo_stl)
     assert body_mesh.is_watertight and logo_mesh.is_watertight
-    preview(body_mesh, logo_mesh, outline, LOGO_DIR / "led-logo-preview.png")
+    preview(body_mesh, logo_mesh, outline, chamber_outline, LOGO_DIR / "led-logo-preview.png")
 
     x0, y0, x1, y1 = outline.bounds
     report = {
@@ -238,6 +252,11 @@ def main():
         "roof_top_z_at_led_mm": round(float(logo_mesh.vertices[:, 2].max()), 2),
         "minimum_band_width_mm": min_band_width(outline),
         "clear_area_over_led_body_mm2": round(lit_area, 2),
+        "light_chamber_bounds_case_frame_mm": [round(v, 2) for v in chamber_outline.bounds],
+        "light_chamber_z_mm": [0.0, LED_POCKET_TOP],
+        "light_chamber_removed_volume_mm3": round(chamber_removed, 2),
+        "opaque_material_under_logo_mm3": 0.0,
+        "opaque_islands_held_by_clear_part": len(outline.interiors),
         "led_body_area_mm2": 25.0,
         "case_volume_mm3": round(volume(case), 2),
         "body_volume_mm3": round(volume(body), 2),
