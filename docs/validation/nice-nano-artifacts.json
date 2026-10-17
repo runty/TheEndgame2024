@@ -22,8 +22,7 @@
     "tools/widen_nice_nano_pcb.py": "50c4e392e19f254340d759224fa0d095f4b028980813226be3b1084eb6626a65",
     "003 FIRMWARE/zmk-endgame-nice-nano/rgbled-widget/src/widget.c": "c5bdc7ab711ad85805de0c3c74f78302224eb05f7c6807cc11e726d1922b7dbd",
     "003 FIRMWARE/zmk-endgame-nice-nano/status-pulse/src/status_pulse.c": "28d5530b3803344282600718f54dd5c5b08a1e98ad418c539c0de2599400cdd1",
-    "003 FIRMWARE/zmk-endgame-nice-nano/config/endgame.conf": "60b7213eeb9fb61d21a95d5564c9cab29031839c1c809880fb40b1271bb07763",
-    "003 FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-philyoku-6profiles.uf2": "79911c4e5ec26a07a0ba5c0ab501105b93e02d41fd27f0f229bf6ef929407177"
+    "003 FIRMWARE/zmk-endgame-nice-nano/config/endgame.conf": "60b7213eeb9fb61d21a95d5564c9cab29031839c1c809880fb40b1271bb07763"
   },
   "case_revision_note": "Both thumb roofs restored from pristine original geometry across the complete affected strips; 8,990 surface samples match, including seams. Prior partial fill superseded. Existing plate clearance 0.2 mm; battery recess and USB relief preserved. New print fit unverified.",
   "pcb_revision_note": "223 mm width; both key halves shifted 2 mm outward, original cap borders retained; nice!nano, battery opening and LED share X=150 mm; 1/4 W axial R1/R2.",
@@ -44,6 +43,5 @@
     "C1_fitted": false,
     "scope": "User report only; full electrical and assembly validation incomplete."
   },
-  "additional_philyoku_firmware": "Six profiles, 500 ms flashes, 250 ms gap; see firmware/philyoku-six-profiles-validation.json and docs/nice-nano-firmware.md.",
   "tray_revision_note": "2026-10-16: 10 x 2 mm center end notch and right corner relief for underside R2 solder joints. Full planning pack support and screw geometry retained. All four resistor solder proxies clear. Print fit unverified."
 }

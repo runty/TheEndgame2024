@@ -1,32 +1,14 @@
 # Endgame nice!nano v2 firmware
 
-The buildable ZMK configuration is in [`003 FIRMWARE/zmk-endgame-nice-nano`](../003%20FIRMWARE/zmk-endgame-nice-nano). It targets **nice!nano v2** (`nice_nano//zmk`, board revision 2.0.0) and the revised Endgame PCB with 36 Choc V1/V2 switch positions, one WS2812B-V6 status LED, and no 74HC595. The original XIAO configuration remains separate.
+The buildable ZMK configuration is in [`003 FIRMWARE/zmk-endgame-nice-nano`](../003%20FIRMWARE/zmk-endgame-nice-nano). It targets **nice!nano v2** (`nice_nano//zmk`, board revision 2.0.0) and the revised Endgame PCB with 36 Choc V1/V2 switch positions, one WS2812B-V6 status LED, and no 74HC595.
 
-## Current Philyoku firmware (2026-10-15)
+## Published firmware
 
-The daily-use Philyoku build is maintained in
-[runty/zmk-keyboards](https://github.com/runty/zmk-keyboards/tree/codex/endgame-nice-nano/keyboards/endgame-nice-nano),
-with the shared layout in [runty/philyoku](https://github.com/runty/philyoku/tree/codex/endgame-nice-nano).
-Download [the six-profile UF2](../003%20FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-philyoku-6profiles.uf2).
-It provides six saved Bluetooth profiles (indices 0–5), 500 ms battery/connection
-flashes, and a 250 ms gap between queued indications. On the BT layer, the left
-top row selects profiles 1–5; the innermost right top-row key selects profile 6.
-Manual connection and battery indicators remain at positions 10 and 20.
-
-Double-tap reset and copy this normal keyboard UF2 onto the bootloader drive.
-Existing profile indices and settings storage are retained, so the original five
-pairings are expected to survive a normal update. Do not use the settings-reset
-image or `BT_CLR` to preserve pairings. Six-profile migration is not yet hardware-tested.
-[Build settings and hash](../003%20FIRMWARE/zmk-endgame-nice-nano/firmware/philyoku-six-profiles-validation.json)
-record the local compile and exact Philyoku commit.
+[`endgame-nice-nano-v2.uf2`](../003%20FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-v2.uf2) is built from the sample QWERTY keymap in this folder, with 120 ms status flashes. Edit [`config/endgame.keymap`](../003%20FIRMWARE/zmk-endgame-nice-nano/config/endgame.keymap) for your own layout and rebuild with `build.sh`.
 
 The user reported working LED indications on 2026-10-15 with C1 omitted. C1 remains
 part of the design; voltage margins and all battery/charging conditions are not
 validated by that observation.
-
-The remainder of this document describes the separately retained **original
-QWERTY firmware**, `endgame-nice-nano-v2.uf2`, with 120 ms flashes. Its source and
-binary have not been replaced by the Philyoku build.
 
 ## Matrix and keymap
 

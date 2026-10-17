@@ -11,7 +11,7 @@ A 36-key [Endgame](https://github.com/OldMan6955/TheEndgame2024) repository with
 
 The nice!nano version is **4 mm wider than the original PCB**. Each key half moves outward 2 mm, giving the inner keys more clearance from the controller while preserving the original outer borders. The controller, battery opening, and LED remain on the board's centreline. Its matching case retains the original height and sloped profile. The case has a relieved USB opening and corrected inner thumb edges that restore the original continuous roof; see the [thumb repair comparison](002%20CASE/NICE%20NANO%20WIRELESS/thumb-roof-repair-preview.png).
 
-**Prototype status:** the RP2040-Zero Choc V2 board has been built, and all 36 keys work; keycap clearance on assembled hardware is unchecked. The nice!nano build has documented digital design, manufacturing-file, and CAD checks and has reached user assembly testing, with LED operation reported; the latest case repair, clear LED logo case, six-profile pairing migration, and printed thumb caps still need physical validation. Full system qualification and JLCPCB upload-preview verification remain incomplete. See the [2026-10-15 update](docs/updates-2026-10-15.md).
+**Prototype status:** the RP2040-Zero Choc V2 board has been built, and all 36 keys work; keycap clearance on assembled hardware is unchecked. The nice!nano build has documented digital design, manufacturing-file, and CAD checks and has reached user assembly testing, with LED operation reported; the latest case repair, clear LED logo case, and printed thumb caps still need physical validation. Full system qualification and JLCPCB upload-preview verification remain incomplete. See the [2026-10-15 update](docs/updates-2026-10-15.md).
 
 **RP2040-Zero Choc V2 PCB, top**
 
@@ -51,8 +51,7 @@ Use the PCB, case, and firmware from this table together.
 | Removable battery tray with solder relief | [STL](002%20CASE/NICE%20NANO%20WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.stl) · [STEP](002%20CASE/NICE%20NANO%20WIRELESS/TheENDGAME2024_NICE_NANO_BATTERY_TRAY.step) |
 | Optional Choc V2 switch plates | [3-D print (recommended)](001%20PCB/PLATE%20CHOC%20V2/NICE%20NANO%20WIRELESS/3D%20PRINT/) · [1.2 mm FR-4/metal](001%20PCB/PLATE%20CHOC%20V2/NICE%20NANO%20WIRELESS/) · [notes](docs/nice-nano-case.md#choc-v2-switch-plates) |
 | Editable KiCad project | [PCB](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano.kicad_pcb) · [schematic](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano.kicad_sch) · [project and local libraries](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/) |
-| nice!nano original QWERTY firmware | [UF2](003%20FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-v2.uf2) · [ZMK source](003%20FIRMWARE/zmk-endgame-nice-nano/) |
-| nice!nano Philyoku firmware | [Six-profile UF2, 500 ms LED flashes](003%20FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-philyoku-6profiles.uf2) · [controls and update instructions](docs/nice-nano-firmware.md#current-philyoku-firmware-2026-10-15) |
+| nice!nano ZMK firmware (sample QWERTY keymap) | [UF2](003%20FIRMWARE/zmk-endgame-nice-nano/firmware/endgame-nice-nano-v2.uf2) · [ZMK source](003%20FIRMWARE/zmk-endgame-nice-nano/) |
 | Build details | [Full BOM and assembly notes](docs/nice-nano-wireless.md) · [electrical](docs/nice-nano-electrical.md) · [case](docs/nice-nano-case.md) · [firmware](docs/nice-nano-firmware.md) |
 
 ## nice!nano JLCPCB order settings
