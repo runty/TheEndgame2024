@@ -17,8 +17,8 @@
   "minimum_band_width_mm": 1.3,
   "clear_area_over_led_body_mm2": 11.37,
   "led_body_area_mm2": 25.0,
-  "case_volume_mm3": 62315.88,
-  "body_volume_mm3": 62003.71,
+  "case_volume_mm3": 62703.18,
+  "body_volume_mm3": 62391.02,
   "clear_volume_mm3": 312.17,
   "body_and_clear_watertight": true
 }

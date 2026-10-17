@@ -134,6 +134,25 @@ def thumb_fill_regions():
                 14 if side == 1 else -10, 3.6, 12) for side in (-1, 1)]
 
 
+def alpha_fill_regions():
+    """Upper inner alpha-opening edges where the X=±12 split leaves a notch.
+
+    Above Y≈36.5 the opening edge lies inside the fixed centre, so it did
+    not move outward with its keys. These strips take the original edge
+    translated with each half, as for the thumbs.
+    """
+    return [box(7 if side == 1 else -14, 36, THUMB_RELIEF_TOP,
+                14 if side == 1 else -7, 62, 12) for side in (-1, 1)]
+
+
+def fill_regions():
+    return thumb_fill_regions() + alpha_fill_regions()
+
+
+def controller_pocket():
+    return rounded_prism(-9.2, 43.2, 9.2, 77.8, 1.0, 0.0, 6.5)
+
+
 def yz_prism(points, x0=-USB_HALF_WIDTH, x1=USB_HALF_WIDTH):
     polygon = BRepBuilderAPI_MakePolygon()
     for y, z in points:
@@ -144,19 +163,22 @@ def yz_prism(points, x0=-USB_HALF_WIDTH, x1=USB_HALF_WIDTH):
     ).Shape()
 
 
-def refine_case(case, original, battery_pocket):
-    """Smooth upper thumb divots and relieve the printed USB contact points.
+def refine_case(case, original, battery_pocket, widened_base):
+    """Smooth upper thumb divots and inner alpha notches; relieve the USB.
 
     Restore the original roof and rounded opening edge, translated with
     each key half, across the entire affected strip. The donor must be the
     pristine source, not the widened case with its existing recesses.
-    Preserve the battery pocket and relief below Z=4 for existing plates.
+    Preserve every internal cavity and relief below Z=4 for existing plates.
     USB removal reaches below the base to eliminate both original ledges.
     Only the last 1.64 mm of the roof is bevelled; the inner roof stays put.
     """
-    for side, region in zip((-1, 1), thumb_fill_regions()):
+    cavities = cut(widened_base, case)
+    for side, region in zip((-1, 1, -1, 1), fill_regions()):
         patch = BRepAlgoAPI_Common(translated(original, side * 2), region).Shape()
-        patch = cut(patch, battery_pocket)
+        # The stock opening's upper corners overhang the controller; keep its
+        # full pocket clear beneath the restored roof.
+        patch = cut(cut(cut(patch, battery_pocket), cavities), controller_pocket())
         case = fuse(case, patch)
     case = cut(case, rounded_prism(-USB_HALF_WIDTH, 70, USB_HALF_WIDTH, 82,
                                   0.8, -2.0, 7.3))
@@ -174,27 +196,34 @@ def verify_thumb_roof(case, original):
     includes the intentional rounded/chamfered key-opening edge.
     """
     def top(intersector, x, y):
+        # Only the restored part above the plate relief is compared; below
+        # Z=4 the openings deliberately keep their widened-case walls.
         intersector.Perform(gp_Lin(gp_Pnt(x, y, -10), gp_Dir(0, 0, 1)), 0, 30)
-        return max((intersector.Pnt(i).Z() for i in range(1, intersector.NbPnt()+1)), default=None)
+        zs = [intersector.Pnt(i).Z() for i in range(1, intersector.NbPnt()+1)]
+        return max((z for z in zs if z > THUMB_RELIEF_TOP), default=None)
 
     actual = IntCurvesFace_ShapeIntersector()
     actual.Load(case, 1e-7)
     checked, max_error = 0, 0.0
+    strips = (
+        ([9.99, 10.01] + [10.1 + i * 0.1 for i in range(39)] + [13.99, 14.01],
+         [-7.11, -7.09] + [-7.0 + i * 0.1 for i in range(106)] + [3.59, 3.61]),
+        # Upper inner alpha-opening edges, including both patch seams.
+        ([6.99, 7.01] + [7.1 + i * 0.1 for i in range(69)] + [13.99, 14.01],
+         [35.99, 36.01] + [36.1 + i * 0.2 for i in range(130)] + [61.99, 62.01]),
+    )
     for side in (-1, 1):
         reference = IntCurvesFace_ShapeIntersector()
         reference.Load(translated(original, side * 2), 1e-7)
-        xs = [9.99, 10.01] + [10.1 + i * 0.1 for i in range(39)] + [13.99, 14.01]
-        ys = [-7.11, -7.09] + [-7.0 + i * 0.1 for i in range(106)] + [3.59, 3.61]
-        for x in xs:
-            for y in ys:
-                expected = top(reference, side*x, y)
-                observed = top(actual, side*x, y)
-                assert (expected is None) == (observed is None), (side*x, y, expected, observed)
-                if expected is not None:
-                    error = abs(observed - expected)
-                    assert error < 1e-5, (side*x, y, expected, observed)
-                    max_error = max(max_error, error)
-                    checked += 1
+        for x, y in ((x, y) for xs, ys in strips for x in xs for y in ys):
+            expected = top(reference, side*x, y)
+            observed = top(actual, side*x, y)
+            assert (expected is None) == (observed is None), (side*x, y, expected, observed)
+            if expected is not None:
+                error = abs(observed - expected)
+                assert error < 1e-5, (side*x, y, expected, observed)
+                max_error = max(max_error, error)
+                checked += 1
     return {"reference": "pristine original case, translated 2 mm outward per half",
             "sampled_surface_points": checked,
             "maximum_top_surface_error_mm": max_error,
@@ -205,7 +234,7 @@ def verify_refinements(case, previous, original, battery_pocket):
     # The visibly smoothed walls must add material only above the plates.
     added = cut(case, previous)
     additions = []
-    for region in thumb_fill_regions():
+    for region in fill_regions():
         part = BRepAlgoAPI_Common(added, region).Shape()
         additions.append(volume(part))
         added = cut(added, region)
@@ -213,7 +242,9 @@ def verify_refinements(case, previous, original, battery_pocket):
     roof_report = verify_thumb_roof(case, original)
     assert volume(BRepAlgoAPI_Common(case, battery_pocket).Shape()) < 1e-5
     assert abs(volume(added)) < 1e-5
+    # Left/right thumb fills, then left/right alpha fills, are mirror pairs.
     assert abs(additions[0] - additions[1]) < 0.001
+    assert abs(additions[2] - additions[3]) < 0.01, additions
     # Continuous 15 mm entrance including former bottom-corner ledges.
     entry = box(-USB_HALF_WIDTH, 78.8, -1.4, USB_HALF_WIDTH, USB_REAR_Y, 7.3)
     assert volume(BRepAlgoAPI_Common(case, entry).Shape()) < 1e-5
@@ -241,7 +272,9 @@ def verify_refinements(case, previous, original, battery_pocket):
                        "clearance_mm": round(distance.Value(), 6)})
     assert len(plates) == 4
     return {"thumb_upper_divots_smoothed": True,
-            "thumb_fill_volume_mm3": additions,
+            "thumb_fill_volume_mm3": additions[:2],
+            "upper_inner_alpha_notches_filled": True,
+            "alpha_fill_volume_mm3": additions[2:],
             "thumb_roof_surface": roof_report,
             "battery_pocket_preserved": True,
             "existing_plate_relief_top_z_mm": THUMB_RELIEF_TOP,
@@ -643,22 +676,33 @@ def cs_keycap_clearance(source_original, widened_base, revised):
     bottom-out. It is a centred 17.5 x 16.5 mm bounding envelope, not a model
     of every CS variant or a claim about wider thumb caps or print tolerance.
     """
-    board = PCB.read_text()
+    def cap_proxies(pcb):
+        proxies = {}
+        for footprint in blocks(pcb.read_text(), "footprint"):
+            if "SW_choc_v1_v2_HS_" not in footprint.splitlines()[0]:
+                continue
+            at = coords(footprint, "at", 2)
+            angle = at[2] if len(at) == 3 else 0.0
+            ref = re.search(r'\(property "Reference" "([^"]+)', footprint).group(1)
+            proxy = box(-8.75, -8.25, 1.6, 8.75, 8.25, 20)
+            transform = gp_Trsf()
+            transform.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), math.radians(angle))
+            proxy = BRepBuilderAPI_Transform(proxy, transform, True).Shape()
+            transform = gp_Trsf()
+            transform.SetTranslation(gp_Vec(at[0] - 150, 140 - at[1], 0))
+            proxies[ref] = BRepBuilderAPI_Transform(proxy, transform, True).Shape()
+        return proxies
+
+    # Reference: the stock case around the stock PCB's own key positions.
+    stock = {}
+    for ref, proxy in cap_proxies(SOURCE_PCB).items():
+        distance = BRepExtrema_DistShapeShape(source_original, proxy)
+        distance.Perform()
+        assert distance.IsDone()
+        stock[ref] = distance.Value()
     rows = []
-    for footprint in blocks(board, "footprint"):
-        if "SW_choc_v1_v2_HS_" not in footprint.splitlines()[0]:
-            continue
-        at = coords(footprint, "at", 2)
-        angle = at[2] if len(at) == 3 else 0.0
-        ref = re.search(r'\(property "Reference" "([^"]+)', footprint).group(1)
-        proxy = box(-8.75, -8.25, 1.6, 8.75, 8.25, 20)
-        transform = gp_Trsf()
-        transform.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), math.radians(angle))
-        proxy = BRepBuilderAPI_Transform(proxy, transform, True).Shape()
-        transform = gp_Trsf()
-        transform.SetTranslation(gp_Vec(at[0] - 150, 140 - at[1], 0))
-        proxy = BRepBuilderAPI_Transform(proxy, transform, True).Shape()
-        row = {"reference": ref}
+    for ref, proxy in cap_proxies(PCB).items():
+        row = {"reference": ref, "stock_case_on_stock_pcb_clearance_mm": stock[ref]}
         for name, shape in (("source_original", source_original), ("widened_baseline", widened_base), ("revised", revised)):
             overlap = volume(BRepAlgoAPI_Common(shape, proxy).Shape())
             distance = BRepExtrema_DistShapeShape(shape, proxy)
@@ -668,7 +712,8 @@ def cs_keycap_clearance(source_original, widened_base, revised):
                 assert overlap < 1e-6, (ref, name, overlap)
             row[f"{name}_clearance_mm"] = distance.Value()
             row[f"{name}_overlap_mm3"] = overlap
-        assert row["revised_clearance_mm"] >= row["widened_baseline_clearance_mm"] - 1e-5, ref
+        # Each key keeps at least the clearance the stock case gives it.
+        assert row["revised_clearance_mm"] >= stock[ref] - 1e-4, (ref, row)
         rows.append(row)
     assert len(rows) == 36
     report = {
@@ -683,7 +728,8 @@ def cs_keycap_clearance(source_original, widened_base, revised):
         "source_original_colliding_envelopes": [
             r["reference"] for r in rows if r["source_original_overlap_mm3"] >= 1e-6
         ],
-        "widened_baseline_clearance_preserved": True,
+        "stock_case_clearance_preserved_per_key": True,
+        "stock_case_minimum_clearance_mm": min(stock.values()),
         "physical_print_or_wider_thumb_caps_verified": False,
         "positions": rows,
     }
@@ -818,7 +864,7 @@ def main():
     # 0.5 mm headroom. Preserve the stock key-opening edges: an added 20 mm
     # hood cleared switch bodies but intruded into the moving cap footprint.
     # The original roof covers the recess; its edges follow the stock profile.
-    revised = cut(revised, rounded_prism(-9.2, 43.2, 9.2, 77.8, 1.0, 0.0, 6.5))
+    revised = cut(revised, controller_pocket())
     # USB-C at negative PCB Y (positive case Y). Entry reaches beyond the
     # old case edge at Y≈80.44 and is open through the original case end wall.
     # The source sloped roof already encloses this cover envelope. Retain
@@ -843,7 +889,7 @@ def main():
         revised = cut(revised, cylinder(x, y, 2.3, 1.5, 5.6))
 
     previous_case = revised
-    revised = refine_case(revised, original, pocket)
+    revised = refine_case(revised, original, pocket, widened_base)
     refinement_report = verify_refinements(revised, previous_case, original, pocket)
 
     # Insulating lower tray: 1.0 mm plate under the opening, with 1.8 mm
@@ -871,11 +917,11 @@ def main():
     assert BRepCheck_Analyzer(revised).IsValid() and solids(revised) == 1
     assert BRepCheck_Analyzer(tray).IsValid() and solids(tray) == 1
     assert volume(BRepAlgoAPI_Common(revised, tray).Shape()) < 1e-5
-    # Only the internal tray mounts and the bounded upper thumb patches
+    # Only the internal tray mounts and the bounded thumb and alpha patches
     # add material beyond the widened baseline. The original openings and exterior profile move with their
     # respective halves while the central controller waist stays fixed.
     additions = cut(revised, widened_base)
-    for region in thumb_fill_regions():
+    for region in fill_regions():
         additions = cut(additions, region)
     for x, y in mounts:
         additions = cut(additions, cylinder(x, y, 4.51, 1.59, 2.91))
@@ -914,7 +960,9 @@ def main():
     # key-opening contour rather than extending into the keycap footprint.
     nano_roof = box(-8.0, 44.0, 6.5, 8.0, 69.0, 7.75)
     assert abs(volume(BRepAlgoAPI_Common(revised, nano_roof).Shape()) - volume(nano_roof)) < 1e-5
-    roof_region = box(-10, 43.2, 6.5, 10, 69.6, 12)
+    # The alpha fills at |X|>=7 deliberately restore the stock opening edge;
+    # compare the rest of the controller roof with the widened baseline.
+    roof_region = box(-7, 43.2, 6.5, 7, 69.6, 12)
     original_roof_volume = volume(BRepAlgoAPI_Common(widened_base, roof_region).Shape())
     revised_roof_volume = volume(BRepAlgoAPI_Common(revised, roof_region).Shape())
     # Repeated curved-surface Boolean integration differs by ~0.00055 mm3.
@@ -971,7 +1019,7 @@ def main():
     print("Recessed M3×6 DIN965 heads: >=0.6 mm desk clearance with 1 mm feet")
     print(f"36 switch-body envelopes clear case; minimum {switch_clearance:.4f} mm")
     print(f"36 nominal CS 1U cap envelopes clear through case height; minimum {cap_clearance:.4f} mm")
-    print("Thumb divots smoothed above Z=4; all four existing STEP plates clear")
+    print("Thumb divots and upper inner alpha notches restored above Z=4; all four existing STEP plates clear")
     print("USB: 15 mm wide, ledges removed, rear ceiling 7.9 mm; bevel roof >=1.25 mm")
     print(f"Written to {OUTPUT}")
 

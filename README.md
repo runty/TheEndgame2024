@@ -9,7 +9,7 @@ A 36-key [Endgame](https://github.com/OldMan6955/TheEndgame2024) repository with
 
 **Case fit warning for nice!nano:** this PCB is 4 mm wider than the original and requires the matching **231 mm-wide nice!nano case** linked above. It does **not** fit the original Endgame case. Use the nice!nano-specific case files and plates.
 
-The nice!nano version is **4 mm wider than the original PCB**. Each key half moves outward 2 mm, giving the inner keys more clearance from the controller while preserving the original outer borders. The controller, battery opening, and LED remain on the board's centreline. Its matching case retains the original height and sloped profile. The case has a relieved USB opening and corrected inner thumb edges that restore the original continuous roof; see the [thumb repair comparison](002%20CASE/NICE%20NANO%20WIRELESS/thumb-roof-repair-preview.png).
+The nice!nano version is **4 mm wider than the original PCB**. Each key half moves outward 2 mm, giving the inner keys more clearance from the controller while preserving the original outer borders. The controller, battery opening, and LED remain on the board's centreline. Its matching case retains the original height and sloped profile. The case has a relieved USB opening, and its inner thumb and top inner alpha opening edges match the original case; see the [thumb repair comparison](002%20CASE/NICE%20NANO%20WIRELESS/thumb-roof-repair-preview.png).
 
 **Prototype status:** the RP2040-Zero Choc V2 board has been built, and all 36 keys work; keycap clearance on assembled hardware is unchecked. The nice!nano build has documented digital design, manufacturing-file, and CAD checks and has reached user assembly testing, with LED operation reported; the latest case repair, clear LED logo case, and printed thumb caps still need physical validation. Full system qualification and JLCPCB upload-preview verification remain incomplete. See the [2026-10-15 update](docs/updates-2026-10-15.md).
 
@@ -75,13 +75,13 @@ The measured Gerber outline is **223.000032 × 96.106067 mm**. Upload the ZIP in
 | Keycap-to-controller clearance | **2.16 mm minimum** to the conservative 18 × 33 mm nice!nano envelope in CAD |
 | Printed case width | **231 mm**, with the original overall height retained |
 | USB opening | **15 mm wide**; lower side ledges removed; rear lip bevel adds 0.6 mm headroom while keeping at least 1.25 mm roof |
-| Inner thumb edges | Complete original roof restored over both former divots; existing switch plates retain 0.2 mm vertical clearance |
+| Inner thumb and alpha edges | Original roof and opening edges restored beside the inner thumbs and top inner keys; existing switch plates retain 0.2 mm vertical clearance |
 | Battery opening | **22 × 35 mm**, with 1 mm corner radii |
 | Battery allowance checked | **18.5 × 33 × 5 mm** complete-pack envelope |
 
 A centred **17 × 30 mm** battery leaves **2.5 mm on each side of the PCB opening**. The larger checked pack envelope leaves **1.75 mm per side and 1.0 mm at each end**, with **0.15 mm above the 5 mm-thick envelope** inside the case after the planned 0.2 mm support allowance. The actual wrapped battery and its lead exit still need measurement.
 
-All 36 nominal **17.5 × 16.5 mm Chicago Steno 1U keycap envelopes** clear the case throughout a full-height CAD sweep, with a **0.70 mm minimum gap**. Choc V2 requires **MX-stem** keycaps. The separate [thumb-cap package](006%20KEYCAPS/CHOC%20V2%20THUMBS/) includes larger-cap CAD checks; actual print tolerances and physical fit remain untested.
+All 36 nominal **17.5 × 16.5 mm Chicago Steno 1U keycap envelopes** clear the case throughout a full-height CAD sweep, with a **0.70 mm minimum gap**, the same as the original case. Choc V2 requires **MX-stem** keycaps. The separate [thumb-cap package](006%20KEYCAPS/CHOC%20V2%20THUMBS/) includes larger-cap CAD checks; actual print tolerances and physical fit remain untested.
 
 See the [measured layout and centreline](docs/validation/nice-nano-pcb/outer-key-symmetry.png), [keycap clearance comparison](docs/validation/nice-nano-case/cs-clearance.png), and [case preview](002%20CASE/NICE%20NANO%20WIRELESS/case-and-tray-preview.png).
 

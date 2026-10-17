@@ -29,20 +29,23 @@
     "SW28",
     "SW15"
   ],
-  "widened_baseline_clearance_preserved": true,
+  "stock_case_clearance_preserved_per_key": true,
+  "stock_case_minimum_clearance_mm": 0.7042754787491189,
   "physical_print_or_wider_thumb_caps_verified": false,
   "positions": [
     {
       "reference": "SW20",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7043277829659274,
       "source_original_clearance_mm": 1.2658300388338466,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.850006657199161,
       "widened_baseline_overlap_mm3": 0.0,
-      "revised_clearance_mm": 0.850006657199161,
+      "revised_clearance_mm": 0.7043277829659274,
       "revised_overlap_mm3": 0.0
     },
     {
       "reference": "SW30",
+      "stock_case_on_stock_pcb_clearance_mm": 0.8500033131349914,
       "source_original_clearance_mm": 0.5027069578011296,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.8500033131349914,
@@ -52,6 +55,7 @@
     },
     {
       "reference": "SW23",
+      "stock_case_on_stock_pcb_clearance_mm": 0.8499971506537415,
       "source_original_clearance_mm": 0.4341794677098459,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.8499971506537415,
@@ -61,6 +65,7 @@
     },
     {
       "reference": "SW11",
+      "stock_case_on_stock_pcb_clearance_mm": 0.8499980417991818,
       "source_original_clearance_mm": 0.5027016864653235,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.8499980417991818,
@@ -70,6 +75,7 @@
     },
     {
       "reference": "SW7",
+      "stock_case_on_stock_pcb_clearance_mm": 13.554156916285415,
       "source_original_clearance_mm": 13.03504896396851,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 13.554156916285415,
@@ -79,6 +85,7 @@
     },
     {
       "reference": "SW29",
+      "stock_case_on_stock_pcb_clearance_mm": 14.083361317632873,
       "source_original_clearance_mm": 14.963956941259838,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 14.083361317632873,
@@ -88,6 +95,7 @@
     },
     {
       "reference": "SW34",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7046177732264263,
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 140.28217795964153,
       "widened_baseline_clearance_mm": 0.7046177732264263,
@@ -97,15 +105,17 @@
     },
     {
       "reference": "SW21",
+      "stock_case_on_stock_pcb_clearance_mm": 0.8499907477592542,
       "source_original_clearance_mm": 2.8062859492269503,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.8499907477593895,
       "widened_baseline_overlap_mm3": 0.0,
-      "revised_clearance_mm": 0.8499907477593895,
+      "revised_clearance_mm": 0.8499907477592648,
       "revised_overlap_mm3": 0.0
     },
     {
       "reference": "SW27",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7043329123969139,
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 98.73334536618727,
       "widened_baseline_clearance_mm": 0.7043329123969139,
@@ -115,6 +125,7 @@
     },
     {
       "reference": "SW31",
+      "stock_case_on_stock_pcb_clearance_mm": 0.8174838671017493,
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 1.5611021966271255,
       "widened_baseline_clearance_mm": 0.8174838671017493,
@@ -124,6 +135,7 @@
     },
     {
       "reference": "SW35",
+      "stock_case_on_stock_pcb_clearance_mm": 0.8500030000000294,
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 128.962711715305,
       "widened_baseline_clearance_mm": 0.8500030000000294,
@@ -133,15 +145,17 @@
     },
     {
       "reference": "SW17",
+      "stock_case_on_stock_pcb_clearance_mm": 0.8500538641712738,
       "source_original_clearance_mm": 2.8063490656389645,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.8500538641714009,
       "widened_baseline_overlap_mm3": 0.0,
-      "revised_clearance_mm": 0.8500538641714009,
+      "revised_clearance_mm": 0.8500538641712428,
       "revised_overlap_mm3": 0.0
     },
     {
       "reference": "SW5",
+      "stock_case_on_stock_pcb_clearance_mm": 0.8499967918178006,
       "source_original_clearance_mm": 0.8499967918177713,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.8499967918178006,
@@ -151,6 +165,7 @@
     },
     {
       "reference": "SW19",
+      "stock_case_on_stock_pcb_clearance_mm": 0.8499944995710512,
       "source_original_clearance_mm": 0.4341711179364733,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.8499944995710512,
@@ -160,6 +175,7 @@
     },
     {
       "reference": "SW4",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7042754787491189,
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 117.73993463356355,
       "widened_baseline_clearance_mm": 0.7042754787491189,
@@ -169,6 +185,7 @@
     },
     {
       "reference": "SW24",
+      "stock_case_on_stock_pcb_clearance_mm": 0.849994882563591,
       "source_original_clearance_mm": 1.2658182641991127,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.849994882563591,
@@ -178,6 +195,7 @@
     },
     {
       "reference": "SW13",
+      "stock_case_on_stock_pcb_clearance_mm": 14.03100201215028,
       "source_original_clearance_mm": 13.443926893791664,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 14.03100201215028,
@@ -187,6 +205,7 @@
     },
     {
       "reference": "SW26",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7324030986263558,
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 18.27083969529393,
       "widened_baseline_clearance_mm": 0.7324030986263558,
@@ -196,15 +215,17 @@
     },
     {
       "reference": "SW16",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7043338734647174,
       "source_original_clearance_mm": 1.265778957620645,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.8499555759859448,
       "widened_baseline_overlap_mm3": 0.0,
-      "revised_clearance_mm": 0.8499555759859448,
+      "revised_clearance_mm": 0.7043338734647174,
       "revised_overlap_mm3": 0.0
     },
     {
       "reference": "SW3",
+      "stock_case_on_stock_pcb_clearance_mm": 0.8500019999998187,
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 128.96282772231444,
       "widened_baseline_clearance_mm": 0.8500019999998187,
@@ -214,6 +235,7 @@
     },
     {
       "reference": "SW10",
+      "stock_case_on_stock_pcb_clearance_mm": 14.083361755954673,
       "source_original_clearance_mm": 14.963959889075861,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 14.083361755954673,
@@ -223,6 +245,7 @@
     },
     {
       "reference": "SW22",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7045228094070298,
       "source_original_clearance_mm": 0.4341709177361668,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.7045228094070298,
@@ -232,6 +255,7 @@
     },
     {
       "reference": "SW36",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7042796939016344,
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 117.73949722950015,
       "widened_baseline_clearance_mm": 0.7042796939016344,
@@ -241,6 +265,7 @@
     },
     {
       "reference": "SW2",
+      "stock_case_on_stock_pcb_clearance_mm": 0.704613484551871,
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 140.2821845097471,
       "widened_baseline_clearance_mm": 0.704613484551871,
@@ -250,6 +275,7 @@
     },
     {
       "reference": "SW37",
+      "stock_case_on_stock_pcb_clearance_mm": 0.8499967918188744,
       "source_original_clearance_mm": 0.8499967918188656,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.8499967918188744,
@@ -259,6 +285,7 @@
     },
     {
       "reference": "SW33",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7382846625658653,
       "source_original_clearance_mm": 0.6409471978269015,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.7382846625658653,
@@ -268,6 +295,7 @@
     },
     {
       "reference": "SW32",
+      "stock_case_on_stock_pcb_clearance_mm": 13.55412097190834,
       "source_original_clearance_mm": 13.035011287312493,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 13.55412097190834,
@@ -277,6 +305,7 @@
     },
     {
       "reference": "SW14",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7323513948520368,
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 18.27195468714785,
       "widened_baseline_clearance_mm": 0.7323513948520368,
@@ -286,6 +315,7 @@
     },
     {
       "reference": "SW9",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7865929676933175,
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 0.2644704927799237,
       "widened_baseline_clearance_mm": 0.7865929676933175,
@@ -295,6 +325,7 @@
     },
     {
       "reference": "SW6",
+      "stock_case_on_stock_pcb_clearance_mm": 0.8174753872944107,
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 1.5612116868494639,
       "widened_baseline_clearance_mm": 0.8174753872944107,
@@ -304,6 +335,7 @@
     },
     {
       "reference": "SW18",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7045531598350612,
       "source_original_clearance_mm": 0.4342075250205408,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.7045531598350612,
@@ -313,6 +345,7 @@
     },
     {
       "reference": "SW28",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7866064224998706,
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 0.26451330262375716,
       "widened_baseline_clearance_mm": 0.7866064224998706,
@@ -322,6 +355,7 @@
     },
     {
       "reference": "SW8",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7382588941830338,
       "source_original_clearance_mm": 0.6409186702764988,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.7382588941830338,
@@ -331,6 +365,7 @@
     },
     {
       "reference": "SW12",
+      "stock_case_on_stock_pcb_clearance_mm": 0.8500033692115228,
       "source_original_clearance_mm": 1.2658267508470444,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 0.8500033692115228,
@@ -340,6 +375,7 @@
     },
     {
       "reference": "SW15",
+      "stock_case_on_stock_pcb_clearance_mm": 0.7043351793849836,
       "source_original_clearance_mm": 0.0,
       "source_original_overlap_mm3": 98.73366870143794,
       "widened_baseline_clearance_mm": 0.7043351793849836,
@@ -349,6 +385,7 @@
     },
     {
       "reference": "SW25",
+      "stock_case_on_stock_pcb_clearance_mm": 14.031010997801676,
       "source_original_clearance_mm": 13.443931322966089,
       "source_original_overlap_mm3": 0.0,
       "widened_baseline_clearance_mm": 14.031010997801676,
