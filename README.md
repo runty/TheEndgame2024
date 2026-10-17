@@ -100,7 +100,7 @@ The cap envelopes clear the wired, XIAO and nice!nano cases in CAD. The meshes a
 
 | Build | Details |
 | --- | --- |
-| Original wired Choc V1/V2 design | [Compatibility and manufacturing notes](docs/choc-v1-v2.md); original mounting geometry and case |
+| Original wired Choc V1/V2 design | [JLCPCB manufacturing ZIP](001%20PCB/GERBER/CHOC%20V1%20V2/TheEndgame2024_Choc_V1_V2_JLCPCB.zip) · [compatibility and manufacturing notes](docs/choc-v1-v2.md) · optional Choc V2 plates for the original case: [3-D print](001%20PCB/PLATE%20CHOC%20V2/3D%20PRINT/), [1.2 mm FR-4/metal](001%20PCB/PLATE%20CHOC%20V2/) ([notes](docs/choc-v1-v2.md#choc-v2-switch-plates)); original mounting geometry and case |
 | Original Endgame | [Upstream project](https://github.com/OldMan6955/TheEndgame2024); original author documentation preserved below |
 
 <details>
