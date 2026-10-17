@@ -40,12 +40,12 @@ The sculpted set contains two left long, two right long, one left small and one 
 | Right inner and outer long thumbs | SW23, SW37 | `sculpted-long-right.stl`, quantity 2 | `convex-long.stl`, quantity 2 |
 | Right middle small thumb | SW27 | `sculpted-small-right.stl`, quantity 1 | `convex-small.stl`, quantity 1 |
 
-Use the long axis across each 1.5u footprint. The supplied long sculpted cap geometry already includes the required 90° body rotation with the MX cross aligned to the footprint. References apply to the wired, XIAO and nice!nano designs in this repository.
+Use the long axis across each 1.5u footprint. The supplied long sculpted cap geometry already includes the required 90° body rotation with the MX cross aligned to the footprint. References apply to the wired and nice!nano designs in this repository.
 
 ## Verification and limits
 
 - All six single-cap variants and both connected grids are watertight, consistently oriented, positive-volume meshes, each with **one connected component**. See `validation/meshes.json` for dimensions and SHA-256 hashes.
-- Conservative full-height rectangular envelopes around the actual cap bodies were compared with the wired, XIAO and nice!nano case STEP models. They showed no intersections: at least about **0.73 mm case clearance for sculpted** and **0.90 mm for convex**. The tightest adjacent thumb-cap envelope gaps are about **0.46 mm sculpted / 0.70 mm convex**. These are nominal CAD checks, not tolerance guarantees.
+- Conservative full-height rectangular envelopes around the actual cap bodies were compared with the wired and nice!nano case STEP models (and a since-removed XIAO case). They showed no intersections: at least about **0.73 mm case clearance for sculpted** and **0.90 mm for convex**. The tightest adjacent thumb-cap envelope gaps are about **0.46 mm sculpted / 0.70 mm convex**. These are nominal CAD checks, not tolerance guarantees.
 - These case checks do not establish actual switch seating height, full key travel, print strength, or socket fit. Physical validation is still required. The first printed set is a prototype.
 - The stem's nominal cross is 4.03 × 1.15 mm on one axis and 4.23 × 1.25 mm on the other, with a flared entry. Approximate centreline cavity depth is 2.78 mm sculpted and 3.65 mm convex. No global scaling or speculative printer compensation was applied.
 

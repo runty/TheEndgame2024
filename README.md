@@ -1,21 +1,16 @@
-# Endgame — wired and wireless builds / Choc V1 & V2
+# Endgame — Choc V1/V2 and nice!nano wireless
 
-A 36-key [Endgame](https://github.com/OldMan6955/TheEndgame2024) repository with two wireless hardware builds, alongside the original wired designs. Both wireless PCBs support Choc V1/V2 hot-swap switches, but their controllers, electronics, batteries, cases, and firmware differ. Use the files for one build together; the parts are not interchangeable.
+A 36-key [Endgame](https://github.com/OldMan6955/TheEndgame2024) repository with two variants, both with Choc V1/V2 hot-swap switches: the original wired design in its original case, and a nice!nano v2 wireless build with its own PCB, case and firmware. Use the files for one variant together; the parts are not interchangeable.
 
-| Wireless build | Hardware and battery | PCB and matching case | Firmware and build notes |
+| Build | Hardware and battery | PCB and matching case | Firmware and build notes |
 | --- | --- | --- | --- |
-| **Seeed XIAO nRF52840** | XIAO nRF52840, 74HC595 column driver, direct-wired protected 150 mAh LiPo, physical power switch | [219 × 96.11 mm Gerbers](001%20PCB/GERBER/XIAO%20WIRELESS/TheEndgame2024_XIAO_Choc_V1_V2_JLCPCB.zip) · [KiCad project](001%20PCB/KICAD/XIAO%20WIRELESS/) · [case and tray STLs](002%20CASE/XIAO%20WIRELESS/) | [ZMK firmware](003%20FIRMWARE/zmk-endgame/) · [build handoff](docs/xiao-wireless.md) · [case notes](docs/xiao-case.md) |
 | **nice!nano v2** | nice!nano v2, directly soldered 401730 LiPo (target ≤200 mAh), two axial resistors, WS2812B-V6 status LED | [223 × 96.11 mm Gerbers](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano_223mm_THT_JLCPCB.zip) · [KiCad project](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/) · [case and tray STLs](002%20CASE/NICE%20NANO%20WIRELESS/) | [ZMK firmware](003%20FIRMWARE/zmk-endgame-nice-nano/) · [build notes](docs/nice-nano-wireless.md) · [case notes](docs/nice-nano-case.md) |
 
-**Case fit warning for nice!nano:** this PCB is 4 mm wider than the original and requires the matching **231 mm-wide nice!nano case** linked above. It does **not** fit the original Endgame case or the XIAO case. Use the nice!nano-specific case files and plates.
+**Case fit warning for nice!nano:** this PCB is 4 mm wider than the original and requires the matching **231 mm-wide nice!nano case** linked above. It does **not** fit the original Endgame case. Use the nice!nano-specific case files and plates.
 
 The nice!nano version is **4 mm wider than the original PCB**. Each key half moves outward 2 mm, giving the inner keys more clearance from the controller while preserving the original outer borders. The controller, battery opening, and LED remain on the board's centreline. Its matching case retains the original height and sloped profile. The case has a relieved USB opening and corrected inner thumb edges that restore the original continuous roof; see the [thumb repair comparison](002%20CASE/NICE%20NANO%20WIRELESS/thumb-roof-repair-preview.png).
 
-**Prototype status:** both wireless variants have documented digital design, manufacturing-file, and CAD checks. The nice!nano has reached user assembly testing, with LED operation reported; the latest case repair, six-profile pairing migration, and printed thumb caps still need physical validation. Full system qualification and JLCPCB upload-preview verification remain incomplete. See the [2026-10-15 update](docs/updates-2026-10-15.md).
-
-**XIAO PCB, front**
-
-![XIAO PCB, front](001%20PCB/GERBER/XIAO%20WIRELESS/front-preview.png)
+**Prototype status:** the nice!nano build has documented digital design, manufacturing-file, and CAD checks. The nice!nano has reached user assembly testing, with LED operation reported; the latest case repair, six-profile pairing migration, and printed thumb caps still need physical validation. Full system qualification and JLCPCB upload-preview verification remain incomplete. See the [2026-10-15 update](docs/updates-2026-10-15.md).
 
 **nice!nano PCB, front**
 
@@ -23,7 +18,7 @@ The nice!nano version is **4 mm wider than the original PCB**. Each key half mov
 
 ## nice!nano downloads
 
-Use the PCB, case, and firmware from this table together. The XIAO and nice!nano designs are parallel wireless variants. Each has its own PCB, case and firmware; choose matching files from one table row.
+Use the PCB, case, and firmware from this table together.
 
 | File | Download |
 | --- | --- |
@@ -92,7 +87,7 @@ The committed PCB is the authoritative manufacturing source. The scratch PCB gen
 
 [Printable thumb caps and ordering notes](006%20KEYCAPS/CHOC%20V2%20THUMBS/) include **two separate connected 2 × 3 sets**: sculpted Chicago Steno thumbs and convex thumbs. Each contains **four long (1.5u) and two small (1u) caps**, with MX-style sockets for Choc V2 and removable connecting gates. These keycaps do not fit Choc V1 switches.
 
-The cap envelopes clear the wired, XIAO and nice!nano cases in CAD. The meshes are verified locally; physical stem fit, print quality and JLC3DP acceptance remain untested. Upload the two files from the keycap folder's `upload` directory, quantity 1 each to try both profiles on one keyboard.
+The cap envelopes clear the wired and nice!nano cases in CAD. The meshes are verified locally; physical stem fit, print quality and JLC3DP acceptance remain untested. Upload the two files from the keycap folder's `upload` directory, quantity 1 each to try both profiles on one keyboard.
 
 ![Connected thumb-cap sets](006%20KEYCAPS/CHOC%20V2%20THUMBS/connected-sets-preview.png)
 

@@ -85,7 +85,7 @@ def main():
     outlines=p.SHAPE_POLY_SET()
     assert board.GetBoardPolygonOutlines(outlines,False)
     assert outlines.OutlineCount()==1 and outlines.HoleCount(0)==1
-    host=p.LoadBoard(str(ROOT / '001 PCB/KICAD/XIAO WIRELESS/TheEndgame2024_XIAO.kicad_pcb'))
+    host=p.LoadBoard(str(ROOT / '001 PCB/KICAD/NICE NANO WIRELESS/source/TheEndgame2024_XIAO_base.kicad_pcb'))
     host_outline=p.SHAPE_POLY_SET()
     assert host.GetBoardPolygonOutlines(host_outline,False)
     def vertices(chain):

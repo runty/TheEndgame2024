@@ -14,7 +14,7 @@ APP = wx.App(False)
 import pcbnew as p
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE = ROOT / '001 PCB/KICAD/XIAO WIRELESS/TheEndgame2024_XIAO.kicad_pcb'
+BASE = ROOT / '001 PCB/KICAD/NICE NANO WIRELESS/source/TheEndgame2024_XIAO_base.kicad_pcb'
 PROJECT = ROOT / '001 PCB/KICAD/NICE NANO WIRELESS'
 LIBS = Path('/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints')
 PLACEMENT = {'U2': (150,80,0), 'LED1': (150,103.5,0),

@@ -1,6 +1,6 @@
 # Endgame nice!nano / 401730 revision requirements
 
-Status: implemented as a complete digital prototype on `codex/nice-nano-401730`, based on XIAO revision `266837a`. See the [prototype handoff](nice-nano-wireless.md) for fabrication files, assembly requirements, and validation. The older wired and XIAO outputs remain separate. Physical hardware has not been tested.
+Status: implemented as a complete digital prototype on `codex/nice-nano-401730`, based on XIAO revision `266837a` (the XIAO variant has since been removed from this repository; only its board file is kept as a layout source under `001 PCB/KICAD/NICE NANO WIRELESS/source/`). See the [prototype handoff](nice-nano-wireless.md) for fabrication files, assembly requirements, and validation. The older wired and XIAO outputs remain separate. Physical hardware has not been tested.
 
 ## Accepted choices
 
