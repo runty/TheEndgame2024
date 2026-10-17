@@ -4,14 +4,14 @@ A 36-key [Endgame](https://github.com/OldMan6955/TheEndgame2024) repository with
 
 | Build | Hardware and battery | PCB and matching case | Firmware and build notes |
 | --- | --- | --- | --- |
-| **RP2040-Zero Choc V2** (wired) | Waveshare RP2040-Zero, USB-C wired, original Endgame PCB outline and mounting | [JLCPCB Gerber ZIP](001%20PCB/GERBER/CHOC%20V1%20V2/TheEndgame2024_Choc_V1_V2_JLCPCB.zip) · [KiCad project](001%20PCB/KICAD/SILKSCREEN%20KICAD/) · [original case STEP](002%20CASE/TheENDGAME2024_CASE001.step) · Choc V2 plates: [3-D print](001%20PCB/PLATE%20CHOC%20V2/3D%20PRINT/), [1.2 mm FR-4/metal](001%20PCB/PLATE%20CHOC%20V2/) | [Vial UF2](003%20FIRMWARE/vial/endgame_vial.uf2) · [QMK config](003%20FIRMWARE/qmk-config-endgame/) · [Choc V1/V2 notes](docs/choc-v1-v2.md) |
-| **nice!nano Choc V2** (wireless) | nice!nano v2, directly soldered 401730 LiPo (target ≤200 mAh), two axial resistors, WS2812B-V6 status LED | [223 × 96.11 mm Gerbers](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano_223mm_THT_JLCPCB.zip) · [KiCad project](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/) · [case and tray STLs](002%20CASE/NICE%20NANO%20WIRELESS/) | [ZMK firmware](003%20FIRMWARE/zmk-endgame-nice-nano/) · [build notes](docs/nice-nano-wireless.md) · [case notes](docs/nice-nano-case.md) |
+| **RP2040-Zero Choc V2** (wired) | Waveshare RP2040-Zero, USB-C wired, original Endgame PCB outline and mounting | [JLCPCB Gerber ZIP](001%20PCB/GERBER/CHOC%20V1%20V2/TheEndgame2024_Choc_V1_V2_JLCPCB.zip) · [KiCad project](001%20PCB/KICAD/SILKSCREEN%20KICAD/) · [original case STEP](002%20CASE/TheENDGAME2024_CASE001.step) · Choc V2 plates: [3-D print](001%20PCB/PLATE%20CHOC%20V2/3D%20PRINT/), [1.2 mm FR-4/metal](001%20PCB/PLATE%20CHOC%20V2/) | [Vial UF2](003%20FIRMWARE/vial/endgame_vial.uf2) · [QMK config](003%20FIRMWARE/qmk-config-endgame/) (upstream, matrix unchanged) · [Choc V1/V2 notes](docs/choc-v1-v2.md) |
+| **nice!nano Choc V2** (wireless) | nice!nano v2, directly soldered 401730 LiPo (target ≤200 mAh), two axial resistors, WS2812B-V6 status LED | [223 × 96.11 mm Gerbers](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano_223mm_THT_JLCPCB.zip) · [KiCad project](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/) · [case (standard or clear LED logo) and tray](002%20CASE/NICE%20NANO%20WIRELESS/) | [ZMK firmware](003%20FIRMWARE/zmk-endgame-nice-nano/) · [build notes](docs/nice-nano-wireless.md) · [case notes](docs/nice-nano-case.md) |
 
 **Case fit warning for nice!nano:** this PCB is 4 mm wider than the original and requires the matching **231 mm-wide nice!nano case** linked above. It does **not** fit the original Endgame case. Use the nice!nano-specific case files and plates.
 
 The nice!nano version is **4 mm wider than the original PCB**. Each key half moves outward 2 mm, giving the inner keys more clearance from the controller while preserving the original outer borders. The controller, battery opening, and LED remain on the board's centreline. Its matching case retains the original height and sloped profile. The case has a relieved USB opening and corrected inner thumb edges that restore the original continuous roof; see the [thumb repair comparison](002%20CASE/NICE%20NANO%20WIRELESS/thumb-roof-repair-preview.png).
 
-**Prototype status:** the nice!nano build has documented digital design, manufacturing-file, and CAD checks. The nice!nano has reached user assembly testing, with LED operation reported; the latest case repair, six-profile pairing migration, and printed thumb caps still need physical validation. Full system qualification and JLCPCB upload-preview verification remain incomplete. See the [2026-10-15 update](docs/updates-2026-10-15.md).
+**Prototype status:** the RP2040-Zero Choc V2 board has been built, and all 36 keys work; keycap clearance on assembled hardware is unchecked. The nice!nano build has documented digital design, manufacturing-file, and CAD checks and has reached user assembly testing, with LED operation reported; the latest case repair, clear LED logo case, six-profile pairing migration, and printed thumb caps still need physical validation. Full system qualification and JLCPCB upload-preview verification remain incomplete. See the [2026-10-15 update](docs/updates-2026-10-15.md).
 
 **RP2040-Zero Choc V2 PCB, top**
 
@@ -20,6 +20,23 @@ The nice!nano version is **4 mm wider than the original PCB**. Each key half mov
 **nice!nano Choc V2 PCB, front**
 
 ![nice!nano Choc V2 PCB, front](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/front-preview.png)
+
+## RP2040-Zero Choc V2 downloads
+
+The original wired Endgame PCB with Choc V2 hot-swap support added (Choc V1 still fits). It keeps the original outline, mounting holes, controller position and 1.6 mm thickness, so it fits the original case.
+
+| File | Download |
+| --- | --- |
+| JLCPCB manufacturing package | [Gerber ZIP](001%20PCB/GERBER/CHOC%20V1%20V2/TheEndgame2024_Choc_V1_V2_JLCPCB.zip) · [top](001%20PCB/GERBER/CHOC%20V1%20V2/top-preview.png) and [bottom](001%20PCB/GERBER/CHOC%20V1%20V2/bottom-preview.png) previews |
+| Case | [Original case STEP](002%20CASE/TheENDGAME2024_CASE001.step) |
+| Optional Choc V2 switch plates | [3-D print (recommended, test-fitted)](001%20PCB/PLATE%20CHOC%20V2/3D%20PRINT/) · [1.2 mm FR-4/metal](001%20PCB/PLATE%20CHOC%20V2/) · [notes](docs/choc-v1-v2.md#choc-v2-switch-plates) |
+| Editable KiCad project | [SILKSCREEN KiCad project](001%20PCB/KICAD/SILKSCREEN%20KICAD/) (the released variant) |
+| Firmware | [Vial UF2](003%20FIRMWARE/vial/endgame_vial.uf2) · [QMK config](003%20FIRMWARE/qmk-config-endgame/) from upstream; the key matrix is unchanged. The prototype was tested with ZMK on the RP2040-Zero; that ZMK config is not in this repository. |
+| Build details | [Compatibility, ordering, validation and prototype notes](docs/choc-v1-v2.md) |
+
+Order **2 layers, 1.6 mm FR-4, 1 oz copper**, approximately **219 × 96.1 mm** (use the outline in the ZIP). Confirm the preview shows all 36 relief slots and 36 large centre holes. The older `SILKSCREEN GERBER` and `COPPER GERBER` folders are upstream Choc V1-only archives.
+
+Prototype tips: the RP2040-Zero's 5V and GND pads are 0.84 mm apart, so check for a solder bridge before plugging in. If a whole column is dead, check continuity from its GP pin to the column socket tab; each column crosses to the front through a via beside its top-row switch.
 
 ## nice!nano downloads
 
@@ -75,7 +92,7 @@ The battery tray now includes an open center notch and corner relief for the und
 - **nice!nano v2:** mount on short soldered posts, with USB facing the upper edge. Follow the [assembly-height limits](docs/nice-nano-case.md); standard sockets have not been qualified for this case.
 - **Battery:** generic 401730 single-cell LiPo, target capacity ≤200 mAh. Solder its wires directly to **J1: pad 1 B+, pad 2 B−**. No JST connector is used. SW38 remains the physical battery disconnect.
 - **Resistors:** R1 **330 Ω** and R2 **100 kΩ**, ordinary **¼ W axial through-hole** parts. Use nominal 6.3 × 2.5 mm bodies at **10.16 mm lead pitch**, mounted flat on the PCB's top side. The case accommodates bodies up to 6.5 × 2.5 mm; installation and lead-trimming limits are in the [BOM](docs/nice-nano-wireless.md#parts-and-assembly).
-- **Status LED:** one **Worldsemi WS2812B-V6**, powered through nice!nano v2 switched VCC. The translucent case roof acts as the diffuser. The firmware adapts [zmk-rgbled-widget](https://github.com/caksoylar/zmk-rgbled-widget) for brief battery and Bluetooth/USB status flashes, then switches LED power off. See [LED meanings and limits](docs/nice-nano-firmware.md#status-indications).
+- **Status LED:** one **Worldsemi WS2812B-V6**, powered through nice!nano v2 switched VCC. With the standard case, a translucent case roof acts as the diffuser; the [clear LED logo case](docs/nice-nano-case.md#optional-clear-led-logo-two-filament-print) shows it through a transparent logo instead. The firmware adapts [zmk-rgbled-widget](https://github.com/caksoylar/zmk-rgbled-widget) for brief battery and Bluetooth/USB status flashes, then switches LED power off. See [LED meanings and limits](docs/nice-nano-firmware.md#status-indications).
 - **Other parts:** C1 remains a **100 nF 0603 capacitor**, and the matrix retains **36 SOD-123 diodes and 36 Choc hot-swap sockets**. This is a hot-swap switch design; the original optional direct-solder switch pattern is not retained.
 
 The [full parts list](docs/nice-nano-wireless.md#parts-and-assembly) includes controller posts, inserts, tray screws, feet, battery-fit assumptions, and charging requirements. Firmware is **ZMK for nice!nano v2**; the original wired QMK/Vial firmware does not apply to this revision.
@@ -97,17 +114,14 @@ The cap envelopes clear the RP2040-Zero (original) and nice!nano cases in CAD. T
 
 ![Connected thumb-cap sets](006%20KEYCAPS/CHOC%20V2%20THUMBS/connected-sets-preview.png)
 
-## RP2040-Zero Choc V2 and upstream documentation
+## Upstream documentation
 
-| Build | Details |
-| --- | --- |
-| RP2040-Zero Choc V2 (wired) | [JLCPCB manufacturing ZIP](001%20PCB/GERBER/CHOC%20V1%20V2/TheEndgame2024_Choc_V1_V2_JLCPCB.zip) · [compatibility and manufacturing notes](docs/choc-v1-v2.md) · optional Choc V2 plates for the original case: [3-D print](001%20PCB/PLATE%20CHOC%20V2/3D%20PRINT/), [1.2 mm FR-4/metal](001%20PCB/PLATE%20CHOC%20V2/) ([notes](docs/choc-v1-v2.md#choc-v2-switch-plates)); original mounting geometry and case |
-| Original Endgame | [Upstream project](https://github.com/OldMan6955/TheEndgame2024); original author documentation preserved below |
+This repository is based on the [original Endgame project](https://github.com/OldMan6955/TheEndgame2024). The original author's documentation is preserved below.
 
 <details>
 <summary>Original upstream README — wired Endgame, parts, credits, and photos</summary>
 
-The following is the original project's documentation. Its controller, firmware, parts lists, manufacturing comments, and physical-test statements refer to the original wired design, not either wireless build above.
+The following is the original project's documentation. Its controller, firmware, parts lists, manufacturing comments, and physical-test statements refer to the original Choc V1 wired design, not the RP2040-Zero Choc V2 or nice!nano Choc V2 builds above.
 
 <img src="https://github.com/OldMan6955/TheEndgame2024/blob/main/004%20IMAGES/TheEndgameBillboard.jpg" alt="TheEndgameBillboard">
 
