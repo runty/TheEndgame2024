@@ -1,0 +1,9 @@
+file_format: "1"
+id: endgame
+name: Endgame
+type: shield
+url: https://github.com/OldMan6955/TheEndgame2024
+requires: [rp2040_zero]
+features:
+  - keys
+  - underglow

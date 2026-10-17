@@ -52,7 +52,7 @@ The new ZIP contains seven RS-274X Gerber layers (front/back copper, front/back 
 | Surface finish | HASL or ENIG as preferred |
 | Assembly | Bare PCB; solder components and Choc sockets separately |
 
-The slot tooling is 1.5 mm wide with 0.5 mm centerline travel, producing a 1.5 × 2.0 mm slot. Confirm that the manufacturer's preview recognises all 36 slots and 36 large center holes. A prototype of this revision has been built, and all 36 keys work with the RP2040-Zero and ZMK firmware. Keycap clearance has not been checked on assembled hardware.
+The slot tooling is 1.5 mm wide with 0.5 mm centerline travel, producing a 1.5 × 2.0 mm slot. Confirm that the manufacturer's preview recognises all 36 slots and 36 large center holes. A prototype of this revision has been built, and all 36 keys work with the RP2040-Zero and ZMK firmware. A [ZMK config with a sample keymap](../003%20FIRMWARE/zmk-endgame-rp2040-zero/) is included. Keycap clearance has not been checked on assembled hardware.
 
 Build notes from the prototype:
 
