@@ -1,10 +1,11 @@
-# Endgame — Choc V1/V2 and nice!nano wireless
+# Endgame — RP2040-Zero Choc V2 and nice!nano Choc V2
 
-A 36-key [Endgame](https://github.com/OldMan6955/TheEndgame2024) repository with two variants, both with Choc V1/V2 hot-swap switches: the original wired design in its original case, and a nice!nano v2 wireless build with its own PCB, case and firmware. Use the files for one variant together; the parts are not interchangeable.
+A 36-key [Endgame](https://github.com/OldMan6955/TheEndgame2024) repository with two builds. Both PCBs take Kailh Choc V2 (and Choc V1) hot-swap switches. Use the files for one build together; the PCBs, cases and firmware are not interchangeable.
 
 | Build | Hardware and battery | PCB and matching case | Firmware and build notes |
 | --- | --- | --- | --- |
-| **nice!nano v2** | nice!nano v2, directly soldered 401730 LiPo (target ≤200 mAh), two axial resistors, WS2812B-V6 status LED | [223 × 96.11 mm Gerbers](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano_223mm_THT_JLCPCB.zip) · [KiCad project](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/) · [case and tray STLs](002%20CASE/NICE%20NANO%20WIRELESS/) | [ZMK firmware](003%20FIRMWARE/zmk-endgame-nice-nano/) · [build notes](docs/nice-nano-wireless.md) · [case notes](docs/nice-nano-case.md) |
+| **RP2040-Zero Choc V2** (wired) | Waveshare RP2040-Zero, USB-C wired, original Endgame PCB outline and mounting | [JLCPCB Gerber ZIP](001%20PCB/GERBER/CHOC%20V1%20V2/TheEndgame2024_Choc_V1_V2_JLCPCB.zip) · [KiCad project](001%20PCB/KICAD/SILKSCREEN%20KICAD/) · [original case STEP](002%20CASE/TheENDGAME2024_CASE001.step) · Choc V2 plates: [3-D print](001%20PCB/PLATE%20CHOC%20V2/3D%20PRINT/), [1.2 mm FR-4/metal](001%20PCB/PLATE%20CHOC%20V2/) | [Vial UF2](003%20FIRMWARE/vial/endgame_vial.uf2) · [QMK config](003%20FIRMWARE/qmk-config-endgame/) · [Choc V1/V2 notes](docs/choc-v1-v2.md) |
+| **nice!nano Choc V2** (wireless) | nice!nano v2, directly soldered 401730 LiPo (target ≤200 mAh), two axial resistors, WS2812B-V6 status LED | [223 × 96.11 mm Gerbers](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano_223mm_THT_JLCPCB.zip) · [KiCad project](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/) · [case and tray STLs](002%20CASE/NICE%20NANO%20WIRELESS/) | [ZMK firmware](003%20FIRMWARE/zmk-endgame-nice-nano/) · [build notes](docs/nice-nano-wireless.md) · [case notes](docs/nice-nano-case.md) |
 
 **Case fit warning for nice!nano:** this PCB is 4 mm wider than the original and requires the matching **231 mm-wide nice!nano case** linked above. It does **not** fit the original Endgame case. Use the nice!nano-specific case files and plates.
 
@@ -12,9 +13,13 @@ The nice!nano version is **4 mm wider than the original PCB**. Each key half mov
 
 **Prototype status:** the nice!nano build has documented digital design, manufacturing-file, and CAD checks. The nice!nano has reached user assembly testing, with LED operation reported; the latest case repair, six-profile pairing migration, and printed thumb caps still need physical validation. Full system qualification and JLCPCB upload-preview verification remain incomplete. See the [2026-10-15 update](docs/updates-2026-10-15.md).
 
-**nice!nano PCB, front**
+**RP2040-Zero Choc V2 PCB, top**
 
-![nice!nano PCB, front](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/front-preview.png)
+![RP2040-Zero Choc V2 PCB, top](001%20PCB/GERBER/CHOC%20V1%20V2/top-preview.png)
+
+**nice!nano Choc V2 PCB, front**
+
+![nice!nano Choc V2 PCB, front](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/front-preview.png)
 
 ## nice!nano downloads
 
@@ -87,15 +92,15 @@ The committed PCB is the authoritative manufacturing source. The scratch PCB gen
 
 [Printable thumb caps and ordering notes](006%20KEYCAPS/CHOC%20V2%20THUMBS/) include **two separate connected 2 × 3 sets**: sculpted Chicago Steno thumbs and convex thumbs. Each contains **four long (1.5u) and two small (1u) caps**, with MX-style sockets for Choc V2 and removable connecting gates. These keycaps do not fit Choc V1 switches.
 
-The cap envelopes clear the wired and nice!nano cases in CAD. The meshes are verified locally; physical stem fit, print quality and JLC3DP acceptance remain untested. Upload the two files from the keycap folder's `upload` directory, quantity 1 each to try both profiles on one keyboard.
+The cap envelopes clear the RP2040-Zero (original) and nice!nano cases in CAD. The meshes are verified locally; physical stem fit, print quality and JLC3DP acceptance remain untested. Upload the two files from the keycap folder's `upload` directory, quantity 1 each to try both profiles on one keyboard.
 
 ![Connected thumb-cap sets](006%20KEYCAPS/CHOC%20V2%20THUMBS/connected-sets-preview.png)
 
-## Wired designs and upstream documentation
+## RP2040-Zero Choc V2 and upstream documentation
 
 | Build | Details |
 | --- | --- |
-| Original wired Choc V1/V2 design | [JLCPCB manufacturing ZIP](001%20PCB/GERBER/CHOC%20V1%20V2/TheEndgame2024_Choc_V1_V2_JLCPCB.zip) · [compatibility and manufacturing notes](docs/choc-v1-v2.md) · optional Choc V2 plates for the original case: [3-D print](001%20PCB/PLATE%20CHOC%20V2/3D%20PRINT/), [1.2 mm FR-4/metal](001%20PCB/PLATE%20CHOC%20V2/) ([notes](docs/choc-v1-v2.md#choc-v2-switch-plates)); original mounting geometry and case |
+| RP2040-Zero Choc V2 (wired) | [JLCPCB manufacturing ZIP](001%20PCB/GERBER/CHOC%20V1%20V2/TheEndgame2024_Choc_V1_V2_JLCPCB.zip) · [compatibility and manufacturing notes](docs/choc-v1-v2.md) · optional Choc V2 plates for the original case: [3-D print](001%20PCB/PLATE%20CHOC%20V2/3D%20PRINT/), [1.2 mm FR-4/metal](001%20PCB/PLATE%20CHOC%20V2/) ([notes](docs/choc-v1-v2.md#choc-v2-switch-plates)); original mounting geometry and case |
 | Original Endgame | [Upstream project](https://github.com/OldMan6955/TheEndgame2024); original author documentation preserved below |
 
 <details>
