@@ -48,10 +48,11 @@ LANDING_R, COLLAR_BASE_R, COLLAR_DROP = 24.6, 25.8, 1.2
 COUNTERSINK_R, COUNTERSINK_H = 23.6, 1.5
 BATTERY = (-9.25, -3.0, -0.5, 9.25, 30.0, 4.5)   # 401730 envelope, 0.5 mm lower
 LED_POCKET = (76.39, -1.26, 82.39, 4.74, 3.55)   # LED1 only; its passives are underneath
-# SW38 sits under the nice!nano on the PCB underside; its slider reaches out
-# through the USB opening at the back edge (case X 0.1..1.4, Y to 78.7).
-SW38_BODY = (-3.35, 74.9, -1.4, 3.35, 77.5, 0.0)
-SW38_SLIDER = (-0.1, 77.0, -1.4, 1.6, 78.8, 0.0)
+# SW38 sits under the nice!nano on the PCB underside, slider towards the back
+# edge but 0.46 mm inside it (case Y 76.98 vs edge 77.44); it is operated
+# through the USB opening, which runs below the board.
+SW38_BODY = (-3.35, 72.0, -1.4, 3.35, 74.8, 0.0)
+SW38_SLIDER = (-0.1, 74.6, -1.4, 1.6, 77.0, 0.0)
 CENTRAL_MOUNTS = [(-9.804941, -14.168516), (9.804965, -14.170142)]
 
 

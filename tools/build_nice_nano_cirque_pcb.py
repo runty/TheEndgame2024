@@ -38,8 +38,9 @@ PLACE = {
     'R1': (LED_XY[0] + 5.0, LED_XY[1] - 2.5, 90, 'B'),
     'R2': (LED_XY[0] + 5.0, LED_XY[1] + 1.3, 90, 'B'),
     # Power switch under the nice!nano at the back edge: the slider faces out
-    # through the case's USB opening, so the case needs no separate hole.
-    'SW38': (150.0, 64.5, 0, 'B'),
+    # through the case's USB opening, so the case needs no separate hole. Its
+    # tip stays 0.5 mm inside the PCB edge, where the board protects it.
+    'SW38': (150.0, 66.3, 0, 'B'),
     'J2': (169.6, 123.0, None, 'B'),
     'R3': (168.6, 114.0, 90, 'B'),
     'R4': (170.6, 114.0, 90, 'B'),

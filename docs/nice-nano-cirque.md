@@ -34,7 +34,11 @@ A third Endgame build: the wireless nice!nano Choc V2 board with a 40 mm **Cirqu
 | R3, R4 | 4.7 kΩ 0603 (I2C pull-ups) | C23162 | Bottom |
 | J2 | Jushuo AFC01-S12FCA-00, 12-pin 0.5 mm FFC, bottom contact, flip lock | C262661 (extended) | Bottom |
 
-In JLCPCB's placement preview, check J2's and LED1's rotation and pin 1. J2's footprint origin is its pad row, not the body centre, so expect JLCPCB to offset it. Hand-solder the 36 Choc hot-swap sockets, the nice!nano on short posts, the battery wires (J1) and the power switch SW38, as for the [nice!nano build](nice-nano-wireless.md). SW38 (C&K PCM12) now sits on the **underside, under the nice!nano at the back edge**, with its slider facing out; it is reached through the case's USB opening, so the case has no switch hole. The yellow key outlines in the previews are KiCad reference drawings, not silkscreen; they are not in the Gerbers.
+In JLCPCB's placement preview, check J2's and LED1's rotation and pin 1. J2's footprint origin is its pad row, not the body centre, so expect JLCPCB to offset it. Hand-solder the 36 Choc hot-swap sockets, the nice!nano on short posts, the battery wires (J1) and the power switch SW38, as for the [nice!nano build](nice-nano-wireless.md). SW38 (C&K PCM12) now sits on the **underside, under the nice!nano at the back edge**, slider facing the edge but recessed 0.46 mm inside it so the board protects it; reach it through the case's USB opening with a fingernail or a toothpick. The case has no switch hole. The yellow key outlines in the previews are KiCad reference drawings, not silkscreen; they are not in the Gerbers.
+
+## Board artwork
+
+Both sides carry a dithered black-and-white photo as white silkscreen on the black mask: 0.25 mm dots, mirrored on the underside so it reads correctly when the board is turned over. The ink stays 0.4 mm from the edges and clear of the mounting-hole ring artwork, and the Gerber export removes it from every exposed pad. Source: [`art/silkscreen-photo.jpg`](../001%20PCB/KICAD/NICE%20NANO%20CIRQUE/art/silkscreen-photo.jpg); previews: [top](../001%20PCB/GERBER/NICE%20NANO%20CIRQUE/photo-top-preview.png), [underside (as seen from below)](../001%20PCB/GERBER/NICE%20NANO%20CIRQUE/photo-bottom-preview.png). KiCad's 3-D render does not show this artwork.
 
 ## Touchpad
 
@@ -79,7 +83,7 @@ The case roof slopes 2° front to back. The bezel is a flat landing at the rim's
 | LED logo | The clear-logo version is 10 mm wide here. A 1 mm wall is kept around the heat-insert bore 7 mm away. |
 | Battery tray | Pack support plate at Z −1.5 … −0.5, with a cut-out for the FFC; same countersunk M3×6 ears and 1 mm feet as the nice!nano build. |
 | Controller, USB, J1 | Same positions and pockets as the nice!nano case. |
-| Power switch | SW38 on the PCB underside at the back edge; its slider (case X 0.1–1.4 mm) is reached through the 15 mm USB opening, which already runs below the board. No front switch channel. |
+| Power switch | SW38 on the PCB underside at the back edge, slider recessed 0.46 mm inside the PCB edge (case X 0.1–1.4 mm) and reached through the 15 mm USB opening, which already runs below the board. No front switch channel. |
 
 See the [geometry report](validation/nice-nano-cirque-case/geometry.json) for per-key clearances and the pad-stack checks. The [switch plates](../001%20PCB/PLATE%20CHOC%20V2/NICE%20NANO%20CIRQUE/) were regenerated for this case: zero case intersection and at least 0.3 mm clearance.
 
@@ -89,7 +93,7 @@ The pad runs from the nice!nano's switched VCC, the only 3.3 V pin, shared with 
 
 ## Validation
 
-- **PCB:** KiCad 10.0.6 DRC has 0 errors, 0 unconnected items and 0 schematic-parity issues ([report](validation/nice-nano-cirque-pcb/drc.json)); ERC is clean ([report](validation/nice-nano-cirque-pcb/erc.json)). One cosmetic warning remains: LED1's silkscreen outline touches the mounting-hole artwork.
+- **PCB:** KiCad 10.0.6 DRC has 0 errors, 0 unconnected items and 0 schematic-parity issues ([report](validation/nice-nano-cirque-pcb/drc.json)); ERC is clean ([report](validation/nice-nano-cirque-pcb/erc.json)). The remaining warnings are all silkscreen: the photo overlapping pads, holes and footprint outlines.
 - **Case:** valid single solids with watertight STLs. The case, tray and carrier don't overlap each other or the proxies for the battery, pad, overlay, connector, nice!nano, USB, LED and power switch.
 - **Firmware:** both UF2s build at the pinned ZMK revision.
 - **Not tested:** physical fit, the FFC path and cable type, touchpad behaviour, JLCPCB assembly and battery life.
@@ -108,6 +112,8 @@ $KPY tools/build_nice_nano_cirque_pcb.py dump --input /tmp/cirque_placed.kicad_p
 python3 tools/route_nice_nano_cirque.py --obstacles /tmp/obstacles.json --output /tmp/routes.json   # NumPy, SciPy, Shapely, Matplotlib
 $KPY tools/build_nice_nano_cirque_pcb.py apply --input /tmp/cirque_placed.kicad_pcb --routes /tmp/routes.json \
     --output "001 PCB/KICAD/NICE NANO CIRQUE/TheEndgame2024_NiceNanoCirque.kicad_pcb"
+python3 tools/add_cirque_photo_silkscreen.py --board "001 PCB/KICAD/NICE NANO CIRQUE/TheEndgame2024_NiceNanoCirque.kicad_pcb" \
+    --photo "001 PCB/KICAD/NICE NANO CIRQUE/art/silkscreen-photo.jpg"   # Pillow, NumPy, SciPy
 python3 tools/export_jlcpcb.py --board "001 PCB/KICAD/NICE NANO CIRQUE/TheEndgame2024_NiceNanoCirque.kicad_pcb" \
     --output /tmp/cirque-gerbers --archive-name TheEndgame2024_NiceNanoCirque_239mm_JLCPCB.zip
 python3 tools/export_jlcpcb_assembly.py --board "001 PCB/KICAD/NICE NANO CIRQUE/TheEndgame2024_NiceNanoCirque.kicad_pcb" \
