@@ -1,0 +1,69 @@
+diff --git a/drivers/input/input_pinnacle.c b/drivers/input/input_pinnacle.c
+--- a/drivers/input/input_pinnacle.c
++++ b/drivers/input/input_pinnacle.c
+@@ -211,6 +211,7 @@ struct pinnacle_data {
+ 	const struct device *dev;
+ 	struct gpio_callback dr_cb_data;
+ 	struct k_work work;
++	bool primary_btn_active;
+ };
+ 
+ static inline bool pinnacle_bus_is_ready(const struct device *dev)
+@@ -650,8 +651,18 @@ static int pinnacle_handle_interrupt(const struct device *dev)
+ 	struct pinnacle_data *drv_data = dev->data;
+ 	union pinnacle_sample *sample = &drv_data->sample;
+ 
++	uint8_t status;
+ 	int rc;
+ 
++	rc = pinnacle_read(dev, PINNACLE_REG_STATUS1, &status);
++	if (rc) {
++		LOG_ERR("Failed to read Status1");
++		return rc;
++	}
++	if ((status & PINNACLE_STATUS1_SW_DR) != PINNACLE_STATUS1_SW_DR) {
++		return 0;
++	}
++
+ 	rc = pinnacle_sample_fetch(dev, sample);
+ 	if (rc) {
+ 		LOG_ERR("Failed to read data packets");
+@@ -659,12 +670,17 @@ static int pinnacle_handle_interrupt(const struct device *dev)
+ 	}
+ 
+ 	if (config->relative_mode) {
++		/* Only emit Cirque tap changes so motion packets do not release held mouse keys. */
++		bool primary_btn_changed = config->primary_tap_enabled &&
++					   sample->btn_primary != drv_data->primary_btn_active;
++
+ 		input_report_rel(dev, INPUT_REL_X, sample->rel_x, false, K_FOREVER);
+-		input_report_rel(dev, INPUT_REL_Y, sample->rel_y, !config->primary_tap_enabled,
++		input_report_rel(dev, INPUT_REL_Y, sample->rel_y, !primary_btn_changed,
+ 				 K_FOREVER);
+-		if (config->primary_tap_enabled) {
++		if (primary_btn_changed) {
+ 			input_report_key(dev, INPUT_BTN_TOUCH, sample->btn_primary, true,
+ 					 K_FOREVER);
++			drv_data->primary_btn_active = sample->btn_primary;
+ 		}
+ 	} else {
+ 		if (config->clipping_enabled && !pinnacle_is_idle_sample(sample)) {
+@@ -736,6 +752,9 @@ int pinnacle_init_interrupt(const struct device *dev)
+ 		return rc;
+ 	}
+ 
++	/* Catch data-ready state that was active before the edge callback was installed. */
++	k_work_submit(&drv_data->work);
++
+ 	return 0;
+ }
+ 
+@@ -757,6 +776,8 @@ static int pinnacle_init(const struct device *dev)
+ 		return rc;
+ 	}
+ 
++	LOG_INF("Firmware ASIC ID %02x", value);
++
+ 	if (value != PINNACLE_FIRMWARE_ID) {
+ 		LOG_ERR("Incorrect Firmware ASIC ID %x", value);
+ 		return -ENODEV;

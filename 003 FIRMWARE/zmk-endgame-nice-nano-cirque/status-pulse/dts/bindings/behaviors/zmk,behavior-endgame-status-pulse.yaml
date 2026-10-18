@@ -1,0 +1,3 @@
+description: Explicit single status LED test pulse
+compatible: "zmk,behavior-endgame-status-pulse"
+include: zero_param.yaml

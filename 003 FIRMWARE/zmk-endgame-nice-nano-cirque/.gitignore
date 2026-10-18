@@ -1,0 +1,2 @@
+# Build logs contain local paths; the UF2s are committed.
+firmware/*.log
