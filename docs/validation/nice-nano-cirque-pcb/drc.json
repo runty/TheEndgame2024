@@ -5,8 +5,8 @@
   "schematic_parity": 0,
   "warnings_by_type": {
     "silk_edge_clearance": 199,
-    "silk_overlap": 199,
+    "silk_overlap": 21,
     "silk_over_copper": 199
   },
-  "warning_note": "All warnings are silkscreen-only (photo artwork over pads, near holes and outlines); KiCad caps each type at 199. The Gerber export subtracts solder-mask openings from silkscreen."
+  "warning_note": "All warnings are silkscreen-only (underside photo artwork over pads, near holes and outlines); KiCad caps each type at 199. The Gerber export subtracts solder-mask openings from silkscreen."
 }

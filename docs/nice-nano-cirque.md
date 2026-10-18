@@ -38,7 +38,7 @@ In JLCPCB's placement preview, check J2's and LED1's rotation and pin 1. J2's fo
 
 ## Board artwork
 
-Both sides carry a dithered black-and-white photo as white silkscreen on the black mask: 0.25 mm dots, mirrored on the underside so it reads correctly when the board is turned over. The ink stays 0.4 mm from the edges and clear of the mounting-hole ring artwork, and the Gerber export removes it from every exposed pad. Source: [`art/silkscreen-photo.jpg`](../001%20PCB/KICAD/NICE%20NANO%20CIRQUE/art/silkscreen-photo.jpg); previews: [top](../001%20PCB/GERBER/NICE%20NANO%20CIRQUE/photo-top-preview.png), [underside (as seen from below)](../001%20PCB/GERBER/NICE%20NANO%20CIRQUE/photo-bottom-preview.png). KiCad's 3-D render does not show this artwork.
+The underside carries a dithered black-and-white photo as white silkscreen on the black mask: 0.25 mm dots, mirrored so it reads correctly when the board is turned over. The top side keeps only the normal markings. The ink stays 0.4 mm from the edges and clear of the mounting-hole ring artwork, and the Gerber export removes it from every exposed pad. Source: [`art/silkscreen-photo.jpg`](../001%20PCB/KICAD/NICE%20NANO%20CIRQUE/art/silkscreen-photo.jpg); [preview as seen from below](../001%20PCB/GERBER/NICE%20NANO%20CIRQUE/photo-bottom-preview.png). KiCad's 3-D render does not show this artwork.
 
 ## Touchpad
 
@@ -93,7 +93,7 @@ The pad runs from the nice!nano's switched VCC, the only 3.3 V pin, shared with 
 
 ## Validation
 
-- **PCB:** KiCad 10.0.6 DRC has 0 errors, 0 unconnected items and 0 schematic-parity issues ([report](validation/nice-nano-cirque-pcb/drc.json)); ERC is clean ([report](validation/nice-nano-cirque-pcb/erc.json)). The remaining warnings are all silkscreen: the photo overlapping pads, holes and footprint outlines.
+- **PCB:** KiCad 10.0.6 DRC has 0 errors, 0 unconnected items and 0 schematic-parity issues ([report](validation/nice-nano-cirque-pcb/drc.json)); ERC is clean ([report](validation/nice-nano-cirque-pcb/erc.json)). The remaining warnings are all silkscreen: the underside photo overlapping pads, holes and footprint outlines.
 - **Case:** valid single solids with watertight STLs. The case, tray and carrier don't overlap each other or the proxies for the battery, pad, overlay, connector, nice!nano, USB, LED and power switch.
 - **Firmware:** both UF2s build at the pinned ZMK revision.
 - **Not tested:** physical fit, the FFC path and cable type, touchpad behaviour, JLCPCB assembly and battery life.

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Put a dithered photo on both silkscreen layers of the Cirque PCB.
+"""Put a dithered photo on the underside silkscreen of the Cirque PCB.
 
 The photo is cropped to the board's aspect ratio, contrast-stretched and
 Floyd-Steinberg dithered at PIXEL mm, then written as filled silkscreen
-rectangles (horizontal runs merged vertically). The bottom layer is mirrored
-so it reads correctly when the board is turned over. Ink is kept EDGE_MARGIN
+rectangles (horizontal runs merged vertically), mirrored so it reads
+correctly when the board is turned over. The top side has no photo. Ink is kept EDGE_MARGIN
 from the outline and cutouts and clear of the mounting-hole ring artwork.
 Rerunning replaces the previous photo. Needs Pillow and NumPy.
 Run: python tools/add_cirque_photo_silkscreen.py --board X.kicad_pcb --photo art.jpg
@@ -140,7 +140,7 @@ def main():
     outline, cutouts = outline_from_board(text)
     holes = mounting_holes(text)
     parts, previews = [], {}
-    for layer, mirror in (('F.SilkS', False), ('B.SilkS', True)):
+    for layer, mirror in (('B.SilkS', True),):
         mask, (x0, y0) = ink_mask(args.photo, outline, cutouts, holes, mirror)
         previews[layer] = mask
         for c0, r0, c1, r1 in rectangles(mask):
@@ -154,10 +154,8 @@ def main():
     args.board.write_text(body[:-1] + ''.join(parts) + '\n)\n')
     print(f'{len(parts)} silkscreen rectangles written to {args.board}')
     if args.preview:
-        top = np.where(previews['F.SilkS'], 240, 18).astype(np.uint8)
-        bottom = np.where(previews['B.SilkS'], 240, 18).astype(np.uint8)
-        gap = np.full((20, top.shape[1]), 255, np.uint8)
-        Image.fromarray(np.vstack([top, gap, bottom])).save(args.preview)
+        # As seen from below.
+        Image.fromarray(np.fliplr(np.where(previews['B.SilkS'], 240, 18).astype(np.uint8))).save(args.preview)
 
 
 if __name__ == '__main__':
