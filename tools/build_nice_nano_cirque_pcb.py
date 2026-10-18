@@ -5,7 +5,7 @@ Run with KiCad's bundled Python (pcbnew), one subcommand per process:
   place  --input widened.kicad_pcb --netlist cirque.net --output placed.kicad_pcb
       Removes the centre LED circuit's copper, replaces axial R1/R2 with 0603
       parts, moves LED1/C1/R1/R2 to the right thumb gap, adds J2 (bottom-side
-      FFC), R3/R4/C2, cuts the FFC slot and assigns nets and LCSC fields.
+      FFC), R3/R4/C2, cuts the FFC notch and assigns nets and LCSC fields.
   dump   --input placed.kicad_pcb --obstacles obstacles.json
       Writes copper, keep-out and outline geometry for the router.
   apply  --input placed.kicad_pcb --routes routes.json --output final.kicad_pcb
@@ -41,8 +41,10 @@ PLACE = {
     'R4': (170.6, 114.0, 90, 'B'),
     'C2': (166.0, 114.0, 0, 'B'),
 }
-# Pad FFC drops through this slot (case X 12.2..13.8, Y 12.5..21.5).
-SLOT = (162.2, 118.5, 163.8, 127.5)
+# The pad's 4.1 mm-tall FFC connector and cable drop into this notch on the
+# right side of the battery opening (case X 11..14.8, Y 12..22).
+NOTCH = (161.0, 118.0, 164.8, 128.0)
+NOTCH_RADIUS = 0.6
 NEW_NETS = ('SDA', 'SCL', 'DR', 'VCC_SW', 'LED_DATA', 'LED_DIN')
 # Ground stubs and vias that only served the old centre LED1/C1/R2 pads.
 OLD_LED_GND_BOX = (151.0, 100.5, 155.5, 108.0)
@@ -109,8 +111,9 @@ def place(args):
                                                for q in (t.GetStart(), t.GetEnd()))
     old_copper = [t for t in b.GetTracks() if t.GetNetname() in NEW_NETS or old_led_ground(t)]
     old_parts = [fp for fp in footprints if fp.GetReference() in ('R1', 'R2')]
-    artwork = [d for d in b.GetDrawings() if isinstance(d, p.PCB_SHAPE) and d.GetShape() == p.SHAPE_T_POLY
-               and d.GetLayer() in (p.F_SilkS, p.B_SilkS)]
+    drawings = [d for d in b.GetDrawings() if isinstance(d, p.PCB_SHAPE)]
+    artwork = [d for d in drawings if d.GetShape() == p.SHAPE_T_POLY and d.GetLayer() in (p.F_SilkS, p.B_SilkS)]
+    edge_cuts = [d for d in drawings if d.GetLayer() == p.Edge_Cuts]
     by_ref = {fp.GetReference(): fp for fp in footprints if fp not in old_parts}
     for fp in loaded.values():
         b.Add(fp)
@@ -149,7 +152,7 @@ def place(args):
     # and the axial resistors last.
     for item in old_copper + old_parts:
         b.Remove(item)
-    add_slot(b)
+    add_notch(b, edge_cuts)
     p.SaveBoard(args.output, b)
     assert os.path.exists(args.output), args.output
     print('placed', args.output)
@@ -181,28 +184,40 @@ def clear_artwork(artwork, by_ref):
 
 
 def orient_ffc(fp):
-    """Point J2's FFC entry (the side away from its signal pads) at the slot."""
+    """Point J2's FFC entry (the side away from its signal pads) at the notch."""
     for rot in (0, 90, 180, 270):
         fp.SetOrientationDegrees(rot)
         sig = [mm(pd.GetPosition())[0] for pd in fp.Pads() if pd.GetNumber() != 'MP']
         mp = [mm(pd.GetPosition())[0] for pd in fp.Pads() if pd.GetNumber() == 'MP']
         if sum(mp) / len(mp) < sum(sig) / len(sig) - 2:
             return
-    raise AssertionError('No J2 orientation faces the slot')
+    raise AssertionError('No J2 orientation faces the notch')
 
 
-def add_slot(b):
-    x0, y0, x1, y1 = SLOT
-    r = (x1 - x0) / 2
+def add_notch(b, edge_cuts):
+    """Extend the battery opening's right edge (X=161) with a rectangular notch."""
+    x0, y0, x1, y1 = NOTCH
+    r = NOTCH_RADIUS
+    edge = [d for d in edge_cuts if d.GetShape() == p.SHAPE_T_SEGMENT
+            and abs(mm(d.GetStart())[0] - x0) < 1e-3 and abs(mm(d.GetEnd())[0] - x0) < 1e-3]
+    assert len(edge) == 1, len(edge)
+    edge = edge[0]
+    ya, yb = sorted((mm(edge.GetStart())[1], mm(edge.GetEnd())[1]))
+    assert ya < y0 and y1 < yb, (ya, yb)
+    edge.SetStart(P(x0, ya)); edge.SetEnd(P(x0, y0))
     def seg(a, z):
-        s = p.PCB_SHAPE(b); s.SetShape(p.SHAPE_T_SEGMENT); s.SetLayer(p.Edge_Cuts); s.SetWidth(p.FromMM(0.05))
+        s = p.PCB_SHAPE(b); s.SetShape(p.SHAPE_T_SEGMENT); s.SetLayer(p.Edge_Cuts); s.SetWidth(edge.GetWidth())
         s.SetStart(P(*a)); s.SetEnd(P(*z)); b.Add(s)
     def arc(a, m, z):
-        s = p.PCB_SHAPE(b); s.SetShape(p.SHAPE_T_ARC); s.SetLayer(p.Edge_Cuts); s.SetWidth(p.FromMM(0.05))
+        s = p.PCB_SHAPE(b); s.SetShape(p.SHAPE_T_ARC); s.SetLayer(p.Edge_Cuts); s.SetWidth(edge.GetWidth())
         s.SetArcGeometry(P(*a), P(*m), P(*z)); b.Add(s)
-    cx = (x0 + x1) / 2
-    seg((x0, y0 + r), (x0, y1 - r)); seg((x1, y0 + r), (x1, y1 - r))
-    arc((x0, y0 + r), (cx, y0), (x1, y0 + r)); arc((x0, y1 - r), (cx, y1), (x1, y1 - r))
+    k = r * (1 - 2 ** -0.5)
+    seg((x0, y1), (x0, yb))
+    seg((x0, y0), (x1 - r, y0))
+    arc((x1 - r, y0), (x1 - k, y0 + k), (x1, y0 + r))
+    seg((x1, y0 + r), (x1, y1 - r))
+    arc((x1, y1 - r), (x1 - k, y1 - k), (x1 - r, y1))
+    seg((x1 - r, y1), (x0, y1))
 
 
 def poly_points(poly):

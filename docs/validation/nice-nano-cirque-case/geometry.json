@@ -1,0 +1,213 @@
+{
+  "split_x_mm": 7.0,
+  "half_shift_from_original_mm": 10.0,
+  "keycaps": {
+    "minimum_clearance_mm": 0.7043,
+    "stock_minimum_clearance_mm": 0.7043,
+    "every_key_at_least_stock": true,
+    "positions": [
+      {
+        "reference": "SW20",
+        "stock_case_clearance_mm": 0.7043,
+        "clearance_mm": 0.7043
+      },
+      {
+        "reference": "SW30",
+        "stock_case_clearance_mm": 0.85,
+        "clearance_mm": 0.85
+      },
+      {
+        "reference": "SW23",
+        "stock_case_clearance_mm": 0.85,
+        "clearance_mm": 0.85
+      },
+      {
+        "reference": "SW11",
+        "stock_case_clearance_mm": 0.85,
+        "clearance_mm": 0.85
+      },
+      {
+        "reference": "SW7",
+        "stock_case_clearance_mm": 13.5542,
+        "clearance_mm": 13.5542
+      },
+      {
+        "reference": "SW29",
+        "stock_case_clearance_mm": 14.0834,
+        "clearance_mm": 14.0834
+      },
+      {
+        "reference": "SW34",
+        "stock_case_clearance_mm": 0.7046,
+        "clearance_mm": 0.7046
+      },
+      {
+        "reference": "SW21",
+        "stock_case_clearance_mm": 0.85,
+        "clearance_mm": 0.85
+      },
+      {
+        "reference": "SW27",
+        "stock_case_clearance_mm": 0.7043,
+        "clearance_mm": 0.7043
+      },
+      {
+        "reference": "SW31",
+        "stock_case_clearance_mm": 0.8175,
+        "clearance_mm": 0.8175
+      },
+      {
+        "reference": "SW35",
+        "stock_case_clearance_mm": 0.85,
+        "clearance_mm": 0.85
+      },
+      {
+        "reference": "SW17",
+        "stock_case_clearance_mm": 0.8501,
+        "clearance_mm": 0.8501
+      },
+      {
+        "reference": "SW5",
+        "stock_case_clearance_mm": 0.85,
+        "clearance_mm": 0.85
+      },
+      {
+        "reference": "SW19",
+        "stock_case_clearance_mm": 0.85,
+        "clearance_mm": 0.85
+      },
+      {
+        "reference": "SW4",
+        "stock_case_clearance_mm": 0.7043,
+        "clearance_mm": 0.7043
+      },
+      {
+        "reference": "SW24",
+        "stock_case_clearance_mm": 0.85,
+        "clearance_mm": 0.85
+      },
+      {
+        "reference": "SW13",
+        "stock_case_clearance_mm": 14.031,
+        "clearance_mm": 14.031
+      },
+      {
+        "reference": "SW26",
+        "stock_case_clearance_mm": 0.7324,
+        "clearance_mm": 0.7324
+      },
+      {
+        "reference": "SW16",
+        "stock_case_clearance_mm": 0.7043,
+        "clearance_mm": 0.7043
+      },
+      {
+        "reference": "SW3",
+        "stock_case_clearance_mm": 0.85,
+        "clearance_mm": 0.85
+      },
+      {
+        "reference": "SW10",
+        "stock_case_clearance_mm": 14.0834,
+        "clearance_mm": 14.0834
+      },
+      {
+        "reference": "SW22",
+        "stock_case_clearance_mm": 0.7045,
+        "clearance_mm": 0.7045
+      },
+      {
+        "reference": "SW36",
+        "stock_case_clearance_mm": 0.7043,
+        "clearance_mm": 0.7043
+      },
+      {
+        "reference": "SW2",
+        "stock_case_clearance_mm": 0.7046,
+        "clearance_mm": 0.7046
+      },
+      {
+        "reference": "SW37",
+        "stock_case_clearance_mm": 0.85,
+        "clearance_mm": 0.85
+      },
+      {
+        "reference": "SW33",
+        "stock_case_clearance_mm": 0.7383,
+        "clearance_mm": 0.7383
+      },
+      {
+        "reference": "SW32",
+        "stock_case_clearance_mm": 13.5541,
+        "clearance_mm": 13.5541
+      },
+      {
+        "reference": "SW14",
+        "stock_case_clearance_mm": 0.7324,
+        "clearance_mm": 0.7324
+      },
+      {
+        "reference": "SW9",
+        "stock_case_clearance_mm": 0.7866,
+        "clearance_mm": 0.7866
+      },
+      {
+        "reference": "SW6",
+        "stock_case_clearance_mm": 0.8175,
+        "clearance_mm": 0.8175
+      },
+      {
+        "reference": "SW18",
+        "stock_case_clearance_mm": 0.7046,
+        "clearance_mm": 0.7046
+      },
+      {
+        "reference": "SW28",
+        "stock_case_clearance_mm": 0.7866,
+        "clearance_mm": 0.7866
+      },
+      {
+        "reference": "SW8",
+        "stock_case_clearance_mm": 0.7383,
+        "clearance_mm": 0.7383
+      },
+      {
+        "reference": "SW12",
+        "stock_case_clearance_mm": 0.85,
+        "clearance_mm": 0.85
+      },
+      {
+        "reference": "SW15",
+        "stock_case_clearance_mm": 0.7043,
+        "clearance_mm": 0.7043
+      },
+      {
+        "reference": "SW25",
+        "stock_case_clearance_mm": 14.031,
+        "clearance_mm": 14.031
+      }
+    ]
+  },
+  "minimum_switch_body_clearance_mm": 1.6,
+  "flange_ledge_fill_fraction": 1.0,
+  "rim_z_mm": 7.947,
+  "overlay_height_assumed_mm": 1.5,
+  "flange_thickness_assumed_mm": 0.6,
+  "pad_pcb_bottom_z_mm": 5.707,
+  "pad_components_assumed_max_mm": 1.0,
+  "battery_envelope_z_mm": [
+    -0.5,
+    4.5
+  ],
+  "battery_to_pad_components_mm": 0.207,
+  "pad_connector_bottom_z_mm": 1.607,
+  "pad_connector_drops_into_pcb_notch": true,
+  "case_volume_mm3": 66748.76,
+  "tray_volume_mm3": 1163.68,
+  "carrier_volume_mm3": 569.33,
+  "stl_watertight": [
+    "CASE",
+    "BATTERY_TRAY",
+    "PAD_CARRIER"
+  ]
+}

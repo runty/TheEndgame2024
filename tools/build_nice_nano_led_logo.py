@@ -32,13 +32,25 @@ from OCP.gp import gp_Pnt, gp_Vec
 from build_nice_nano_case import OUTPUT, box, cut, solids, volume, write_step, write_stl
 
 
-LOGO_DIR = OUTPUT / "LED LOGO"
-SVG = LOGO_DIR / "runty.svg"
-CASE = OUTPUT / "TheENDGAME2024_NICE_NANO_CASE.step"
-VALIDATION = OUTPUT.parents[1] / "docs/validation/nice-nano-case/led-logo.json"
-LED_CENTER = (0.0, 36.5)  # WS2812B-V6 at PCB (150,103.5)
+ROOT = OUTPUT.parents[1]
+SVG = OUTPUT / "LED LOGO" / "runty.svg"
+VARIANTS = {
+    # WS2812B-V6 at PCB (150,103.5), centred between the halves.
+    "nice-nano": dict(case=OUTPUT / "TheENDGAME2024_NICE_NANO_CASE.step", logo_dir=OUTPUT / "LED LOGO",
+                      stem="TheENDGAME2024_NICE_NANO_CASE_LED_LOGO",
+                      validation=ROOT / "docs/validation/nice-nano-case/led-logo.json",
+                      centre=(0.0, 36.5), width=14.0, inserts=[]),
+    # Cirque variant: LED between SW27 and SW37; a heat-insert bore sits 7 mm away.
+    "cirque": dict(case=ROOT / "002 CASE/NICE NANO CIRQUE/TheENDGAME2024_NICE_NANO_CIRQUE_CASE.step",
+                   logo_dir=ROOT / "002 CASE/NICE NANO CIRQUE/LED LOGO",
+                   stem="TheENDGAME2024_NICE_NANO_CIRQUE_CASE_LED_LOGO",
+                   validation=ROOT / "docs/validation/nice-nano-cirque-case/led-logo.json",
+                   centre=(79.39, 1.74), width=10.0, inserts=[(84.65, -4.92)]),
+}
 LED_POCKET_TOP = 3.55
-LED_BODY = (-2.5, 34.0, 2.5, 39.0)
+INSERT_BORE_R, INSERT_WALL = 2.3, 1.0
+LED_CENTER = VARIANTS["nice-nano"]["centre"]
+LED_BODY = (LED_CENTER[0] - 2.5, LED_CENTER[1] - 2.5, LED_CENTER[0] + 2.5, LED_CENTER[1] + 2.5)
 CHAMBER_MARGIN = 0.5  # light chamber extends past the logo's convex hull
 
 
@@ -169,8 +181,8 @@ def preview(case_mesh, logo_mesh, outline, chamber, path):
         top.add_collection(PolyCollection(tris, facecolors=colour, edgecolors=colour, linewidths=0.3))
     top.add_patch(plt.Rectangle((LED_BODY[0], LED_BODY[1]), 5, 5, fill=False, ec="#ff7a00", lw=1.2, ls="--"))
     top.plot(*chamber.exterior.xy, color="#ffb15c", lw=0.8, ls=":")
-    top.set_xlim(-16, 16)
-    top.set_ylim(24, 50)
+    top.set_xlim(LED_CENTER[0] - 16, LED_CENTER[0] + 16)
+    top.set_ylim(LED_CENTER[1] - 12.5, LED_CENTER[1] + 13.5)
     top.set_aspect("equal")
     top.set_title("Top view: clear logo in case; LED dashed, light chamber dotted")
 
@@ -179,9 +191,9 @@ def preview(case_mesh, logo_mesh, outline, chamber, path):
         lines = section(mesh, [0, 1, 0], [0, LED_CENTER[1], 0])
         for a, b in lines:
             side.plot([a[0], b[0]], [a[2], b[2]], color=colour, lw=1.2)
-    side.add_patch(plt.Rectangle((-2.5, 1.6), 5, 1.6, color="#ff7a00", alpha=0.6, label="WS2812B body"))
+    side.add_patch(plt.Rectangle((LED_CENTER[0] - 2.5, 1.6), 5, 1.6, color="#ff7a00", alpha=0.6, label="WS2812B body"))
     side.axhline(1.6, color="#2e8b57", lw=0.8, label="PCB top Z=1.6")
-    side.set_xlim(-16, 16)
+    side.set_xlim(LED_CENTER[0] - 16, LED_CENTER[0] + 16)
     side.set_ylim(-0.5, 10)
     side.set_aspect("equal")
     side.legend(loc="lower right", fontsize=8)
@@ -193,8 +205,16 @@ def preview(case_mesh, logo_mesh, outline, chamber, path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--width", type=float, default=14.0, help="logo width in mm")
+    parser.add_argument("--variant", choices=sorted(VARIANTS), default="nice-nano")
+    parser.add_argument("--width", type=float, help="logo width in mm (variant default)")
     args = parser.parse_args()
+    global LED_CENTER, LED_BODY
+    v = VARIANTS[args.variant]
+    LED_CENTER = v["centre"]
+    LED_BODY = (LED_CENTER[0] - 2.5, LED_CENTER[1] - 2.5, LED_CENTER[0] + 2.5, LED_CENTER[1] + 2.5)
+    CASE, LOGO_DIR, VALIDATION, stem = v["case"], v["logo_dir"], v["validation"], v["stem"]
+    if args.width is None:
+        args.width = v["width"]
 
     reader = STEPControl_Reader()
     assert int(reader.ReadFile(str(CASE))) == 1
@@ -224,12 +244,16 @@ def main():
     # Nothing opaque between the PCB and the underside of any stroke.
     under_logo = prism(outline, 1.6, LED_POCKET_TOP)
     assert volume(BRepAlgoAPI_Common(body, under_logo).Shape()) < 1e-5
+    for ix, iy in v["inserts"]:
+        # Keep a full wall around nearby heat-insert bores.
+        from build_nice_nano_case import cylinder
+        wall = cut(cylinder(ix, iy, INSERT_BORE_R + INSERT_WALL, 1.6, 5.6), cylinder(ix, iy, INSERT_BORE_R, 1.5, 5.7))
+        assert abs(volume(BRepAlgoAPI_Common(body, wall).Shape()) - volume(BRepAlgoAPI_Common(case, wall).Shape())) < 1e-5
     # Clear material forms the pocket ceiling directly above the LED body.
     led_ceiling = box(LED_BODY[0], LED_BODY[1], LED_POCKET_TOP, LED_BODY[2], LED_BODY[3], LED_POCKET_TOP + 0.2)
     lit_area = volume(BRepAlgoAPI_Common(logo, led_ceiling).Shape()) / 0.2
 
     LOGO_DIR.mkdir(parents=True, exist_ok=True)
-    stem = "TheENDGAME2024_NICE_NANO_CASE_LED_LOGO"
     body_stl, logo_stl = LOGO_DIR / f"{stem}_BODY.stl", LOGO_DIR / f"{stem}_CLEAR.stl"
     write_step(body, LOGO_DIR / f"{stem}_BODY.step")
     write_step(logo, LOGO_DIR / f"{stem}_CLEAR.step")
@@ -243,7 +267,8 @@ def main():
 
     x0, y0, x1, y1 = outline.bounds
     report = {
-        "svg": str(SVG.relative_to(OUTPUT.parents[1])),
+        "variant": args.variant,
+        "svg": str(SVG.relative_to(ROOT)),
         "logo_width_mm": round(x1 - x0, 2),
         "logo_height_mm": round(y1 - y0, 2),
         "logo_bounds_case_frame_mm": [round(v, 2) for v in outline.bounds],
