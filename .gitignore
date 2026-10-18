@@ -13,3 +13,6 @@ __pycache__/
 001 PCB/KICAD/NICE NANO WIRELESS/*.kicad_prl
 # RP2040-Zero build logs contain local paths; the UF2s are committed.
 003 FIRMWARE/zmk-endgame-rp2040-zero/firmware/*.log
+001 PCB/GERBER/NICE NANO CIRQUE/gerbers/
+001 PCB/KICAD/NICE NANO CIRQUE/*.kicad_prl
+001 PCB/KICAD/NICE NANO CIRQUE/*-backups/

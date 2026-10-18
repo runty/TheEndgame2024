@@ -1,0 +1,17 @@
+{
+  "kicad_version": "10.0.6",
+  "violations": [
+    {
+      "type": "silk_overlap",
+      "severity": "warning",
+      "description": "Silkscreen clearance",
+      "items": [
+        "Segment of LED1 on F.Silkscreen",
+        "Polygon of REF** on F.Silkscreen"
+      ]
+    }
+  ],
+  "unconnected_items": 0,
+  "schematic_parity": 0,
+  "errors": 0
+}

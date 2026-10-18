@@ -1,7 +1,9 @@
-"""Insert two 2 mm strips next to the centered tray of the nice!nano PCB.
+"""Insert two strips next to the centered tray of the nice!nano PCB.
 
 The script preserves the X=138..162 mm center and translates each original
 wing with its switches, diodes, mounts, copper, and reference geometry.
+By default it widens the original 219 mm board by 2 mm per half; --shift
+and --input-bounds widen an already-widened board further.
 """
 import argparse
 import math,os,sys,collections
@@ -11,7 +13,11 @@ import pcbnew as p
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--input',required=True,help='Pre-widening nice!nano PCB source')
 parser.add_argument('--output',required=True,help='Scratch widened PCB destination')
+parser.add_argument('--shift',type=float,default=2.0,help='mm each half moves outward')
+parser.add_argument('--input-bounds',type=float,nargs=2,default=(40.5,259.5),metavar=('LEFT','RIGHT'),
+                    help='expected input outline X extent; guards against double widening')
 args=parser.parse_args()
+SHIFT=args.shift
 assert os.path.realpath(args.input)!=os.path.realpath(args.output), 'Use a separate output'
 SOURCE=args.input
 OUTPUT=args.output
@@ -19,10 +25,11 @@ b=p.LoadBoard(SOURCE)
 original_outline=p.SHAPE_POLY_SET()
 assert b.GetBoardPolygonOutlines(original_outline,False)
 original_bounds=original_outline.BBox()
-assert abs(original_bounds.GetLeft()/1e6-40.5)<.1 and abs(original_bounds.GetRight()/1e6-259.5)<.1, 'Expected original 219 mm-wide board; refuse double widening'
+IN_LEFT,IN_RIGHT=args.input_bounds
+assert abs(original_bounds.GetLeft()/1e6-IN_LEFT)<.1 and abs(original_bounds.GetRight()/1e6-IN_RIGHT)<.1, 'Unexpected input width; refuse double widening'
 P=lambda x,y:p.VECTOR2I(p.FromMM(x),p.FromMM(y))
 mm=lambda q:(q.x/1e6,q.y/1e6)
-shift=lambda x:(-2.0 if x<138-1e-7 else 2.0 if x>162+1e-7 else 0.0)
+shift=lambda x:(-SHIFT if x<138-1e-7 else SHIFT if x>162+1e-7 else 0.0)
 FIXED_CENTRAL_REFS={'U2','LED1','C1','R1','R2','J1','SW38'}
 detached=[]
 counts=collections.Counter()
@@ -45,6 +52,10 @@ for tr in list(b.GetTracks()):
    dm=shift(mm(tr.GetMid())[0]);assert da==dz==dm,(tr.GetNetname(),a,z,mm(tr.GetMid()))
   if da==dz:
    if da:tr.Move(P(da,0));counts['tracks_shifted']+=1
+  elif not [c for c in (138,162) if min(a[0],z[0])<c<max(a[0],z[0])]:
+   # A bridge from an earlier widening ends on a split line: that end
+   # stays with the centre and the bridge simply lengthens.
+   tr.SetStart(P(a[0]+da,a[1]));tr.SetEnd(P(z[0]+dz,z[1]));counts['tracks_stretched']+=1
   else:
    cuts=[c for c in (138,162) if min(a[0],z[0])<c<max(a[0],z[0])]
    assert len(cuts)==1,(tr.GetNetname(),a,z,cuts)
@@ -104,7 +115,7 @@ def reshape_crossing(dr,cut):
   if len(part)==2:add_line(layer,width,*moved)
   else:add_arc(layer,width,*moved)
  # Horizontal bridge between the translated and fixed sections.
- side=-2 if cut==138 else 2
+ side=-SHIFT if cut==138 else SHIFT
  add_line(layer,width,(cut,at[1]),(cut+side,at[1]))
  detached.append(dr);b.Remove(dr)
  counts['split_'+p.LayerName(layer)]+=1
@@ -124,6 +135,8 @@ for dr in list(b.GetDrawings()):
   da=shift(a[0]);dz=shift(z[0])
   if da!=dz:
    cuts=[c for c in (138,162) if min(a[0],z[0])<c<max(a[0],z[0])]
+   if not cuts and dr.GetShape()==p.SHAPE_T_SEGMENT:
+    dr.SetStart(P(a[0]+da,a[1]));dr.SetEnd(P(z[0]+dz,z[1]));counts['stretched_'+p.LayerName(lay)]+=1;continue
    assert len(cuts)==1,(p.LayerName(lay),a,z,cuts)
    reshape_crossing(dr,cuts[0]);continue
   if da:dr.Move(P(da,0));counts['draw_'+p.LayerName(lay)]+=1
@@ -139,7 +152,7 @@ outline=p.SHAPE_POLY_SET();ok=b.GetBoardPolygonOutlines(outline,False)
 print('outline valid',ok,'outlines',outline.OutlineCount(),'holes',outline.HoleCount(0) if ok else None)
 assert ok and outline.OutlineCount()==1 and outline.HoleCount(0)==1
 bb=outline.BBox();print('bounds',mm(bb.GetOrigin()),mm(bb.GetEnd()))
-assert abs(bb.GetLeft()/1e6-38.5)<.1 and abs(bb.GetRight()/1e6-261.5)<.1
+assert abs(bb.GetLeft()/1e6-(IN_LEFT-SHIFT))<.1 and abs(bb.GetRight()/1e6-(IN_RIGHT+SHIFT))<.1
 print('counts',dict(counts))
 b.BuildConnectivity();p.ZONE_FILLER(b).Fill(b.Zones());p.SaveBoard(OUTPUT,b)
 print('saved',OUTPUT)
