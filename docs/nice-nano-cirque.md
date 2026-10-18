@@ -22,19 +22,19 @@ A third Endgame build: the wireless nice!nano Choc V2 board with a 40 mm **Cirqu
 | Setting | Value |
 | --- | --- |
 | Size | **239.00 × 96.11 mm**, 2 layers, 1.6 mm FR-4, 1 oz |
-| Assembly | **Both sides** (top: LED1, C1, R1, R2; bottom: J2, R3, R4, C2) |
+| Assembly | **Both sides** (top: LED1; bottom: C1, R1, R2, J2, R3, R4, C2) |
 | Assembly files | BOM and CPL above; every assembled part carries its LCSC number |
 
 | Ref | Part | LCSC | Side |
 | --- | --- | --- | --- |
 | LED1 | WS2812B-V6 5050 | C52917433 (extended) | Top |
-| C1, C2 | 100 nF 0603 | C14663 | Top / bottom |
-| R1 | 330 Ω 0603 (LED data) | C23138 | Top |
-| R2 | 100 kΩ 0603 (LED data pull-down) | C25803 | Top |
+| C1, C2 | 100 nF 0603 | C14663 | Bottom |
+| R1 | 330 Ω 0603 (LED data) | C23138 | Bottom |
+| R2 | 100 kΩ 0603 (LED data pull-down) | C25803 | Bottom |
 | R3, R4 | 4.7 kΩ 0603 (I2C pull-ups) | C23162 | Bottom |
 | J2 | Jushuo AFC01-S12FCA-00, 12-pin 0.5 mm FFC, bottom contact, flip lock | C262661 (extended) | Bottom |
 
-In JLCPCB's placement preview, check J2's and LED1's rotation and pin 1. J2's footprint origin is its pad row, not the body centre, so expect JLCPCB to offset it. Hand-solder the 36 Choc hot-swap sockets, the nice!nano on short posts, SW38 and the battery wires (J1), as for the [nice!nano build](nice-nano-wireless.md).
+In JLCPCB's placement preview, check J2's and LED1's rotation and pin 1. J2's footprint origin is its pad row, not the body centre, so expect JLCPCB to offset it. Hand-solder the 36 Choc hot-swap sockets, the nice!nano on short posts, the battery wires (J1) and the power switch SW38, as for the [nice!nano build](nice-nano-wireless.md). SW38 (C&K PCM12) now sits on the **underside, under the nice!nano at the back edge**, with its slider facing out; it is reached through the case's USB opening, so the case has no switch hole. The yellow key outlines in the previews are KiCad reference drawings, not silkscreen; they are not in the Gerbers.
 
 ## Touchpad
 
@@ -75,10 +75,11 @@ The case roof slopes 2° front to back. The bezel is a flat landing at the rim's
 | Width | Original case split at X = ±7 mm (inside the solid waist) and each half moved 10 mm; every key opening matches the original's shape. |
 | Keycaps | Each nominal 17.5 × 16.5 mm cap keeps at least the clearance the original case gives it on the original PCB (0.704 mm minimum). Switch bodies clear by 1.6 mm. |
 | Pad margin | 4.0 mm from the 46.13 mm overlay flange to the nearest keycap. |
-| Status LED | Moved to the right thumb gap, midway between SW27 and SW37 on the line through their centres (case X 79.4, Y 1.7). Its pocket is open to Z 3.55. |
+| Status LED | Moved to the right thumb gap, midway between SW27 and SW37 on the line through their centres (case X 79.4, Y 1.7). Its capacitor and resistors are on the PCB underside, so the case pocket is just the 5 × 5 mm LED plus 0.5 mm, open to Z 3.55. |
 | LED logo | The clear-logo version is 10 mm wide here. A 1 mm wall is kept around the heat-insert bore 7 mm away. |
 | Battery tray | Pack support plate at Z −1.5 … −0.5, with a cut-out for the FFC; same countersunk M3×6 ears and 1 mm feet as the nice!nano build. |
-| Controller, USB, J1, SW38 | Same positions and pockets as the nice!nano case. |
+| Controller, USB, J1 | Same positions and pockets as the nice!nano case. |
+| Power switch | SW38 on the PCB underside at the back edge; its slider (case X 0.1–1.4 mm) is reached through the 15 mm USB opening, which already runs below the board. No front switch channel. |
 
 See the [geometry report](validation/nice-nano-cirque-case/geometry.json) for per-key clearances and the pad-stack checks. The [switch plates](../001%20PCB/PLATE%20CHOC%20V2/NICE%20NANO%20CIRQUE/) were regenerated for this case: zero case intersection and at least 0.3 mm clearance.
 

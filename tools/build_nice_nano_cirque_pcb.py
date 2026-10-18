@@ -33,9 +33,13 @@ LOCAL_FP = os.path.join(HERE, '..', '001 PCB', 'KICAD', 'NICE NANO CIRQUE', 'Nan
 LED_XY = (229.39, 138.26)
 PLACE = {
     'LED1': (LED_XY[0], LED_XY[1], 0, 'F'),
-    'C1': (LED_XY[0], LED_XY[1] - 3.9, 0, 'F'),
-    'R1': (LED_XY[0] + 5.2, LED_XY[1] - 3.3, 90, 'F'),
-    'R2': (LED_XY[0] + 5.2, LED_XY[1] + 0.4, 90, 'F'),
+    # The LED's passives sit on the underside so its case pocket stays small.
+    'C1': (LED_XY[0], LED_XY[1] + 2.5, 0, 'B'),
+    'R1': (LED_XY[0] + 5.0, LED_XY[1] - 2.5, 90, 'B'),
+    'R2': (LED_XY[0] + 5.0, LED_XY[1] + 1.3, 90, 'B'),
+    # Power switch under the nice!nano at the back edge: the slider faces out
+    # through the case's USB opening, so the case needs no separate hole.
+    'SW38': (150.0, 64.5, 0, 'B'),
     'J2': (169.6, 123.0, None, 'B'),
     'R3': (168.6, 114.0, 90, 'B'),
     'R4': (170.6, 114.0, 90, 'B'),
@@ -45,7 +49,7 @@ PLACE = {
 # right side of the battery opening (case X 11..14.8, Y 12..22).
 NOTCH = (161.0, 118.0, 164.8, 128.0)
 NOTCH_RADIUS = 0.6
-NEW_NETS = ('SDA', 'SCL', 'DR', 'VCC_SW', 'LED_DATA', 'LED_DIN')
+NEW_NETS = ('SDA', 'SCL', 'DR', 'VCC_SW', 'LED_DATA', 'LED_DIN', 'VBAT', 'VBAT_SW')
 # Ground stubs and vias that only served the old centre LED1/C1/R2 pads.
 OLD_LED_GND_BOX = (151.0, 100.5, 155.5, 108.0)
 FOOTPRINTS = {
@@ -166,7 +170,8 @@ def dump(args):
 
 def clear_artwork(artwork, by_ref):
     """Cut windows in the board-wide silkscreen artwork over the new parts."""
-    groups = ((p.F_SilkS, ('LED1', 'C1', 'R1', 'R2')), (p.B_SilkS, ('J2', 'R3', 'R4', 'C2')))
+    groups = ((p.F_SilkS, ('LED1',)), (p.B_SilkS, ('C1', 'R1', 'R2')),
+              (p.B_SilkS, ('J2', 'R3', 'R4', 'C2')), (p.B_SilkS, ('SW38',)))
     for layer, refs in groups:
         boxes = [by_ref[r].GetBoundingBox(False) for r in refs]
         x0 = min(bb.GetLeft() for bb in boxes) / 1e6 - 0.8

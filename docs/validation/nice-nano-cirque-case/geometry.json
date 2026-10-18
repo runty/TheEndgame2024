@@ -202,7 +202,7 @@
   "battery_to_pad_components_mm": 0.207,
   "pad_connector_bottom_z_mm": 1.607,
   "pad_connector_drops_into_pcb_notch": true,
-  "case_volume_mm3": 66748.76,
+  "case_volume_mm3": 67074.27,
   "tray_volume_mm3": 1163.68,
   "carrier_volume_mm3": 569.33,
   "stl_watertight": [

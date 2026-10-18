@@ -37,6 +37,10 @@ LAYERS = ("F", "B")
 
 # Net -> (track width, pads in routing order). The first pad seeds the tree.
 NETS = [
+    # Battery path first: J1 (front) -> SW38 (back edge, under the nice!nano)
+    # -> RAW. The long LED data route along the back edge would box it in.
+    ("VBAT_SW", 0.4, ["U2.24", "SW38.1"]),
+    ("VBAT", 0.4, ["J1.1", "SW38.2"]),
     # J2 pins leave towards U2 (-Y); route them in pin order from the -Y end
     # (12 VCC, 11 GND, 10 SDA, 9 SCL, 4 DR) so none is boxed in.
     ("VCC_SW", 0.25, ["U2.21", "J2.12", "R3.1", "R4.1", "C2.1", "C1.1", "LED1.1"]),
@@ -162,6 +166,16 @@ def main():
     hole_dist = ndimage.distance_transform_edt(~holes) * RES
     for net, width, pads in NETS:
         half = width / 2
+        # Drilled holes of other nets block this net; its own (e.g. a pin
+        # post it starts from) must not wall in its pad.
+        foreign = np.zeros_like(edge)
+        for h in data["holes"]:
+            if h["net"] != net:
+                draw_disk(foreign, *g.cell(*h["xy"]), h["r"] / RES)
+        for v in vias:
+            if v["net"] != net:
+                draw_disk(foreign, *g.cell(*v["xy"]), v["drill"] / 2 / RES)
+        foreign_dist = ndimage.distance_transform_edt(~foreign) * RES
         blocked, via_ok = {}, None
         for L in LAYERS:
             others = np.zeros_like(edge)
@@ -169,7 +183,7 @@ def main():
                 if n != net:
                     others |= m
             dist = ndimage.distance_transform_edt(~others) * RES
-            blocked[L] = (dist < CLEARANCE + MARGIN + half) | edge | (keepout_dist < MARGIN + half) | (hole_dist < 0.25 + MARGIN + half)
+            blocked[L] = (dist < CLEARANCE + MARGIN + half) | edge | (keepout_dist < MARGIN + half) | (foreign_dist < 0.25 + MARGIN + half)
             via_block = dist < CLEARANCE + MARGIN + VIA[0] / 2
             via_ok = ~via_block if via_ok is None else via_ok & ~via_block
         via_ok &= ~edge & (keepout_dist > MARGIN + VIA[0] / 2) & (hole_dist > HOLE_CLEARANCE + VIA[1] / 2)

@@ -3,8 +3,9 @@
 
 The original Endgame case is split at X=+-7 mm (inside the solid waist, so no
 key opening crosses a split) and each half moves outward 10 mm to match the
-239 mm Cirque PCB. Central features (controller, USB, battery, J1, SW38 and
-tray mounts) are re-cut at their fixed positions. A flat bezel holds a Cirque
+239 mm Cirque PCB. Central features (controller, USB, battery, J1 and tray
+mounts) are re-cut at their fixed positions. The power switch is on the PCB
+underside at the USB opening, so the case has no switch hole. A flat bezel holds a Cirque
 TM040040 with the curved overlay 50-000090-00, clamped from below by a
 printed C-ring; the battery stays under the pad in the PCB opening, lowered
 0.5 mm into the tray. The status LED pocket sits in the right thumb gap.
@@ -46,7 +47,11 @@ COUNTERBORE_R = FLANGE_R + 0.18    # flange seat, open from below
 LANDING_R, COLLAR_BASE_R, COLLAR_DROP = 24.6, 25.8, 1.2
 COUNTERSINK_R, COUNTERSINK_H = 23.6, 1.5
 BATTERY = (-9.25, -3.0, -0.5, 9.25, 30.0, 4.5)   # 401730 envelope, 0.5 mm lower
-LED_POCKET = (76.4, -1.3, 85.6, 6.6, 3.55)       # LED1, C1, R1, R2 (case frame)
+LED_POCKET = (76.39, -1.26, 82.39, 4.74, 3.55)   # LED1 only; its passives are underneath
+# SW38 sits under the nice!nano on the PCB underside; its slider reaches out
+# through the USB opening at the back edge (case X 0.1..1.4, Y to 78.7).
+SW38_BODY = (-3.35, 74.9, -1.4, 3.35, 77.5, 0.0)
+SW38_SLIDER = (-0.1, 77.0, -1.4, 1.6, 78.8, 0.0)
 CENTRAL_MOUNTS = [(-9.804941, -14.168516), (9.804965, -14.170142)]
 
 
@@ -144,7 +149,6 @@ def build_case(original):
     case = cut(case, rounded_prism(-USB_HALF_WIDTH, 70, USB_HALF_WIDTH, 82, 0.8, -2.0, 7.3))
     slope = (USB_MOUTH_TOP - 7.3) / (USB_REAR_Y - USB_BEVEL_START_Y)
     case = cut(case, yz_prism([(USB_BEVEL_START_Y, 7.3), (82, 7.3), (82, 7.3 + slope * (82 - USB_BEVEL_START_Y))]))
-    case = cut(case, rounded_prism(-4.1, -22.3, 4.1, -12.4, 0.7, 0.0, 4.2))       # SW38
     for mx, my in CENTRAL_MOUNTS:
         case = fuse(case, cylinder(mx, my, 4.5, 1.6, 2.9))
         case = cut(case, cylinder(mx, my, 2.3, 1.5, 5.6))
@@ -218,8 +222,9 @@ def verify(original, case, plate, ring, rim):
         "401730 battery envelope": box(*BATTERY),
         "nice!nano assembled envelope": box(-9.0, 44.0, 2.6, 9.0, 77.0, 6.0),
         "USB shell/cable corridor": box(-4.8, 70.5, 1.6, 4.8, 78.0, 7.2),
-        "WS2812B-V6 + C1/R1/R2": box(76.89, 1.24 - 2.5 + 0.0, 1.6, 81.89, 4.24, 3.2),
-        "power switch": box(-3.35, -17.15, 1.6, 3.35, -13.0, 3.1),
+        "WS2812B-V6": box(76.89, -0.76, 1.6, 81.89, 4.24, 3.2),
+        "power switch body (PCB underside)": box(*SW38_BODY),
+        "power switch slider (PCB underside)": box(*SW38_SLIDER),
     })
     for name, solid in proxies.items():
         assert volume(BRepAlgoAPI_Common(case, solid).Shape()) < 1e-5, name

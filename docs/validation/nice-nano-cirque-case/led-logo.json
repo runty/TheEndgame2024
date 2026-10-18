@@ -27,12 +27,12 @@
     0.0,
     3.55
   ],
-  "light_chamber_removed_volume_mm3": 36.36,
+  "light_chamber_removed_volume_mm3": 70.93,
   "opaque_material_under_logo_mm3": 0.0,
   "opaque_islands_held_by_clear_part": 1,
   "led_body_area_mm2": 25.0,
-  "case_volume_mm3": 66747.44,
-  "body_volume_mm3": 66588.87,
+  "case_volume_mm3": 67072.95,
+  "body_volume_mm3": 66879.81,
   "clear_volume_mm3": 122.22,
   "body_and_clear_watertight": true
 }
