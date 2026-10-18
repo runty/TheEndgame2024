@@ -1,17 +1,20 @@
-# Endgame — RP2040-Zero Choc V2 and nice!nano Choc V2
+# Endgame — RP2040-Zero Choc V2, nice!nano Choc V2 and nice!nano + Cirque
 
-A 36-key [Endgame](https://github.com/OldMan6955/TheEndgame2024) repository with two builds. Both PCBs take Kailh Choc V2 (and Choc V1) hot-swap switches. Use the files for one build together; the PCBs, cases and firmware are not interchangeable.
+A 36-key [Endgame](https://github.com/OldMan6955/TheEndgame2024) repository with three builds. Both PCBs take Kailh Choc V2 (and Choc V1) hot-swap switches. Use the files for one build together; the PCBs, cases and firmware are not interchangeable.
 
 | Build | Hardware and battery | PCB and matching case | Firmware and build notes |
 | --- | --- | --- | --- |
 | **RP2040-Zero Choc V2** (wired) | Waveshare RP2040-Zero, USB-C wired, original Endgame PCB outline and mounting | [JLCPCB Gerber ZIP](001%20PCB/GERBER/CHOC%20V1%20V2/TheEndgame2024_Choc_V1_V2_JLCPCB.zip) · [KiCad project](001%20PCB/KICAD/SILKSCREEN%20KICAD/) · [original case STEP](002%20CASE/TheENDGAME2024_CASE001.step) · Choc V2 plates: [3-D print](001%20PCB/PLATE%20CHOC%20V2/3D%20PRINT/), [1.2 mm FR-4/metal](001%20PCB/PLATE%20CHOC%20V2/) | [ZMK firmware](003%20FIRMWARE/zmk-endgame-rp2040-zero/) (sample keymap) · upstream [Vial UF2](003%20FIRMWARE/vial/endgame_vial.uf2) / [QMK config](003%20FIRMWARE/qmk-config-endgame/) · [Choc V1/V2 notes](docs/choc-v1-v2.md) |
 | **nice!nano Choc V2** (wireless) | nice!nano v2, directly soldered 401730 LiPo (target ≤200 mAh), two axial resistors, WS2812B-V6 status LED | [223 × 96.11 mm Gerbers](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/TheEndgame2024_NiceNano_223mm_THT_JLCPCB.zip) · [KiCad project](001%20PCB/KICAD/NICE%20NANO%20WIRELESS/) · [case (standard or clear LED logo) and tray](002%20CASE/NICE%20NANO%20WIRELESS/) | [ZMK firmware](003%20FIRMWARE/zmk-endgame-nice-nano/) · [build notes](docs/nice-nano-wireless.md) · [case notes](docs/nice-nano-case.md) |
+| **nice!nano Choc V2 + Cirque** (wireless, touchpad) | nice!nano v2 plus a 40 mm Cirque TM040040 touchpad (curved overlay) between the thumbs; 401730 LiPo under the pad; JLCPCB-assembled SMD parts and FFC connector | [239 × 96.11 mm Gerbers + BOM/CPL](001%20PCB/GERBER/NICE%20NANO%20CIRQUE/) · [KiCad project](001%20PCB/KICAD/NICE%20NANO%20CIRQUE/) · [case, tray and pad carrier](002%20CASE/NICE%20NANO%20CIRQUE/) | [ZMK firmware](003%20FIRMWARE/zmk-endgame-nice-nano-cirque/) · [build notes](docs/nice-nano-cirque.md) |
 
 **Case fit warning for nice!nano:** this PCB is 4 mm wider than the original and requires the matching **231 mm-wide nice!nano case** linked above. It does **not** fit the original Endgame case. Use the nice!nano-specific case files and plates.
 
 The nice!nano version is **4 mm wider than the original PCB**. Each key half moves outward 2 mm, giving the inner keys more clearance from the controller while preserving the original outer borders. The controller, battery opening, and LED remain on the board's centreline. Its matching case retains the original height and sloped profile. The case has a relieved USB opening, and its inner thumb and top inner alpha opening edges match the original case; see the [thumb repair comparison](002%20CASE/NICE%20NANO%20WIRELESS/thumb-roof-repair-preview.png).
 
 **Prototype status:** the RP2040-Zero Choc V2 board has been built, and all 36 keys work; keycap clearance on assembled hardware is unchecked. The nice!nano build has documented digital design, manufacturing-file, and CAD checks and has reached user assembly testing, with LED operation reported; the latest case repair, clear LED logo case, and printed thumb caps still need physical validation. Full system qualification and JLCPCB upload-preview verification remain incomplete. See the [2026-10-15 update](docs/updates-2026-10-15.md).
+
+**nice!nano + Cirque (digital design, untested):** each half moves a further 8 mm outward (239 mm PCB, 247 mm case, same height) to fit the touchpad with its curved overlay and a 4 mm margin to the keycaps. The status LED moves to the right thumb gap. See the [nice!nano + Cirque notes](docs/nice-nano-cirque.md).
 
 **RP2040-Zero Choc V2 PCB, top**
 
@@ -20,6 +23,10 @@ The nice!nano version is **4 mm wider than the original PCB**. Each key half mov
 **nice!nano Choc V2 PCB, front**
 
 ![nice!nano Choc V2 PCB, front](001%20PCB/GERBER/NICE%20NANO%20WIRELESS/front-preview.png)
+
+**nice!nano Choc V2 + Cirque PCB, top**
+
+![nice!nano Choc V2 + Cirque PCB, top](001%20PCB/GERBER/NICE%20NANO%20CIRQUE/top-preview.png)
 
 ## RP2040-Zero Choc V2 downloads
 
