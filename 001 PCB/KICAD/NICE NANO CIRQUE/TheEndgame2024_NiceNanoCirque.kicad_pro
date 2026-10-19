@@ -638,8 +638,8 @@
     "subpart_id_separator": 0,
     "top_level_sheets": [
       {
-        "filename": "TheEndgame2024_NiceNano.kicad_sch",
-        "name": "TheEndgame2024_NiceNano",
+        "filename": "TheEndgame2024_NiceNanoCirque.kicad_sch",
+        "name": "TheEndgame2024_NiceNanoCirque",
         "uuid": "00000000-0000-0000-0000-000000000000"
       }
     ]

@@ -3,9 +3,14 @@
   "errors": 0,
   "unconnected_items": 0,
   "schematic_parity": 0,
+  "rules": {
+    "copper_edge_clearance_mm": 0.2,
+    "copper_hole_clearance_mm": 0.25,
+    "min_clearance_mm": 0.2
+  },
   "warnings_by_type": {
     "silk_edge_clearance": 199,
-    "silk_overlap": 21,
+    "silk_overlap": 19,
     "silk_over_copper": 199
   },
   "warning_note": "All warnings are silkscreen-only (underside photo artwork over pads, near holes and outlines); KiCad caps each type at 199. The Gerber export subtracts solder-mask openings from silkscreen."

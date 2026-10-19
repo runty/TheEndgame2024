@@ -189,6 +189,7 @@
     ]
   },
   "minimum_switch_body_clearance_mm": 1.6,
+  "pcb_to_case_min_clearance_mm": 0.3,
   "flange_ledge_fill_fraction": 1.0,
   "rim_z_mm": 7.947,
   "overlay_height_assumed_mm": 1.5,
@@ -202,7 +203,7 @@
   "battery_to_pad_components_mm": 0.207,
   "pad_connector_bottom_z_mm": 1.607,
   "pad_connector_drops_into_pcb_notch": true,
-  "case_volume_mm3": 67074.27,
+  "case_volume_mm3": 67042.92,
   "tray_volume_mm3": 1163.68,
   "carrier_volume_mm3": 569.33,
   "stl_watertight": [

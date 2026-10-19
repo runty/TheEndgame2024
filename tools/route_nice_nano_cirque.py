@@ -29,10 +29,13 @@ HOLE_CLEARANCE = 0.3      # via drill to any other drill, edge to edge
 VIA_COST = 80.0           # in grid steps
 # Straight fan-out stubs (dx, dy) on the pad's layer, all laid before any
 # routing so each 0.5 mm-pitch FFC pin owns a lane clear of the pad row.
-STUB = {"J2.4": (0.9, 0), "J2.9": (0.9, 0), "J2.10": (0.9, 0), "J2.12": (0.9, 0)}
+STUB = {"J2.9": (0.9, 0), "J2.4": (0.9, 0), "J2.3": (0.9, 0), "J2.1": (0.9, 0)}
 # Ground pads drop through a via into the F.Cu ground pour at the end of a
 # stub; J2's ground stub reaches past the other stubs so its via clears them.
-GND_VIA_STUBS = {"J2.11": (2.0, 0), "C2.2": (0, 1.3)}
+GND_VIA_STUBS = {"J2.2": (2.0, 0), "C2.2": (0, 1.3)}
+# J2's fan-out area (both layers) stays free for its own nets: existing nets
+# re-joined after J2's move must route around it.
+J2_FANOUT = (166.0, 116.5, 178.5, 129.5)
 LAYERS = ("F", "B")
 
 # Net -> (track width, pads in routing order). The first pad seeds the tree.
@@ -41,14 +44,18 @@ NETS = [
     # -> RAW. The long LED data route along the back edge would box it in.
     ("VBAT_SW", 0.4, ["U2.24", "SW38.1"]),
     ("VBAT", 0.4, ["J1.1", "SW38.2"]),
-    # J2 pins leave towards U2 (-Y); route them in pin order from the -Y end
-    # (12 VCC, 11 GND, 10 SDA, 9 SCL, 4 DR) so none is boxed in.
-    ("VCC_SW", 0.25, ["U2.21", "J2.12", "R3.1", "R4.1", "C2.1", "C1.1", "LED1.1"]),
-    ("SDA", 0.2, ["U2.15", "J2.10", "R3.2"]),
-    ("SCL", 0.2, ["U2.14", "J2.9", "R4.2"]),
-    ("DR", 0.2, ["U2.13", "J2.4"]),
+    # J2 carries pad pin N on its pin 13-N (9 DR, 4 SCL, 3 SDA, 2 GND,
+    # 1 VDD). Its pins leave towards U2 (-Y): route from the -Y end of the
+    # row (9, 4, 3, then 1) so none is boxed in.
+    ("DR", 0.2, ["U2.13", "J2.9"]),
+    ("SCL", 0.2, ["U2.14", "J2.4", "R4.2"]),
+    ("SDA", 0.2, ["U2.15", "J2.3", "R3.2"]),
+    ("VCC_SW", 0.25, ["U2.21", "J2.1", "R3.1", "R4.1", "C2.1", "C1.1", "LED1.1"]),
     ("LED_DIN", 0.2, ["R1.2", "LED1.4", "R2.1"]),
     ("LED_DATA", 0.2, ["U2.1", "R1.1"]),
+    # Join the bottom-side ground stubs (J2 pin 2, C2) to existing ground
+    # copper; the top pour under the pad is too broken up to rely on.
+    ("gnd", 0.25, [None, "J2.2", "C2.2"]),
 ]
 
 
@@ -138,7 +145,9 @@ def main():
 
     tracks, vias = [], []
     stub_end = {}
-    for net, width, pads in NETS:
+    # Existing nets cut by J2's move are re-joined first, before new copper.
+    nets_to_route = [(net, 0.25, names) for net, names in data.get("rejoin", {}).items()] + NETS
+    for net, width, pads in nets_to_route:
         for pad in pads:
             if pad in STUB:
                 info = data["pads"][pad]
@@ -163,8 +172,9 @@ def main():
                 m |= g.raster(segment_poly(a, end, 0.125))
             net_masks[layer]["gnd"] = net_masks[layer].get("gnd", np.zeros_like(edge)) | m
         draw_disk(holes, *g.cell(*end), VIA[1] / 2 / RES)
+        stub_end[pad] = end
     hole_dist = ndimage.distance_transform_edt(~holes) * RES
-    for net, width, pads in NETS:
+    for net, width, pads in nets_to_route:
         half = width / 2
         # Drilled holes of other nets block this net; its own (e.g. a pin
         # post it starts from) must not wall in its pad.
@@ -176,6 +186,11 @@ def main():
             if v["net"] != net:
                 draw_disk(foreign, *g.cell(*v["xy"]), v["drill"] / 2 / RES)
         foreign_dist = ndimage.distance_transform_edt(~foreign) * RES
+        rejoining = net in data.get("rejoin", {})
+        reserved = np.zeros_like(edge)
+        if rejoining:
+            x0, y0, x1, y1 = J2_FANOUT
+            reserved = g.raster([(x0, y0), (x1, y0), (x1, y1), (x0, y1)])
         blocked, via_ok = {}, None
         for L in LAYERS:
             others = np.zeros_like(edge)
@@ -183,7 +198,7 @@ def main():
                 if n != net:
                     others |= m
             dist = ndimage.distance_transform_edt(~others) * RES
-            blocked[L] = (dist < CLEARANCE + MARGIN + half) | edge | (keepout_dist < MARGIN + half) | (foreign_dist < 0.25 + MARGIN + half)
+            blocked[L] = (dist < CLEARANCE + MARGIN + half) | edge | (keepout_dist < MARGIN + half) | (foreign_dist < 0.25 + MARGIN + half) | reserved
             via_block = dist < CLEARANCE + MARGIN + VIA[0] / 2
             via_ok = ~via_block if via_ok is None else via_ok & ~via_block
         via_ok &= ~edge & (keepout_dist > MARGIN + VIA[0] / 2) & (hole_dist > HOLE_CLEARANCE + VIA[1] / 2)

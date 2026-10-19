@@ -54,6 +54,26 @@ LED_POCKET = (76.39, -1.26, 82.39, 4.74, 3.55)   # LED1 only; its passives are u
 SW38_BODY = (-3.35, 72.0, -1.4, 3.35, 74.8, 0.0)
 SW38_SLIDER = (-0.1, 74.6, -1.4, 1.6, 77.0, 0.0)
 CENTRAL_MOUNTS = [(-9.804941, -14.168516), (9.804965, -14.170142)]
+PCB_POCKET_CLEARANCE = 0.4   # case pocket around the PCB outline
+PCB_MIN_CLEARANCE = 0.3      # checked between PCB outline and case
+
+
+def pcb_outline():
+    """Outer board outline in the case frame, from the Cirque PCB's Edge.Cuts."""
+    from shapely.geometry import Polygon
+    from add_cirque_photo_silkscreen import outline_from_board
+    outline, _ = outline_from_board(PCB.read_text())
+    return Polygon([(x - 150, 140 - y) for x, y in outline]).buffer(0)
+
+
+def polygon_prism(polygon, z0, z1):
+    from OCP.BRepBuilderAPI import BRepBuilderAPI_MakeFace, BRepBuilderAPI_MakePolygon
+    wire = BRepBuilderAPI_MakePolygon()
+    for x, y in list(polygon.exterior.coords)[:-1]:
+        wire.Add(gp_Pnt(x, y, z0))
+    wire.Close()
+    face = BRepBuilderAPI_MakeFace(wire.Wire()).Face()
+    return BRepPrimAPI_MakePrism(face, gp_Vec(0, 0, z1 - z0)).Shape()
 
 
 def widened_case(original):
@@ -141,6 +161,20 @@ def build_case(original):
     case = cut(case, cylinder(x, y, COUNTERBORE_R, -2, flange_top))
     # Battery pocket corners reach just beyond the counterbore.
     case = cut(case, rounded_prism(-11.1, -4.1, 11.1, 31.1, 1.0, -2, BATTERY[5] + 0.2))
+
+    # The PCB and case were widened at different split lines (|x| 12 and 7),
+    # so re-cut the pocket from the real board outline: the front tabs around
+    # the central mounts would otherwise hit the case's inner front wall.
+    pocket = pcb_outline().buffer(PCB_POCKET_CLEARANCE, join_style=2).simplify(0.05)
+    # Cut faces must not meet the case's Z=1.6 seating faces (slivers break
+    # the STL): the whole pocket to Z 1.55, then a band along the board edge
+    # to Z 1.65 so no wall is left inside the board's thickness.
+    # Only the front strips (|x| 6..23) are affected: the PCB's centre tabs
+    # stayed put while the case wall behind them was extruded from X=+-7.
+    from shapely.geometry import box as sbox
+    for x0, x1 in ((-23.0, -6.0), (6.0, 23.0)):
+        strip = pocket.intersection(sbox(x0, -22.0, x1, -15.0))
+        case = cut(case, polygon_prism(strip, -3.0, 1.65))
 
     # Fixed central features carried over from the nice!nano case.
     case = cut(case, rounded_prism(-3.4, -11.1, 3.4, -3.6, 0.8, 0.0, 3.0))        # J1 wires
@@ -233,6 +267,10 @@ def verify(original, case, plate, ring, rim):
         assert volume(BRepAlgoAPI_Common(plate, solid).Shape()) < 1e-5, ("tray", name)
     assert volume(BRepAlgoAPI_Common(stack["pad components"], box(*BATTERY)).Shape()) < 1e-6
     assert volume(BRepAlgoAPI_Common(case, ring).Shape()) < 1e-5
+    # PCB outline (grown by the minimum clearance) never meets the case.
+    board = polygon_prism(pcb_outline().buffer(PCB_MIN_CLEARANCE, join_style=2).simplify(0.01), 0.0, 1.6)
+    assert volume(BRepAlgoAPI_Common(case, board).Shape()) < 1e-5, "PCB outline within 0.3 mm of the case"
+    report["pcb_to_case_min_clearance_mm"] = PCB_MIN_CLEARANCE
     assert volume(BRepAlgoAPI_Common(case, plate).Shape()) < 1e-5
     # Overlay flange is held: case material directly above it all round.
     over = rim - OVERLAY_HEIGHT

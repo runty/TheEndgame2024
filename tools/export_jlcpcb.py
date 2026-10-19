@@ -20,14 +20,15 @@ def main():
     ap.add_argument('--output', type=Path, required=True, help='New output directory')
     ap.add_argument('--board', type=Path, default=BOARD, help='Verified source PCB')
     ap.add_argument('--archive-name', default='TheEndgame2024_Choc_V1_V2_JLCPCB.zip')
+    ap.add_argument('--paste', action='store_true', help='also export F/B.Paste for SMT assembly stencils')
     args = ap.parse_args()
     assert Path(args.archive_name).name == args.archive_name and args.archive_name.endswith('.zip')
     args.output.mkdir(parents=True, exist_ok=False)
     gerbers = args.output / 'gerbers'
     gerbers.mkdir()
     cli = args.kicad_cli
-    subprocess.run([cli, 'pcb', 'export', 'gerbers', '--output', str(gerbers), '--layers',
-                    'F.Cu,B.Cu,F.Mask,B.Mask,F.SilkS,B.SilkS,Edge.Cuts',
+    layers = 'F.Cu,B.Cu,F.Mask,B.Mask,F.SilkS,B.SilkS,Edge.Cuts' + (',F.Paste,B.Paste' if args.paste else '')
+    subprocess.run([cli, 'pcb', 'export', 'gerbers', '--output', str(gerbers), '--layers', layers,
                     '--no-x2', '--no-netlist', '--subtract-soldermask', '--disable-aperture-macros',
                     '--check-zones', str(args.board)], check=True)
     subprocess.run([cli, 'pcb', 'export', 'drill', '--output', str(gerbers),
@@ -43,7 +44,7 @@ def main():
     archive = args.output / args.archive_name
     with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as z:
         for p in sorted(gerbers.iterdir()):
-            if p.suffix.lower() in {'.gtl', '.gbl', '.gts', '.gbs', '.gto', '.gbo', '.gm1', '.drl', '.gbrjob'}:
+            if p.suffix.lower() in {'.gtl', '.gbl', '.gts', '.gbs', '.gto', '.gbo', '.gtp', '.gbp', '.gm1', '.drl', '.gbrjob'}:
                 z.write(p, p.name)
     print(archive)
 

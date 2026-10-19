@@ -19,7 +19,7 @@ from matplotlib.path import Path as MPath
 from PIL import Image, ImageOps
 
 PIXEL = 0.25          # mm; isolated dots stay above JLCPCB's ~0.15 mm silkscreen minimum
-EDGE_MARGIN = 0.4     # mm from board outline and cutouts
+EDGE_MARGIN = 0.4     # mm from outline and cutouts to every dot's edge
 RING_CLEAR = 4.6      # mm radius kept clear around each mounting-hole footprint
 TAG = "c1c1c1c1"      # uuid prefix marking the photo's rectangles
 
@@ -97,16 +97,18 @@ def ink_mask(photo, outline, cutouts, holes, mirror):
     ys = y0 + (np.arange(ny) + 0.5) * PIXEL
     X, Y = np.meshgrid(xs, ys)
     pts = np.c_[X.ravel(), Y.ravel()]
-    keep = MPath(outline).contains_points(pts, radius=-2 * EDGE_MARGIN)
-    if not keep.any():
-        keep = MPath(outline).contains_points(pts, radius=2 * EDGE_MARGIN)
-    keep = keep.reshape(ny, nx)
-    inside = MPath(outline).contains_points(pts).reshape(ny, nx)
-    from scipy import ndimage
-    edge = ndimage.distance_transform_edt(inside) * PIXEL >= EDGE_MARGIN
-    for c in cutouts:
-        hole = MPath(c).contains_points(pts).reshape(ny, nx)
-        edge &= ndimage.distance_transform_edt(~hole) * PIXEL >= EDGE_MARGIN
+    # A dot is kept only when all four corners clear the margins exactly.
+    from shapely.geometry import Polygon
+    inner = Polygon(outline).buffer(-EDGE_MARGIN)
+    grown = [Polygon(c).buffer(EDGE_MARGIN) for c in cutouts]
+    edge = np.ones((ny, nx), bool)
+    h = PIXEL / 2
+    for cx, cy in ((-h, -h), (h, -h), (h, h), (-h, h)):
+        corners = pts + (cx, cy)
+        ok = MPath(np.asarray(inner.exterior.coords)).contains_points(corners)
+        for g in grown:
+            ok &= ~MPath(np.asarray(g.exterior.coords)).contains_points(corners)
+        edge &= ok.reshape(ny, nx)
     for hx, hy in holes:
         edge &= (X - hx) ** 2 + (Y - hy) ** 2 >= RING_CLEAR ** 2
     return ink & edge, (x0, y0)

@@ -22,19 +22,29 @@ A third Endgame build: the wireless nice!nano Choc V2 board with a 40 mm **Cirqu
 | Setting | Value |
 | --- | --- |
 | Size | **239.00 × 96.11 mm**, 2 layers, 1.6 mm FR-4, 1 oz |
-| Assembly | **Both sides** (top: LED1; bottom: C1, R1, R2, J2, R3, R4, C2) |
-| Assembly files | BOM and CPL above; every assembled part carries its LCSC number |
+| Solder mask / silkscreen | **Black / white** (the underside photo depends on it) |
+| Order number | Choose JLCPCB's "remove order number" option (or specify a location on the underside), or it lands in the artwork |
+| Assembly | **Both sides** (top: LED1; bottom: the 36 diodes, C1, C2, R1–R4, J2). Two-sided PCBA costs more; see below |
+| Assembly files | Gerber ZIP (includes paste layers), BOM and CPL above; every assembled part carries its LCSC number |
 
 | Ref | Part | LCSC | Side |
 | --- | --- | --- | --- |
 | LED1 | WS2812B-V6 5050 | C52917433 (extended) | Top |
+| D5–D47 (36) | 1N4148W SOD-123 matrix diodes | C81598 | Bottom |
 | C1, C2 | 100 nF 0603 | C14663 | Bottom |
 | R1 | 330 Ω 0603 (LED data) | C23138 | Bottom |
 | R2 | 100 kΩ 0603 (LED data pull-down) | C25803 | Bottom |
 | R3, R4 | 4.7 kΩ 0603 (I2C pull-ups) | C23162 | Bottom |
 | J2 | Jushuo AFC01-S12FCA-00, 12-pin 0.5 mm FFC, bottom contact, flip lock | C262661 (extended) | Bottom |
 
-In JLCPCB's placement preview, check J2's and LED1's rotation and pin 1. J2's footprint origin is its pad row, not the body centre, so expect JLCPCB to offset it. Hand-solder the 36 Choc hot-swap sockets, the nice!nano on short posts, the battery wires (J1) and the power switch SW38, as for the [nice!nano build](nice-nano-wireless.md). SW38 (C&K PCM12) now sits on the **underside, under the nice!nano at the back edge**, slider facing the edge but recessed 0.46 mm inside it so the board protects it; reach it through the case's USB opening with a fingernail or a toothpick. The case has no switch hole. The yellow key outlines in the previews are KiCad reference drawings, not silkscreen; they are not in the Gerbers.
+**Check JLCPCB's placement preview before confirming:**
+- **LED1:** the body's pin-1 corner on the VCC pad, top-left at PCB (226.94, 136.61); DIN at (231.84, 136.61).
+- **J2:** pad row on X 173.3, flip latch facing the battery-opening notch (−X), pin 1 at the high-Y end (125.75). Its footprint origin is the pad row, not the body centre, so expect JLCPCB to shift it about 2 mm.
+- **Diodes:** cathode bands on the footprints' cathode marks, as on the nice!nano board.
+
+LED1 is the only top-side part, and it makes the order two-sided assembly. Hand-soldering LED1 instead (a large 5050 part) keeps it one-sided and cheaper.
+
+Hand-solder the 36 Choc hot-swap sockets, the nice!nano on short posts, the battery wires (J1) and the power switch SW38, as for the [nice!nano build](nice-nano-wireless.md). SW38 (C&K PCM12) now sits on the **underside, under the nice!nano at the back edge**, slider facing the edge but recessed 0.46 mm inside it so the board protects it; reach it through the case's USB opening with a fingernail or a toothpick. The case has no switch hole. The yellow key outlines in the previews are KiCad reference drawings, not silkscreen; they are not in the Gerbers.
 
 ## Board artwork
 
@@ -44,7 +54,7 @@ The underside carries a dithered black-and-white photo as white silkscreen on th
 
 **Part:** Cirque **TM040040-2024-303** (Pinnacle ASIC, curved ABS overlay 50-000090-00). It ships in **SPI** mode: remove resistor **R1** on the pad to switch it to I2C.
 
-**Wiring:** a 12-pin, 0.5 mm-pitch FFC runs from the pad's vertical connector to J2 on the PCB underside. Pins 4 DR, 9 SCL, 10 SDA, 11 GND and 12 VDD (3.3 V) are used; the SPI and button pins are left open.
+**Wiring:** a 12-pin, 0.5 mm-pitch FFC runs from the pad's vertical connector to J2 on the PCB underside. Pad pins 4 DR, 9 SCL, 10 SDA, 11 GND and 12 VDD (3.3 V) are used; the SPI and button pins are left open. The cable keeps each conductor's position along the row through its 90° bend, so **pad pin N arrives on J2 pin 13 − N**. J2 is wired that way: DR on 9, SCL on 4, SDA on 3, GND on 2, 3.3 V on 1.
 
 | Signal | nice!nano | Notes |
 | --- | --- | --- |
@@ -55,8 +65,8 @@ The underside carries a dithered black-and-white photo as white silkscreen on th
 
 **Fitting:**
 - **Orientation:** the pad's connector faces **+X** (towards the right-hand keys), over the notch on the right of the battery opening.
-- **Cable path:** the FFC drops straight down through the notch, bends under the board and enters J2 from the left. The board was routed for that path.
-- **Cable:** the shortest standard 12-pin 0.5 mm FFC (about 30 mm) has enough length; fold any slack under the board. Check the contact side (same-side "A" or opposite-side "B") against both connectors before ordering: J2 is bottom-contact.
+- **Cable path:** the FFC drops straight down through the notch, bends 90° under the board and runs about 4.5 mm into J2's entry, which faces the notch. Insert it before the board goes into the case: J2's latch flips open downwards.
+- **Cable:** 12 conductors, 0.5 mm pitch, 0.3 mm thick, about **15–20 mm** long (the path is roughly 15 mm including both insertions) with short (~4 mm) stiffeners. A longer standard cable leaves slack to fold into a 2.4 mm gap under the board. Contact side: J2 is bottom-contact, so it touches the conductors on the face that points +X while the cable hangs down. Cirque's drawing puts the pad connector's pin 1 on the outer (+X) side, which needs a **same-side (Type A)** cable. **Check the contact side on your pad's connector before ordering the cable**; if its contacts are on the inner side, use Type B.
 - **Clamping:** the overlay flange sits under a ledge in the case's flat bezel. The printed C-ring stands on the PCB around the battery and presses the pad's PCB edge up into the bezel, outside its component area. The ring is open over the battery.
 
 **Cross-section at the pad centre** (Z from the PCB bottom):
@@ -69,6 +79,8 @@ The underside carries a dithered black-and-white photo as white silkscreen on th
 | Curved overlay rim (1.5 mm high assumed) | 7.95 |
 
 The case roof slopes 2° front to back. The bezel is a flat landing at the rim's height: a chamfered collar of up to about 0.8 mm rises at the front, and a countersink blends the rim into the higher roof at the back.
+
+**Before the first power-up**, with the cable fitted, check continuity: pad VDD (its connector pin 12) to J2 pin 1, and pad GND (pin 11) to J2 pin 2. A reversed or wrong-type cable would put 3.3 V on the pad's SCK line.
 
 **Still to measure on a real pad:** the overlay height (flange bottom to rim top) and the tallest back-side component other than the connector. The case assumes 1.5 mm and 1.0 mm, leaving 0.21 mm above the battery. If either is larger, adjust `OVERLAY_HEIGHT`, `FLANGE_T` or `PAD_COMPONENTS` in [`tools/build_nice_nano_cirque_case.py`](../tools/build_nice_nano_cirque_case.py) and lower the battery further (up to about 1 mm in total).
 
@@ -93,8 +105,9 @@ The pad runs from the nice!nano's switched VCC, the only 3.3 V pin, shared with 
 
 ## Validation
 
+- **Independent pre-order review:** netlist and pinouts, J2's pin order and footprint (checked against LCSC's model of C262661), fabrication rules and case fit. Fixes from it: J2's pin order reversed for the cable, J2 moved 3.7 mm from the notch for the cable's bend, J2 footprint corrected (fitting nails at ±4.45 mm, 5.75 mm body), notch widened to 4.3 mm, copper kept 0.2 mm from edges and 0.25 mm from holes, the case's front pocket re-cut to the board's real outline (it had overlapped the board's front tabs by 0.48 mm), paste layers added, diodes added to assembly.
 - **PCB:** KiCad 10.0.6 DRC has 0 errors, 0 unconnected items and 0 schematic-parity issues ([report](validation/nice-nano-cirque-pcb/drc.json)); ERC is clean ([report](validation/nice-nano-cirque-pcb/erc.json)). The remaining warnings are all silkscreen: the underside photo overlapping pads, holes and footprint outlines.
-- **Case:** valid single solids with watertight STLs. The case, tray and carrier don't overlap each other or the proxies for the battery, pad, overlay, connector, nice!nano, USB, LED and power switch.
+- **Case:** valid single solids with watertight STLs. The board outline (grown by 0.3 mm) clears the case everywhere. The case, tray and carrier don't overlap each other or the proxies for the battery, pad, overlay, connector, nice!nano, USB, LED and power switch.
 - **Firmware:** both UF2s build at the pinned ZMK revision.
 - **Not tested:** physical fit, the FFC path and cable type, touchpad behaviour, JLCPCB assembly and battery life.
 
@@ -112,10 +125,11 @@ $KPY tools/build_nice_nano_cirque_pcb.py dump --input /tmp/cirque_placed.kicad_p
 python3 tools/route_nice_nano_cirque.py --obstacles /tmp/obstacles.json --output /tmp/routes.json   # NumPy, SciPy, Shapely, Matplotlib
 $KPY tools/build_nice_nano_cirque_pcb.py apply --input /tmp/cirque_placed.kicad_pcb --routes /tmp/routes.json \
     --output "001 PCB/KICAD/NICE NANO CIRQUE/TheEndgame2024_NiceNanoCirque.kicad_pcb"
+$KPY tools/build_nice_nano_cirque_pcb.py fill --input "001 PCB/KICAD/NICE NANO CIRQUE/TheEndgame2024_NiceNanoCirque.kicad_pcb"
 python3 tools/add_cirque_photo_silkscreen.py --board "001 PCB/KICAD/NICE NANO CIRQUE/TheEndgame2024_NiceNanoCirque.kicad_pcb" \
     --photo "001 PCB/KICAD/NICE NANO CIRQUE/art/silkscreen-photo.jpg"   # Pillow, NumPy, SciPy
 python3 tools/export_jlcpcb.py --board "001 PCB/KICAD/NICE NANO CIRQUE/TheEndgame2024_NiceNanoCirque.kicad_pcb" \
-    --output /tmp/cirque-gerbers --archive-name TheEndgame2024_NiceNanoCirque_239mm_JLCPCB.zip
+    --output /tmp/cirque-gerbers --archive-name TheEndgame2024_NiceNanoCirque_239mm_JLCPCB.zip --paste
 python3 tools/export_jlcpcb_assembly.py --board "001 PCB/KICAD/NICE NANO CIRQUE/TheEndgame2024_NiceNanoCirque.kicad_pcb" \
     --output "001 PCB/GERBER/NICE NANO CIRQUE" --name TheEndgame2024_NiceNanoCirque
 python3 tools/build_nice_nano_cirque_case.py          # OCP, trimesh, NumPy, Matplotlib

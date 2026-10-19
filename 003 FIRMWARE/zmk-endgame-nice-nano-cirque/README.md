@@ -46,27 +46,29 @@ do not remove R7/R8 (those are only for 5 V logic).
 ## FFC wiring
 
 The pad connects through a 12-pin, 0.5 mm pitch FFC to the connector on the
-PCB. Pad-side pin numbering (from the CirquePinnacle library documentation;
-check against the Cirque TM040040 spec before ordering a board):
+PCB. Pad-side pin numbering (Cirque TM040040 spec) and where each signal
+arrives on the Endgame's J2: the cable's 90-degree path keeps conductor order,
+so pad pin N lands on J2 pin 13 - N.
 
-| FFC pin | Pad signal | Endgame |
-| --- | --- | --- |
-| 1 | SCK | not connected (SPI only) |
-| 2 | SO / MISO | not connected (SPI only) |
-| 3 | SS | not connected (SPI only) |
-| 4 | DR | D10 / P0.09 |
-| 5 | SI / MOSI | not connected (SPI only) |
-| 6 | B2 | not connected |
-| 7 | B3 | not connected |
-| 8 | B1 | not connected |
-| 9 | SCL | D16 / P0.10 |
-| 10 | SDA | D14 / P1.11 |
-| 11 | GND | GND |
-| 12 | VDD | switched VCC (3.3 V) |
+| Pad pin | Pad signal | J2 pin | Endgame |
+| --- | --- | --- | --- |
+| 1 | SCK | 12 | not connected (SPI only) |
+| 2 | SO / MISO | 11 | not connected (SPI only) |
+| 3 | SS | 10 | not connected (SPI only) |
+| 4 | DR | 9 | D10 / P0.09 |
+| 5 | SI / MOSI | 8 | not connected (SPI only) |
+| 6 | B2 | 7 | not connected |
+| 7 | B3 | 6 | not connected |
+| 8 | B1 | 5 | not connected |
+| 9 | SCL | 4 | D16 / P0.10 |
+| 10 | SDA | 3 | D14 / P1.11 |
+| 11 | GND | 2 | GND |
+| 12 | VDD | 1 | switched VCC (3.3 V) |
 
-Whether pin 1 on the PCB connector lands on pad pin 1 depends on the cable
-type (same-side or opposite-side contacts) and connector orientation; check it
-against the PCB before first power-up. The pad has no I2C pull-ups of its own.
+The cable's contact side must suit both connectors (see
+[the build notes](../../docs/nice-nano-cirque.md#touchpad)); check pad VDD to
+J2 pin 1 for continuity before first power-up. The pad has no I2C pull-ups of
+its own; R3/R4 on the PCB provide them.
 
 ## Touchpad behaviour
 

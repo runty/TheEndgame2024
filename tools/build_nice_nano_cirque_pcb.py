@@ -9,12 +9,15 @@ Run with KiCad's bundled Python (pcbnew), one subcommand per process:
   dump   --input placed.kicad_pcb --obstacles obstacles.json
       Writes copper, keep-out and outline geometry for the router.
   apply  --input placed.kicad_pcb --routes routes.json --output final.kicad_pcb
-      Adds the routed tracks and vias, refills zones and saves.
+      Adds the routed tracks and vias, sets the edge/hole clearance rules and saves.
+  fill   --input final.kicad_pcb
+      Refills the ground pour in a fresh process, so the new rules take effect.
 
 Coordinates are KiCad PCB millimetres; case frame = (X - 150, 140 - Y).
 """
 import argparse
 import json
+import math
 import os
 import re
 import sys
@@ -41,14 +44,21 @@ PLACE = {
     # through the case's USB opening, so the case needs no separate hole. Its
     # tip stays 0.5 mm inside the PCB edge, where the board protects it.
     'SW38': (150.0, 66.3, 0, 'B'),
-    'J2': (169.6, 123.0, None, 'B'),
+    # J2's body reaches 5.75 mm from its pad row towards the notch; at X 173.3
+    # its cable entry is ~4.5 mm from where the FFC drops, room for the bend.
+    'J2': (173.3, 123.0, None, 'B'),
     'R3': (168.6, 114.0, 90, 'B'),
     'R4': (170.6, 114.0, 90, 'B'),
     'C2': (166.0, 114.0, 0, 'B'),
 }
 # The pad's 4.1 mm-tall FFC connector and cable drop into this notch on the
 # right side of the battery opening (case X 11..14.8, Y 12..22).
-NOTCH = (161.0, 118.0, 164.8, 128.0)
+NOTCH = (161.0, 118.0, 165.3, 128.0)
+# Existing underside copper in J2's new area is removed and re-joined by the
+# router (anchors written next to the placed board as <output>.rejoin.json).
+REROUTE_BOX = (165.5, 116.0, 177.5, 131.5)
+# JLCPCB-realistic clearances applied before the ground pour is refilled.
+EDGE_CLEARANCE_MM, HOLE_CLEARANCE_MM = 0.2, 0.25
 NOTCH_RADIUS = 0.6
 NEW_NETS = ('SDA', 'SCL', 'DR', 'VCC_SW', 'LED_DATA', 'LED_DIN', 'VBAT', 'VBAT_SW')
 # Ground stubs and vias that only served the old centre LED1/C1/R2 pads.
@@ -114,7 +124,10 @@ def place(args):
         x0, y0, x1, y1 = OLD_LED_GND_BOX
         return t.GetNetname() == 'gnd' and all(x0 < q.x / 1e6 < x1 and y0 < q.y / 1e6 < y1
                                                for q in (t.GetStart(), t.GetEnd()))
-    old_copper = [t for t in b.GetTracks() if t.GetNetname() in NEW_NETS or old_led_ground(t)]
+    tracks = list(b.GetTracks())
+    old_copper = [t for t in tracks if t.GetNetname() in NEW_NETS or old_led_ground(t)]
+    in_the_way = [t for t in tracks if t not in old_copper and t.GetNetname() and in_reroute_box(t)]
+    rejoin = rejoin_anchors(b, tracks, in_the_way, footprints)
     old_parts = [fp for fp in footprints if fp.GetReference() in ('R1', 'R2')]
     drawings = [d for d in b.GetDrawings() if isinstance(d, p.PCB_SHAPE)]
     artwork = [d for d in drawings if d.GetShape() == p.SHAPE_T_POLY and d.GetLayer() in (p.F_SilkS, p.B_SilkS)]
@@ -155,17 +168,94 @@ def place(args):
     clear_artwork(artwork, by_ref)
     # Remove the centre LED circuit's copper (VCC_SW is rerouted in full)
     # and the axial resistors last.
-    for item in old_copper + old_parts:
+    for item in old_copper + old_parts + in_the_way:
         b.Remove(item)
+    with open(args.output + '.rejoin.json', 'w') as f:
+        json.dump(rejoin, f, indent=1)
     add_notch(b, edge_cuts)
     p.SaveBoard(args.output, b)
     assert os.path.exists(args.output), args.output
     print('placed', args.output)
 
 
+def in_reroute_box(t):
+    """True for B.Cu tracks/vias touching REROUTE_BOX (Liang-Barsky clip)."""
+    x0, y0, x1, y1 = REROUTE_BOX
+    if not t.IsOnLayer(p.B_Cu):
+        return False
+    (ax, ay), (bx, by) = mm(t.GetStart()), mm(t.GetEnd())
+    dx, dy = bx - ax, by - ay
+    lo, hi = 0.0, 1.0
+    for pp, q in ((-dx, ax - x0), (dx, x1 - ax), (-dy, ay - y0), (dy, y1 - ay)):
+        if pp == 0:
+            if q < 0:
+                return False
+            continue
+        r = q / pp
+        if pp < 0:
+            lo = max(lo, r)
+        else:
+            hi = min(hi, r)
+        if lo > hi:
+            return False
+    return True
+
+
+def rejoin_anchors(b, tracks, removed, footprints):
+    """Points where removed copper met copper that stays: {net: [[x, y, layers]]}."""
+    out = {}
+    removed_ids = {id(t) for t in removed}
+    for t in removed:
+        net = t.GetNetname()
+        for q in {mm(t.GetStart()), mm(t.GetEnd())}:
+            layers = None
+            for o in tracks:
+                if id(o) in removed_ids or o.GetNetname() != net:
+                    continue
+                if isinstance(o, p.PCB_VIA):
+                    if math.dist(mm(o.GetPosition()), q) < 1e-3:
+                        layers = ['F', 'B']
+                elif any(math.dist(mm(e), q) < 1e-3 for e in (o.GetStart(), o.GetEnd())):
+                    layers = layers or ['F' if o.GetLayer() == p.F_Cu else 'B']
+            for fp in footprints:
+                for pad in fp.Pads():
+                    if pad.GetNetname() == net and pad.HitTest(P(*q)):
+                        layers = ['F', 'B'] if pad.GetDrillSize().x > 0 else (layers or ['B'])
+            if layers:
+                anchors = out.setdefault(net, [])
+                if not any(math.dist(a[:2], q) < 1e-3 for a in anchors):
+                    anchors.append([round(q[0], 4), round(q[1], 4), layers])
+    for net, anchors in out.items():
+        assert len(anchors) >= 2, (net, anchors)
+    return out
+
+
+def fill(args):
+    """Refill zones in a fresh process so the saved clearance rules apply."""
+    b = p.LoadBoard(args.input)
+    ds = b.GetDesignSettings()
+    assert abs(ds.m_CopperEdgeClearance - p.FromMM(EDGE_CLEARANCE_MM)) < 10, ds.m_CopperEdgeClearance
+    b.BuildConnectivity()
+    p.ZONE_FILLER(b).Fill(b.Zones())
+    p.SaveBoard(args.input, b)
+    print('filled', args.input)
+
+
 def dump(args):
     b = p.LoadBoard(args.input)
     dump_obstacles(b, args.obstacles)
+    rejoin_path = args.input + '.rejoin.json'
+    if os.path.exists(rejoin_path):
+        data = json.load(open(args.obstacles))
+        data['rejoin'] = {}
+        for net, anchors in json.load(open(rejoin_path)).items():
+            names = []
+            for i, (x, y, layers) in enumerate(anchors):
+                name = f'{net}@{i}'
+                data['pads'][name] = {'xy': [x, y], 'net': net, 'layers': layers}
+                names.append(name)
+            data['rejoin'][net] = names
+        json.dump(data, open(args.obstacles, 'w'))
     print('obstacles', args.obstacles)
 
 
@@ -283,6 +373,9 @@ def apply(args):
     for v in routes['vias']:
         via = p.PCB_VIA(b); via.SetPosition(P(*v['xy'])); via.SetWidth(p.FromMM(v['size'])); via.SetDrill(p.FromMM(v['drill']))
         via.SetNet(b.FindNet(v['net'])); b.Add(via)
+    ds = b.GetDesignSettings()
+    ds.m_CopperEdgeClearance = p.FromMM(EDGE_CLEARANCE_MM)
+    ds.m_HoleClearance = p.FromMM(HOLE_CLEARANCE_MM)
     b.BuildConnectivity()
     p.ZONE_FILLER(b).Fill(b.Zones())
     p.SaveBoard(args.output, b)
@@ -296,9 +389,10 @@ if __name__ == '__main__':
     a = sub.add_parser('place'); a.add_argument('--input', required=True); a.add_argument('--netlist', required=True)
     a.add_argument('--output', required=True)
     a = sub.add_parser('dump'); a.add_argument('--input', required=True); a.add_argument('--obstacles', required=True)
+    a = sub.add_parser('fill'); a.add_argument('--input', required=True)
     a = sub.add_parser('apply'); a.add_argument('--input', required=True); a.add_argument('--routes', required=True)
     a.add_argument('--output', required=True)
     args = ap.parse_args()
-    {'place': place, 'dump': dump, 'apply': apply}[args.cmd](args)
+    {'place': place, 'dump': dump, 'apply': apply, 'fill': fill}[args.cmd](args)
     sys.stdout.flush()
     os._exit(0)
