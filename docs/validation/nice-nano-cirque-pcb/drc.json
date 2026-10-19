@@ -1,17 +1,17 @@
 {
   "kicad_version": "10.0.6",
+  "zones_refilled_before_check": true,
   "errors": 0,
   "unconnected_items": 0,
   "schematic_parity": 0,
   "rules": {
     "copper_edge_clearance_mm": 0.2,
     "copper_hole_clearance_mm": 0.25,
-    "min_clearance_mm": 0.2
+    "netclass_clearance_mm": 0.2
   },
   "warnings_by_type": {
-    "silk_edge_clearance": 199,
-    "silk_overlap": 19,
-    "silk_over_copper": 199
+    "lib_footprint_mismatch": 37,
+    "silk_overlap": 1
   },
-  "warning_note": "All warnings are silkscreen-only (underside photo artwork over pads, near holes and outlines); KiCad caps each type at 199. The Gerber export subtracts solder-mask openings from silkscreen."
+  "warning_note": "lib_footprint_mismatch: the 36 hot-swap sockets and SW38 have their stencil paste removed on purpose (hand-soldered). silk_overlap: LED1's outline touches the mounting-hole ring artwork on the top side; both are silkscreen."
 }

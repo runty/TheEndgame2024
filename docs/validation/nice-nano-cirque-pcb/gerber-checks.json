@@ -1,0 +1,12 @@
+{
+  "zip": "TheEndgame2024_NiceNanoCirque_239mm_JLCPCB.zip",
+  "F_Cu_copper_to_edge_mm": 0.1988,
+  "B_Cu_copper_to_edge_mm": 0.1988,
+  "F_paste_over_holes_mm2": 0.0,
+  "B_paste_over_holes_mm2": 0.0,
+  "F_silk_in_mask_openings_mm2": 0.0,
+  "F_silk_fragments_under_0.1mm": 0,
+  "B_silk_in_mask_openings_mm2": 0.0,
+  "B_silk_fragments_under_0.1mm": 0,
+  "pass": true
+}

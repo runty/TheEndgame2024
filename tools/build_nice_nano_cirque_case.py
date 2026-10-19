@@ -41,18 +41,23 @@ PAD_R, KEEPOUT_R = 20.0, 18.0      # module; component area inside Ø36.01
 PAD_PCB, PAD_COMPONENTS, PAD_CONNECTOR_H = 0.74, 1.0, 4.10
 FLANGE_R, STEP_R = 46.13 / 2, 43.86 / 2
 OVERLAY_HEIGHT, FLANGE_T = 1.5, 0.6     # assumed until measured
-PAD_CONNECTOR = (11.6, 12.5, 14.6, 21.5)  # 12-pin vertical FFC, faces +X
+# 12-pin vertical FFC connector, facing +X: envelope of Cirque's land pattern
+# (spec Fig. 2) and the module photo; the cable leaves its slot at X 15.7-16.4.
+PAD_CONNECTOR = (12.5, 12.6, 18.4, 21.4)
+FFC_SLOT_X, FFC_WIDTH = (15.7, 16.4), 6.5
 OPENING_R = STEP_R + 0.17          # through the roof for the overlay step
 COUNTERBORE_R = FLANGE_R + 0.18    # flange seat, open from below
+CARRIER_R = COUNTERBORE_R - 0.2    # carrier locates on the counterbore wall
+CARRIER_GIVE = 0.2                 # carrier prints short; foam tape takes it up
 LANDING_R, COLLAR_BASE_R, COLLAR_DROP = 24.6, 25.8, 1.2
 COUNTERSINK_R, COUNTERSINK_H = 23.6, 1.5
 BATTERY = (-9.25, -3.0, -0.5, 9.25, 30.0, 4.5)   # 401730 envelope, 0.5 mm lower
-LED_POCKET = (76.39, -1.26, 82.39, 4.74, 3.55)   # LED1 only; its passives are underneath
+LED_POCKET = (75.89, -1.26, 82.89, 4.74, 3.55)   # LED1 and its pads; passives are underneath
 # SW38 sits under the nice!nano on the PCB underside, slider towards the back
-# edge but 0.46 mm inside it (case Y 76.98 vs edge 77.44); it is operated
+# edge but about 0.5 mm inside it (case Y 76.99 vs edge 77.44); it is operated
 # through the USB opening, which runs below the board.
-SW38_BODY = (-3.35, 72.0, -1.4, 3.35, 74.8, 0.0)
-SW38_SLIDER = (-0.1, 74.6, -1.4, 1.6, 77.0, 0.0)
+SW38_BODY = (-3.35, 72.7, -1.4, 3.35, 75.3, 0.0)
+SW38_SLIDER = (-1.4, 75.3, -1.4, -0.1, 76.99, 0.0)
 CENTRAL_MOUNTS = [(-9.804941, -14.168516), (9.804965, -14.170142)]
 PCB_POCKET_CLEARANCE = 0.4   # case pocket around the PCB outline
 PCB_MIN_CLEARANCE = 0.3      # checked between PCB outline and case
@@ -60,10 +65,32 @@ PCB_MIN_CLEARANCE = 0.3      # checked between PCB outline and case
 
 def pcb_outline():
     """Outer board outline in the case frame, from the Cirque PCB's Edge.Cuts."""
+    return pcb_board()[0]
+
+
+def pcb_board():
+    """Outer outline and the cutouts (battery opening + FFC notch), case frame."""
     from shapely.geometry import Polygon
     from add_cirque_photo_silkscreen import outline_from_board
-    outline, _ = outline_from_board(PCB.read_text())
-    return Polygon([(x - 150, 140 - y) for x, y in outline]).buffer(0)
+    outline, cutouts = outline_from_board(PCB.read_text())
+    frame = lambda loop: Polygon([(x - 150, 140 - y) for x, y in loop]).buffer(0)
+    return frame(outline), [frame(c) for c in cutouts]
+
+
+def j2_courtyard():
+    """J2's courtyard (underside FFC connector) in the case frame, from the PCB."""
+    fp = next(f for f in blocks(PCB.read_text(), "footprint") if "JUSHUO_AFC01" in f.splitlines()[0])
+    xs, ys = [], []
+    for m in re.finditer(r'\(fp_(?:line|rect)\s*\(start ([-\d.]+) ([-\d.]+)\)\s*\(end ([-\d.]+) ([-\d.]+)\)(?:(?!\(fp_).)*?\(layer "B\.CrtYd"\)', fp, re.S):
+        a, b, c, d = map(float, m.groups())
+        xs += [a, c]; ys += [b, d]
+    at = coords(fp, "at", 2)
+    x, y, t = at[0], at[1], math.radians(at[2] if len(at) == 3 else 0.0)
+    # Local courtyard corners (already mirrored for the B side), rotated as KiCad does (Y down).
+    pts = [(u, v) for u in (min(xs), max(xs)) for v in (min(ys), max(ys))]
+    pts = [(x + u * math.cos(t) + v * math.sin(t), y - u * math.sin(t) + v * math.cos(t)) for u, v in pts]
+    px = [q[0] - 150 for q in pts]; py = [140 - q[1] for q in pts]
+    return min(px), min(py), max(px), max(py)
 
 
 def polygon_prism(polygon, z0, z1):
@@ -136,12 +163,23 @@ def pad_stack(rim):
 
 
 def carrier(rim):
-    """C-ring clamping the pad PCB rim (outside its component area) up to the bezel."""
+    """C-ring clamping the pad PCB rim (outside its component area) up to the bezel.
+
+    Its outside runs to 0.2 mm inside the counterbore wall, which centres it.
+    It prints CARRIER_GIVE short of the gap; thin foam tape on its top takes
+    that up, so print-height error never lifts the board or lets the pad rattle.
+    """
     x, y = PAD_CENTRE
-    top = rim - OVERLAY_HEIGHT - PAD_PCB
-    ring = cut(cylinder(x, y, PAD_R - 0.2, 1.6, top), cylinder(x, y, KEEPOUT_R + 0.3, 1.5, top + 0.1))
+    top = rim - OVERLAY_HEIGHT - PAD_PCB - CARRIER_GIVE
+    ring = cut(cylinder(x, y, CARRIER_R, 1.6, top), cylinder(x, y, KEEPOUT_R + 0.3, 1.5, top + 0.1))
     # Open over the battery and the opening below the pad's front half.
-    return cut(ring, box(-12.5, y - 30, 1.0, 12.5, y, top + 1))
+    ring = cut(ring, box(-12.5, y - 30, 1.0, 12.5, y, top + 1))
+    # Stand only on board material: clear of the cutouts (the FFC notch, where
+    # the pad's connector and cable drop through) by 0.3 mm.
+    for hole in pcb_board()[1]:
+        ring = cut(ring, polygon_prism(hole.buffer(0.3, join_style=2).simplify(0.02), 1.0, top + 1))
+    assert solids(ring) == 1 and BRepCheck_Analyzer(ring).IsValid()
+    return ring
 
 
 def build_case(original):
@@ -202,8 +240,6 @@ def tray():
         plate = cut(plate, cylinder(x, y, 3.1, -1.9, -1.6))
         plate = cut(plate, conical_recess(x, y, 3.1, 1.65, -1.6, -0.15))
         plate = cut(plate, cylinder(x, y, 1.65, -0.15, 0.1))
-    # FFC path from the PCB notch to J2 on the underside.
-    plate = cut(plate, box(10.5, 10.5, -2.5, 13.0, 23.5, 0.5))
     assert solids(plate) == 1 and BRepCheck_Analyzer(plate).IsValid()
     return plate
 
@@ -252,12 +288,20 @@ def verify(original, case, plate, ring, rim):
     report["minimum_switch_body_clearance_mm"] = round(base.switch_body_clearance(case), 4)
 
     stack = pad_stack(rim)
+    j2 = j2_courtyard()
+    stack_conn_bottom = rim - OVERLAY_HEIGHT - PAD_PCB - PAD_CONNECTOR_H
     proxies = dict(stack)
     proxies.update({
         "401730 battery envelope": box(*BATTERY),
         "nice!nano assembled envelope": box(-9.0, 44.0, 2.6, 9.0, 77.0, 6.0),
         "USB shell/cable corridor": box(-4.8, 70.5, 1.6, 4.8, 78.0, 7.2),
         "WS2812B-V6": box(76.89, -0.76, 1.6, 81.89, 4.24, 3.2),
+        "WS2812B-V6 pads and fillets": box(76.19, -0.41, 1.6, 82.59, 3.89, 1.9),
+        "J2 FFC connector (PCB underside)": box(*j2[:2], -2.0, *j2[2:], 0.0),
+        "FFC drop through the notch": box(FFC_SLOT_X[0] - 0.3, PAD_CENTRE[1] - FFC_WIDTH / 2, -1.6,
+                                          FFC_SLOT_X[1] + 0.3, PAD_CENTRE[1] + FFC_WIDTH / 2, stack_conn_bottom),
+        "FFC run under the board to J2": box(FFC_SLOT_X[0] - 0.3, PAD_CENTRE[1] - FFC_WIDTH / 2, -1.6,
+                                             j2[0], PAD_CENTRE[1] + FFC_WIDTH / 2, 0.0),
         "power switch body (PCB underside)": box(*SW38_BODY),
         "power switch slider (PCB underside)": box(*SW38_SLIDER),
     })
@@ -271,6 +315,25 @@ def verify(original, case, plate, ring, rim):
     board = polygon_prism(pcb_outline().buffer(PCB_MIN_CLEARANCE, join_style=2).simplify(0.01), 0.0, 1.6)
     assert volume(BRepAlgoAPI_Common(case, board).Shape()) < 1e-5, "PCB outline within 0.3 mm of the case"
     report["pcb_to_case_min_clearance_mm"] = PCB_MIN_CLEARANCE
+    # The pad's connector and its cable drop into the PCB's FFC notch: both
+    # must sit inside it with room to spare.
+    from shapely.geometry import box as sbox
+    outer, cutouts = pcb_board()
+    connector = sbox(*PAD_CONNECTOR)
+    notch = next(c for c in cutouts if c.intersects(connector))
+    cable = sbox(FFC_SLOT_X[0] - 0.15, PAD_CENTRE[1] - FFC_WIDTH / 2, FFC_SLOT_X[1] + 0.15, PAD_CENTRE[1] + FFC_WIDTH / 2)
+    for key, shape in (("pad_connector_to_notch_edge_mm", connector), ("ffc_to_notch_edge_mm", cable)):
+        assert shape.within(notch), key
+        report[key] = round(notch.exterior.distance(shape), 3)
+    assert report["pad_connector_to_notch_edge_mm"] >= 0.4, report["pad_connector_to_notch_edge_mm"]
+    # The carrier stands on board material only.
+    slab = BRepAlgoAPI_Common(ring, box(-60, -60, 1.6, 60, 90, 1.7)).Shape()
+    support = polygon_prism(outer, 1.6, 1.7)
+    for hole in cutouts:
+        support = cut(support, polygon_prism(hole, 1.5, 1.8))
+    off_board = (volume(slab) - volume(BRepAlgoAPI_Common(slab, support).Shape())) / 0.1
+    assert off_board < 1e-3, off_board
+    report["carrier_footprint_off_board_mm2"] = round(off_board, 4)
     assert volume(BRepAlgoAPI_Common(case, plate).Shape()) < 1e-5
     # Overlay flange is held: case material directly above it all round.
     over = rim - OVERLAY_HEIGHT
@@ -278,7 +341,7 @@ def verify(original, case, plate, ring, rim):
                 cylinder(*PAD_CENTRE, OPENING_R + 0.05, over, over + 2))
     report["flange_ledge_fill_fraction"] = round(volume(BRepAlgoAPI_Common(case, ledge).Shape()) / volume(ledge), 4)
     assert report["flange_ledge_fill_fraction"] > 0.98
-    # Carrier touches the pad PCB underside: ring top = pad PCB bottom.
+    # Carrier top sits CARRIER_GIVE below the pad PCB underside (foam tape).
     report.update({
         "rim_z_mm": round(rim, 3),
         "overlay_height_assumed_mm": OVERLAY_HEIGHT,
@@ -288,7 +351,10 @@ def verify(original, case, plate, ring, rim):
         "battery_envelope_z_mm": [BATTERY[2], BATTERY[5]],
         "battery_to_pad_components_mm": round(over - PAD_PCB - PAD_COMPONENTS - BATTERY[5], 3),
         "pad_connector_bottom_z_mm": round(over - PAD_PCB - PAD_CONNECTOR_H, 3),
-        "pad_connector_drops_into_pcb_notch": True,
+        "carrier_print_short_by_mm": CARRIER_GIVE,
+        "carrier_radial_play_mm": round(COUNTERBORE_R - CARRIER_R, 3),
+        "j2_courtyard_case_xy_mm": [round(v, 3) for v in j2],
+        "ffc_drop_to_j2_entry_mm": round(j2[0] - FFC_SLOT_X[1], 3),
         "case_volume_mm3": round(volume(case), 2),
         "tray_volume_mm3": round(volume(plate), 2),
         "carrier_volume_mm3": round(volume(ring), 2),
@@ -317,8 +383,6 @@ def main():
         mesh = trimesh.load(OUTPUT / f"{stem}_{name}.stl")
         assert mesh.is_watertight and mesh.is_winding_consistent, name
         report.setdefault("stl_watertight", []).append(name)
-    xs = []
-    reader = STEPControl_Reader()
     (VALIDATION / "geometry.json").write_text(json.dumps(report, indent=2) + "\n")
     preview(OUTPUT / f"{stem}_CASE.stl", OUTPUT / f"{stem}_PAD_CARRIER.stl", rim, OUTPUT / "case-preview.png")
     print(json.dumps({k: v for k, v in report.items() if k != "keycaps"}, indent=2))

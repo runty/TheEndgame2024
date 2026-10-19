@@ -26,16 +26,20 @@ MARGIN = 0.1              # covers grid rounding of obstacles and paths
 EDGE_CLEARANCE = 0.5
 VIA = (0.6, 0.3)          # diameter, drill
 HOLE_CLEARANCE = 0.3      # via drill to any other drill, edge to edge
+VIA_PAD_CLEARANCE = 0.3   # via copper to any solder pad, own net included
 VIA_COST = 80.0           # in grid steps
 # Straight fan-out stubs (dx, dy) on the pad's layer, all laid before any
 # routing so each 0.5 mm-pitch FFC pin owns a lane clear of the pad row.
-STUB = {"J2.9": (0.9, 0), "J2.4": (0.9, 0), "J2.3": (0.9, 0), "J2.1": (0.9, 0)}
+# SW22's socket pad sits ~1 mm past J2's pad row on +X, so only pins 9 and 4
+# leave outwards; 3 and 1 leave from their inner ends, under J2's body.
+STUB = {"J2.9": (0.9, 0), "J2.4": (0.9, 0), "J2.3": (-0.9, 0), "J2.1": (-0.9, 0)}
 # Ground pads drop through a via into the F.Cu ground pour at the end of a
-# stub; J2's ground stub reaches past the other stubs so its via clears them.
-GND_VIA_STUBS = {"J2.2": (2.0, 0), "C2.2": (0, 1.3)}
+# stub; J2's ground via sits under its body, inside the pad row and clear of
+# the fitting nails and the pin 1/3 stubs.
+GND_VIA_STUBS = {"J2.2": (-1.4, 0), "C2.2": (0, 1.3)}
 # J2's fan-out area (both layers) stays free for its own nets: existing nets
 # re-joined after J2's move must route around it.
-J2_FANOUT = (166.0, 116.5, 178.5, 129.5)
+J2_FANOUT = (166.0, 116.5, 178.0, 129.5)
 LAYERS = ("F", "B")
 
 # Net -> (track width, pads in routing order). The first pad seeds the tree.
@@ -44,6 +48,10 @@ NETS = [
     # -> RAW. The long LED data route along the back edge would box it in.
     ("VBAT_SW", 0.4, ["U2.24", "SW38.1"]),
     ("VBAT", 0.4, ["J1.1", "SW38.2"]),
+    # Join the bottom-side ground stubs (J2 pin 2, C2) to existing ground
+    # copper before the signals, which would otherwise wall in J2's ground
+    # via under its body; the top pour under the pad is too broken up to rely on.
+    ("gnd", 0.25, [None, "J2.2", "C2.2"]),
     # J2 carries pad pin N on its pin 13-N (9 DR, 4 SCL, 3 SDA, 2 GND,
     # 1 VDD). Its pins leave towards U2 (-Y): route from the -Y end of the
     # row (9, 4, 3, then 1) so none is boxed in.
@@ -53,9 +61,6 @@ NETS = [
     ("VCC_SW", 0.25, ["U2.21", "J2.1", "R3.1", "R4.1", "C2.1", "C1.1", "LED1.1"]),
     ("LED_DIN", 0.2, ["R1.2", "LED1.4", "R2.1"]),
     ("LED_DATA", 0.2, ["U2.1", "R1.1"]),
-    # Join the bottom-side ground stubs (J2 pin 2, C2) to existing ground
-    # copper; the top pour under the pad is too broken up to rely on.
-    ("gnd", 0.25, [None, "J2.2", "C2.2"]),
 ]
 
 
@@ -141,6 +146,11 @@ def main():
         draw_disk(holes, *g.cell(*h["xy"]), h["r"] / RES)
     hole_dist = ndimage.distance_transform_edt(~holes) * RES
     keepout_dist = ndimage.distance_transform_edt(~keepout) * RES
+    smd = np.zeros_like(edge)
+    for pad in data["smd"]:
+        for poly in pad["poly"]:
+            smd |= g.raster(poly)
+    smd_dist = ndimage.distance_transform_edt(~smd) * RES
     # Drilled holes also block tracks on both layers (NPTH holes carry no copper).
 
     tracks, vias = [], []
@@ -202,6 +212,7 @@ def main():
             via_block = dist < CLEARANCE + MARGIN + VIA[0] / 2
             via_ok = ~via_block if via_ok is None else via_ok & ~via_block
         via_ok &= ~edge & (keepout_dist > MARGIN + VIA[0] / 2) & (hole_dist > HOLE_CLEARANCE + VIA[1] / 2)
+        via_ok &= smd_dist > VIA_PAD_CLEARANCE + MARGIN + VIA[0] / 2
 
         tree = {L: np.zeros_like(edge) for L in LAYERS}
         own = {L: net_masks[L].get(net, np.zeros_like(edge)) for L in LAYERS}

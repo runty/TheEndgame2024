@@ -15,6 +15,7 @@ Copies the project, library tables, symbol and footprint libraries into
 Run with any Python 3: python tools/build_nice_nano_cirque_sch.py
 """
 
+import json
 import re
 import shutil
 import uuid
@@ -24,6 +25,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "001 PCB/KICAD/NICE NANO WIRELESS"
 TARGET = ROOT / "001 PCB/KICAD/NICE NANO CIRQUE"
 OLD, NEW = "TheEndgame2024_NiceNano", "TheEndgame2024_NiceNanoCirque"
+COPPER_EDGE_CLEARANCE, HOLE_CLEARANCE = 0.2, 0.25  # mm; same as build_nice_nano_cirque_pcb.py
 SHEET_UUID = "1a30e4b6-03d7-4c78-8024-353d1219867a"
 FFC_FOOTPRINT = "NanoWireless:JUSHUO_AFC01-S12FCA-00_1x12-1MP_P0.50mm_Horizontal"
 
@@ -51,8 +53,12 @@ CONN_SYMBOL = '(symbol "Connector_Generic:Conn_01x12" (pin_names (offset 1.016) 
         for i in range(12)) + ' )\n)\n'
 
 
+_UIDS = iter(range(1 << 30))
+
+
 def uid():
-    return str(uuid.uuid4())
+    """Repeatable UUIDs, so rebuilding doesn't churn the schematic or PCB paths."""
+    return str(uuid.uuid5(uuid.NAMESPACE_URL, f"{NEW}/{next(_UIDS)}"))
 
 
 def label(name, x, y, angle):
@@ -121,8 +127,13 @@ def main():
         shutil.copy2(SOURCE / name, TARGET / name)
     shutil.copytree(SOURCE / "NanoWireless.pretty", TARGET / "NanoWireless.pretty", dirs_exist_ok=True)
     (TARGET / "NanoWireless.pretty" / "JUSHUO_AFC01-S12FCA-00_1x12-1MP_P0.50mm_Horizontal.kicad_mod").write_text(ffc_footprint())
-    pro = (SOURCE / f"{OLD}.kicad_pro").read_text().replace(OLD, NEW)
-    (TARGET / f"{NEW}.kicad_pro").write_text(pro)
+    pro = json.loads((SOURCE / f"{OLD}.kicad_pro").read_text().replace(OLD, NEW))
+    # Zone refills (DRC, Gerber export with --check-zones) read these rules from
+    # the project file, so they must match what the board was filled with.
+    rules = pro["board"]["design_settings"]["rules"]
+    rules["min_copper_edge_clearance"] = COPPER_EDGE_CLEARANCE
+    rules["min_hole_clearance"] = HOLE_CLEARANCE
+    (TARGET / f"{NEW}.kicad_pro").write_text(json.dumps(pro, indent=2) + "\n")
 
     sch = (SOURCE / f"{OLD}.kicad_sch").read_text()
     sch = sch.replace(f'(project "{OLD}"', f'(project "{NEW}"')

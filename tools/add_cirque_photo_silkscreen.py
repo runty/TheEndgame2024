@@ -5,11 +5,15 @@ The photo is cropped to the board's aspect ratio, contrast-stretched and
 Floyd-Steinberg dithered at PIXEL mm, then written as filled silkscreen
 rectangles (horizontal runs merged vertically), mirrored so it reads
 correctly when the board is turned over. The top side has no photo. Ink is kept EDGE_MARGIN
-from the outline and cutouts and clear of the mounting-hole ring artwork.
-Rerunning replaces the previous photo. Needs Pillow and NumPy.
-Run: python tools/add_cirque_photo_silkscreen.py --board X.kicad_pcb --photo art.jpg
+from the outline and cutouts, clear of the mounting-hole ring artwork, and
+MASK_CLEAR from every underside pad opening, hole and via listed in the
+keep-out JSON (`build_nice_nano_cirque_pcb.py photo-keepouts`); J2's courtyard
+stays blank. Whole dots are dropped, so KiCad never has to clip ink into slivers.
+Rerunning replaces the previous photo. Needs Pillow, NumPy and Shapely.
+Run: python tools/add_cirque_photo_silkscreen.py --board X.kicad_pcb --photo art.jpg --keepouts k.json
 """
 import argparse
+import json
 import re
 import uuid
 from pathlib import Path
@@ -21,6 +25,7 @@ from PIL import Image, ImageOps
 PIXEL = 0.25          # mm; isolated dots stay above JLCPCB's ~0.15 mm silkscreen minimum
 EDGE_MARGIN = 0.4     # mm from outline and cutouts to every dot's edge
 RING_CLEAR = 4.6      # mm radius kept clear around each mounting-hole footprint
+MASK_CLEAR = 0.2      # mm from underside mask openings, holes and vias to any dot
 TAG = "c1c1c1c1"      # uuid prefix marking the photo's rectangles
 
 
@@ -78,7 +83,7 @@ def mounting_holes(text):
     return out
 
 
-def ink_mask(photo, outline, cutouts, holes, mirror):
+def ink_mask(photo, outline, cutouts, holes, keepouts, mirror):
     x0, y0 = outline.min(0)
     x1, y1 = outline.max(0)
     nx, ny = int((x1 - x0) / PIXEL), int((y1 - y0) / PIXEL)
@@ -111,7 +116,20 @@ def ink_mask(photo, outline, cutouts, holes, mirror):
         edge &= ok.reshape(ny, nx)
     for hx, hy in holes:
         edge &= (X - hx) ** 2 + (Y - hy) ** 2 >= RING_CLEAR ** 2
-    return ink & edge, (x0, y0)
+    # Exact test of each candidate dot's square against the grown keep-outs.
+    import shapely
+    from shapely.geometry import Point
+    from shapely.ops import unary_union
+    shapes = [Polygon(o).buffer(MASK_CLEAR) for o in keepouts['openings']]
+    shapes += [Point(x, y).buffer(r + MASK_CLEAR, quad_segs=16) for x, y, r in keepouts['holes']]
+    shapes += [Polygon(b) for b in keepouts['blank']]
+    blocked = unary_union(shapes)
+    shapely.prepare(blocked)
+    cand = ink & edge
+    rr, cc = np.nonzero(cand)
+    hit = shapely.intersects(shapely.box(X[rr, cc] - h, Y[rr, cc] - h, X[rr, cc] + h, Y[rr, cc] + h), blocked)
+    cand[rr[hit], cc[hit]] = False
+    return cand, (x0, y0)
 
 
 def rectangles(mask):
@@ -134,6 +152,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--board', type=Path, required=True)
     ap.add_argument('--photo', type=Path, required=True)
+    ap.add_argument('--keepouts', type=Path, required=True, help='JSON from build_nice_nano_cirque_pcb.py photo-keepouts')
     ap.add_argument('--preview', type=Path, help='write a PNG of both layers')
     args = ap.parse_args()
     text = args.board.read_text()
@@ -143,7 +162,7 @@ def main():
     holes = mounting_holes(text)
     parts, previews = [], {}
     for layer, mirror in (('B.SilkS', True),):
-        mask, (x0, y0) = ink_mask(args.photo, outline, cutouts, holes, mirror)
+        mask, (x0, y0) = ink_mask(args.photo, outline, cutouts, holes, json.loads(args.keepouts.read_text()), mirror)
         previews[layer] = mask
         for c0, r0, c1, r1 in rectangles(mask):
             parts.append(

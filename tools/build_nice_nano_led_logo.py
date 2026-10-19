@@ -39,16 +39,18 @@ VARIANTS = {
     "nice-nano": dict(case=OUTPUT / "TheENDGAME2024_NICE_NANO_CASE.step", logo_dir=OUTPUT / "LED LOGO",
                       stem="TheENDGAME2024_NICE_NANO_CASE_LED_LOGO",
                       validation=ROOT / "docs/validation/nice-nano-case/led-logo.json",
-                      centre=(0.0, 36.5), width=14.0, inserts=[]),
-    # Cirque variant: LED between SW27 and SW37; a heat-insert bore sits 7 mm away.
+                      centre=(0.0, 36.5), width=14.0, inserts=[], grommets=[]),
+    # Cirque variant: LED between SW27 and SW37; a heat-insert bore sits 7 mm
+    # away and a grommet recess (PCB's 4 mm mounting hole) 6.8 mm away.
     "cirque": dict(case=ROOT / "002 CASE/NICE NANO CIRQUE/TheENDGAME2024_NICE_NANO_CIRQUE_CASE.step",
                    logo_dir=ROOT / "002 CASE/NICE NANO CIRQUE/LED LOGO",
                    stem="TheENDGAME2024_NICE_NANO_CIRQUE_CASE_LED_LOGO",
                    validation=ROOT / "docs/validation/nice-nano-cirque-case/led-logo.json",
-                   centre=(79.39, 1.74), width=10.0, inserts=[(84.65, -4.92)]),
+                   centre=(79.39, 1.74), width=10.0, inserts=[(84.65, -4.92)], grommets=[(75.65, -4.92)]),
 }
 LED_POCKET_TOP = 3.55
 INSERT_BORE_R, INSERT_WALL = 2.3, 1.0
+GROMMET_R, GROMMET_WALL = 3.15, 0.5   # recess Z 1.6..~2.9; the chamber keeps a wall round it
 LED_CENTER = VARIANTS["nice-nano"]["centre"]
 LED_BODY = (LED_CENTER[0] - 2.5, LED_CENTER[1] - 2.5, LED_CENTER[0] + 2.5, LED_CENTER[1] + 2.5)
 CHAMBER_MARGIN = 0.5  # light chamber extends past the logo's convex hull
@@ -111,6 +113,13 @@ def ring_prism(coords, z0, z1):
 
 
 def prism(polygon, z0, z1):
+    if polygon.geom_type == "MultiPolygon":
+        from build_nice_nano_case import fuse
+        parts = [prism(part, z0, z1) for part in polygon.geoms]
+        shape = parts[0]
+        for part in parts[1:]:
+            shape = fuse(shape, part)
+        return shape
     # The interlocked rings enclose islands of case material.
     shape = ring_prism(polygon.exterior.coords, z0, z1)
     for ring in polygon.interiors:
@@ -229,6 +238,12 @@ def main():
     # ceiling, so no stroke is shadowed. It joins the LED, R1/R2 and
     # battery pockets; the roof above keeps its full thickness.
     chamber_outline = outline.convex_hull.buffer(CHAMBER_MARGIN)
+    # Keep a wall round nearby grommet recesses, so no light leaks out of
+    # the board's mounting hole.
+    from shapely.geometry import Point
+    walls = [Point(g).buffer(GROMMET_R + GROMMET_WALL, 128) for g in v["grommets"]]
+    for wall in walls:
+        chamber_outline = chamber_outline.difference(wall)
     chamber = prism(chamber_outline, 0.0, LED_POCKET_TOP)
     chamber_removed = volume(BRepAlgoAPI_Common(case, chamber).Shape())
     body = cut(cut(case, column), chamber)
@@ -242,8 +257,18 @@ def main():
     assert abs(volume(body) + volume(logo) + chamber_removed - volume(case)) < 0.02, (volume(body), volume(logo), volume(case))
     assert volume(BRepAlgoAPI_Common(body, logo).Shape()) < 1e-5
     # Nothing opaque between the PCB and the underside of any stroke.
-    under_logo = prism(outline, 1.6, LED_POCKET_TOP)
+    lit_outline = outline
+    for wall in walls:
+        lit_outline = lit_outline.difference(wall)
+    under_logo = prism(lit_outline, 1.6, LED_POCKET_TOP)
     assert volume(BRepAlgoAPI_Common(body, under_logo).Shape()) < 1e-5
+    shadowed = outline.area - lit_outline.area
+    opaque_under = volume(BRepAlgoAPI_Common(body, prism(outline, 1.6, LED_POCKET_TOP)).Shape())
+    for gx, gy in v["grommets"]:
+        from build_nice_nano_case import cylinder
+        recess_wall = cut(cylinder(gx, gy, GROMMET_R + GROMMET_WALL - 0.01, 1.6, LED_POCKET_TOP),
+                          cylinder(gx, gy, GROMMET_R + 0.01, 1.5, LED_POCKET_TOP + 0.1))
+        assert abs(volume(BRepAlgoAPI_Common(body, recess_wall).Shape()) - volume(BRepAlgoAPI_Common(case, recess_wall).Shape())) < 1e-5
     for ix, iy in v["inserts"]:
         # Keep a full wall around nearby heat-insert bores.
         from build_nice_nano_case import cylinder
@@ -280,7 +305,9 @@ def main():
         "light_chamber_bounds_case_frame_mm": [round(v, 2) for v in chamber_outline.bounds],
         "light_chamber_z_mm": [0.0, LED_POCKET_TOP],
         "light_chamber_removed_volume_mm3": round(chamber_removed, 2),
-        "opaque_material_under_logo_mm3": 0.0,
+        "grommet_recess_wall_mm": GROMMET_WALL if v["grommets"] else None,
+        "logo_area_over_grommet_wall_mm2": round(shadowed, 2),
+        "opaque_material_under_logo_mm3": round(opaque_under, 2),
         "opaque_islands_held_by_clear_part": len(outline.interiors),
         "led_body_area_mm2": 25.0,
         "case_volume_mm3": round(volume(case), 2),

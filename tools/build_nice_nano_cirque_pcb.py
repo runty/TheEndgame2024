@@ -12,6 +12,9 @@ Run with KiCad's bundled Python (pcbnew), one subcommand per process:
       Adds the routed tracks and vias, sets the edge/hole clearance rules and saves.
   fill   --input final.kicad_pcb
       Refills the ground pour in a fresh process, so the new rules take effect.
+  photo-keepouts --input final.kicad_pcb --output keepouts.json
+      Writes the underside mask openings, part silkscreen, holes, vias and J2's courtyard that
+      add_cirque_photo_silkscreen.py keeps its ink away from.
 
 Coordinates are KiCad PCB millimetres; case frame = (X - 150, 140 - Y).
 """
@@ -44,19 +47,23 @@ PLACE = {
     # through the case's USB opening, so the case needs no separate hole. Its
     # tip stays 0.5 mm inside the PCB edge, where the board protects it.
     'SW38': (150.0, 66.3, 0, 'B'),
-    # J2's body reaches 5.75 mm from its pad row towards the notch; at X 173.3
-    # its cable entry is ~4.5 mm from where the FFC drops, room for the bend.
-    'J2': (173.3, 123.0, None, 'B'),
+    # J2's body reaches 5.75 mm from its pad row towards the notch. With the
+    # row at X 176.0 its cable entry (X 170.25) is ~4 mm from where the FFC
+    # drops (X ~166.0), room for the bend and stiffener; SW22's socket pad
+    # (from X 177.5) stops it moving further out.
+    'J2': (176.0, 123.0, None, 'B'),
     'R3': (168.6, 114.0, 90, 'B'),
     'R4': (170.6, 114.0, 90, 'B'),
     'C2': (166.0, 114.0, 0, 'B'),
 }
 # The pad's 4.1 mm-tall FFC connector and cable drop into this notch on the
-# right side of the battery opening (case X 11..14.8, Y 12..22).
-NOTCH = (161.0, 118.0, 165.3, 128.0)
+# right side of the battery opening. Cirque's drawing and photo put the
+# connector 12.5-18.4 mm out from the pad centre (PCB X 162.5-168.4, Y 118.6-
+# 127.4) with its slot at 15.7-16.4 mm, so the notch runs to X 168.9 (case 18.9).
+NOTCH = (161.0, 117.0, 168.9, 129.0)
 # Existing underside copper in J2's new area is removed and re-joined by the
 # router (anchors written next to the placed board as <output>.rejoin.json).
-REROUTE_BOX = (165.5, 116.0, 177.5, 131.5)
+REROUTE_BOX = (165.5, 116.0, 178.0, 131.5)
 # JLCPCB-realistic clearances applied before the ground pour is refilled.
 EDGE_CLEARANCE_MM, HOLE_CLEARANCE_MM = 0.2, 0.25
 NOTCH_RADIUS = 0.6
@@ -131,6 +138,13 @@ def place(args):
     old_parts = [fp for fp in footprints if fp.GetReference() in ('R1', 'R2')]
     drawings = [d for d in b.GetDrawings() if isinstance(d, p.PCB_SHAPE)]
     artwork = [d for d in drawings if d.GetShape() == p.SHAPE_T_POLY and d.GetLayer() in (p.F_SilkS, p.B_SilkS)]
+    # The imported artwork carries a 300 x 200 mm page frame (both sides) and
+    # an empty sliver polygon outside the board; drop them.
+    board_box = b.GetBoardEdgesBoundingBox()
+    frames = [d for d in artwork if not board_box.Contains(d.GetBoundingBox())]
+    assert all(d.GetBoundingBox().GetWidth() > p.FromMM(250) or d.GetPolyShape().Area() < 1e6
+               for d in frames), [d.GetBoundingBox().GetWidth() for d in frames]
+    artwork = [d for d in artwork if all(d is not f for f in frames)]
     edge_cuts = [d for d in drawings if d.GetLayer() == p.Edge_Cuts]
     by_ref = {fp.GetReference(): fp for fp in footprints if fp not in old_parts}
     for fp in loaded.values():
@@ -165,14 +179,32 @@ def place(args):
         if rot is not None:
             fp.SetOrientationDegrees(rot)
     orient_ffc(by_ref['J2'])
+    # Hot-swap sockets and SW38 are soldered by hand: no stencil paste, so
+    # their pads don't come back from assembly with reflowed solder bumps.
+    for ref, fp in by_ref.items():
+        if ref.startswith('SW'):
+            for pad in fp.Pads():
+                if pad.GetAttribute() == p.PAD_ATTRIB_SMD:
+                    layers = p.LSET(pad.GetLayerSet())
+                    layers.RemoveLayer(p.F_Paste)
+                    layers.RemoveLayer(p.B_Paste)
+                    pad.SetLayerSet(layers)
     clear_artwork(artwork, by_ref)
     # Remove the centre LED circuit's copper (VCC_SW is rerouted in full)
     # and the axial resistors last.
-    for item in old_copper + old_parts + in_the_way:
+    for item in old_copper + old_parts + in_the_way + frames:
         b.Remove(item)
     with open(args.output + '.rejoin.json', 'w') as f:
         json.dump(rejoin, f, indent=1)
     add_notch(b, edge_cuts)
+    # Copper that stays (everything but the rerouted nets) must clear the notch.
+    x0, y0, x1, y1 = NOTCH
+    g = EDGE_CLEARANCE_MM
+    keep = p.BOX2I(P(x0 - g, y0 - g), p.VECTOR2L(p.FromMM(x1 - x0 + 2 * g), p.FromMM(y1 - y0 + 2 * g)))
+    removed = {id(t) for t in old_copper + in_the_way}
+    near = [t.GetNetname() for t in tracks if id(t) not in removed and t.HitTest(keep, False)]
+    near += [f'{fp.GetReference()}.{pd.GetNumber()}' for fp in by_ref.values() for pd in fp.Pads() if pd.HitTest(keep, False)]
+    assert not near, near
     p.SaveBoard(args.output, b)
     assert os.path.exists(args.output), args.output
     print('placed', args.output)
@@ -326,7 +358,7 @@ def poly_points(poly):
 
 def dump_obstacles(b, path):
     """Copper of every net (with its name), keep-outs and the board outline."""
-    data = {'items': [], 'keepouts': [], 'outline': [], 'holes': [], 'pads': {}}
+    data = {'items': [], 'keepouts': [], 'outline': [], 'holes': [], 'pads': {}, 'smd': []}
     layers = {'F': p.F_Cu, 'B': p.B_Cu}
     for fp in b.GetFootprints():
         for pad in fp.Pads():
@@ -335,6 +367,9 @@ def dump_obstacles(b, path):
                     poly = p.SHAPE_POLY_SET()
                     pad.TransformShapeToPolygon(poly, layer, 0, p.FromMM(0.005), p.ERROR_INSIDE)
                     data['items'].append({'layer': side, 'net': pad.GetNetname(), 'poly': poly_points(poly)})
+                    if pad.GetDrillSize().x == 0:
+                        # Vias must stay out of solder pads of any net.
+                        data['smd'].append({'layer': side, 'poly': poly_points(poly)})
             if pad.GetDrillSize().x > 0:
                 data['holes'].append({'xy': mm(pad.GetPosition()), 'r': pad.GetDrillSize().x / 2e6,
                                       'net': pad.GetNetname()})
@@ -361,6 +396,38 @@ def dump_obstacles(b, path):
                        for h in range(outline.HoleCount(0))]
     with open(path, 'w') as f:
         json.dump(data, f)
+
+
+def photo_keepouts(args):
+    """Underside mask openings, part silkscreen, holes, vias and J2 for the photo."""
+    b = p.LoadBoard(args.input)
+    out = {'openings': [], 'holes': [], 'blank': []}
+    for fp in b.GetFootprints():
+        for pad in fp.Pads():
+            if pad.IsOnLayer(p.B_Mask):
+                poly = p.SHAPE_POLY_SET()
+                pad.TransformShapeToPolygon(poly, p.B_Mask, pad.GetSolderMaskExpansion(p.B_Mask),
+                                            p.FromMM(0.005), p.ERROR_OUTSIDE)
+                out['openings'] += poly_points(poly)
+            if pad.GetDrillSize().x > 0:
+                out['holes'].append([*mm(pad.GetPosition()), max(pad.GetDrillSize().x, pad.GetDrillSize().y) / 2e6])
+        # Part outlines and markings stay readable: the photo keeps off them too.
+        for item in list(fp.GraphicalItems()) + [fp.Reference(), fp.Value()]:
+            if item.GetLayer() != p.B_SilkS or (isinstance(item, p.PCB_TEXT) and not item.IsVisible()):
+                continue
+            poly = p.SHAPE_POLY_SET()
+            item.TransformShapeToPolygon(poly, p.B_SilkS, 0, p.FromMM(0.005), p.ERROR_OUTSIDE)
+            out['openings'] += poly_points(poly)
+        if fp.GetReference() == 'J2':
+            # Fine-pitch FFC: no ink anywhere near the stencil or its 0.2 mm mask webs.
+            out['blank'] += poly_points(fp.GetCourtyard(p.B_CrtYd))
+    for t in b.GetTracks():
+        if isinstance(t, p.PCB_VIA):
+            # Tented, but ink over the via's bump prints badly.
+            out['holes'].append([*mm(t.GetPosition()), t.GetWidth(p.B_Cu) / 2e6])
+    with open(args.output, 'w') as f:
+        json.dump(out, f)
+    print('photo keep-outs', args.output, {k: len(v) for k, v in out.items()})
 
 
 def apply(args):
@@ -390,9 +457,10 @@ if __name__ == '__main__':
     a.add_argument('--output', required=True)
     a = sub.add_parser('dump'); a.add_argument('--input', required=True); a.add_argument('--obstacles', required=True)
     a = sub.add_parser('fill'); a.add_argument('--input', required=True)
+    a = sub.add_parser('photo-keepouts'); a.add_argument('--input', required=True); a.add_argument('--output', required=True)
     a = sub.add_parser('apply'); a.add_argument('--input', required=True); a.add_argument('--routes', required=True)
     a.add_argument('--output', required=True)
     args = ap.parse_args()
-    {'place': place, 'dump': dump, 'apply': apply, 'fill': fill}[args.cmd](args)
+    {'place': place, 'dump': dump, 'apply': apply, 'fill': fill, 'photo-keepouts': photo_keepouts}[args.cmd](args)
     sys.stdout.flush()
     os._exit(0)

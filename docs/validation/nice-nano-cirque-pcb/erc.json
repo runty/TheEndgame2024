@@ -1,4 +1,11 @@
 {
   "kicad_version": "10.0.6",
-  "violations": 0
+  "errors": 0,
+  "warnings": [
+    {
+      "type": "lib_symbol_mismatch",
+      "description": "Symbol 'Conn_01x12' doesn't match copy in library 'Connector_Generic'"
+    }
+  ],
+  "warning_note": "J2's 12-pin symbol is embedded by build_nice_nano_cirque_sch.py and differs from KiCad's library copy only in drawing details."
 }

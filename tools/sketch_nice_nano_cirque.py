@@ -35,10 +35,11 @@ MARGIN = 4.0                     # flange to nearest keycap
 BATTERY_OPENING = (-11.0, -4.0, 11.0, 31.0)
 BATTERY_PACK = (-9.25, -3.0, 9.25, 30.0)
 NICE_NANO = (-9.0, 44.0, 9.0, 77.0)
-PAD_CONNECTOR = (11.6, 12.5, 14.6, 21.5)   # 12-pin vertical, beside the pack
-FFC_SLOT = (12.0, 12.5, 14.2, 21.5)
-FFC_J2 = (15.5, 11.5, 21.5, 22.5)          # bottom-side 12-pin 0.5 mm
-J1, SW38 = (-2.0, -7.5), (0.0, -14.0)
+PAD_CONNECTOR = (12.5, 12.6, 18.4, 21.4)   # 12-pin vertical (Cirque drawing + photo)
+FFC_SLOT = (15.7, 13.75, 16.4, 20.25)      # where the 6.5 mm-wide cable leaves it
+FFC_NOTCH = (11.0, 11.0, 18.9, 23.0)       # PCB notch the connector and cable drop into
+FFC_J2 = (20.2, 11.75, 26.65, 22.25)       # bottom-side 12-pin 0.5 mm, pads at X 26
+J1, SW38 = (-2.0, -7.5), (0.0, 74.0)       # power switch under the nice!nano
 LED_GAP = ("SW27", "SW37")                 # LED midway between these caps
 CASE_TOP_AT_PAD = 8.35                     # current case roof near Y=17
 PCB_TOP = 1.6
@@ -142,13 +143,15 @@ def main():
     top.fill(*pad.buffer(PAD_D / 2).exterior.xy, color="#4cb391", alpha=0.35, label="40 mm Cirque TM040040")
     rect(top, NICE_NANO, color="#f58fc0", alpha=0.6)
     top.text(0, 60, "nice!nano", ha="center", fontsize=8)
+    rect(top, FFC_NOTCH, fill=False, ec="#c98a00", lw=1, ls="--")
     rect(top, PAD_CONNECTOR, color="#3d6fb6", alpha=0.8)
+    rect(top, FFC_SLOT, color="#1d3557")
     rect(top, FFC_J2, fill=False, ec="#3d6fb6", lw=1, ls="--")
     top.annotate("pad FFC connector → slot →\nJ2 on PCB underside", xy=(18, 17), xytext=(22, 36),
                  fontsize=7, color="#3d6fb6", arrowprops={"arrowstyle": "->", "color": "#3d6fb6"})
     top.plot(*J1, "s", color="#c0392b", ms=4)
     top.plot(*SW38, "s", color="#555", ms=5)
-    top.text(SW38[0] + 2, SW38[1] - 3, "power switch", fontsize=7)
+    top.text(SW38[0] + 10, SW38[1] - 1, "power switch (underside)", fontsize=7)
     top.add_patch(plt.Rectangle((led.x - 2.5, led.y - 2.5), 5, 5, color="#ff8c1a"))
     top.plot(*led.buffer(7).exterior.xy, color="#ff8c1a", lw=0.8, ls=":")
     top.annotate("status LED", xy=(led.x, led.y), xytext=(led.x - 4, led.y - 22), fontsize=8,
@@ -166,13 +169,13 @@ def main():
         sec.add_patch(plt.Rectangle((x0, z0), x1 - x0, z1 - z0, color=colour, label=label, **kw))
     r = FLANGE_D / 2
     layer(-40, -11, 0, PCB_TOP, "#2e7d32", "PCB (battery opening in centre)")
-    layer(11, 40, 0, PCB_TOP, "#2e7d32")
+    layer(FFC_NOTCH[2], 40, 0, PCB_TOP, "#2e7d32")
     layer(-9.25, 9.25, 0.2, 5.2, "#ffd27a", "battery envelope")
     pad_bottom = 0.2 + 5.0 + PAD_COMPONENTS
     layer(-20, 20, pad_bottom, pad_bottom + PAD_PCB, "#4cb391", "pad PCB")
     layer(-12, 9, pad_bottom - PAD_COMPONENTS, pad_bottom, "#7fbfa8", "pad components (≤1 mm, assumed)")
-    layer(11.6, 14.6, pad_bottom - PAD_CONNECTOR_H, pad_bottom, "#3d6fb6", "pad FFC connector")
-    layer(15.5, 21.5, -1.2, 0, "#9db4dc", "J2 (PCB underside)")
+    layer(PAD_CONNECTOR[0], PAD_CONNECTOR[2], pad_bottom - PAD_CONNECTOR_H, pad_bottom, "#3d6fb6", "pad FFC connector")
+    layer(FFC_J2[0], FFC_J2[2], -2.0, 0, "#9db4dc", "J2 (PCB underside)")
     over = pad_bottom + PAD_PCB
     layer(-r, r, over, over + OVERLAY_HEIGHT, "#555", "curved overlay (height assumed)", alpha=0.6)
     sec.axhline(CASE_TOP_AT_PAD, color="#c0392b", ls="--", lw=1)
