@@ -5,10 +5,14 @@ The original Endgame case is split at X=+-7 mm (inside the solid waist, so no
 key opening crosses a split) and each half moves outward 10 mm to match the
 239 mm Cirque PCB. Central features (controller, USB, battery, J1 and tray
 mounts) are re-cut at their fixed positions. The power switch is on the PCB
-underside at the USB opening, so the case has no switch hole. A flat bezel holds a Cirque
-TM040040 with the curved overlay 50-000090-00, clamped from below by a
-printed C-ring; the battery stays under the pad in the PCB opening, lowered
-0.5 mm into the tray. The status LED pocket sits in the right thumb gap.
+underside at the USB opening, so the case has no switch hole. The roof stays
+the original's single 2-degree plane, with nothing above it, so the case prints
+upside down on its top face. A Cirque TM040040 with the curved overlay
+50-000090-00 drops into a counterbore from below; its flange seats under a
+ledge at least LEDGE_MIN thick, the overlay stands proud of the roof, and a
+printed C-ring clamps it from below. The battery stays under the pad in the
+PCB opening, lowered 0.5 mm into the tray. The status LED pocket sits in the
+right thumb gap.
 
 Coordinates use the case frame (PCB X - 150, 140 - PCB Y, Z); PCB Z=0..1.6.
 Needs OCP, trimesh, NumPy and Matplotlib.
@@ -40,7 +44,12 @@ PAD_CENTRE = (0.0, 17.0)
 PAD_R, KEEPOUT_R = 20.0, 18.0      # module; component area inside Ø36.01
 PAD_PCB, PAD_COMPONENTS, PAD_CONNECTOR_H = 0.74, 1.0, 4.10
 FLANGE_R, STEP_R = 46.13 / 2, 43.86 / 2
-OVERLAY_HEIGHT, FLANGE_T = 1.5, 0.6     # assumed until measured
+# Curved overlay, scaled from Cirque's drawing (spec Fig. 7) until measured: a
+# cup OVERLAY_HEIGHT from flange bottom to rim, its flange FLANGE_T thick, with
+# the pad's PCB glued into a pocket OVERLAY_POCKET deep and POCKET_R across.
+OVERLAY_HEIGHT, FLANGE_T, OVERLAY_POCKET, POCKET_R = 5.0, 1.6, 3.0, 20.2
+PAD_PCB_AND_ADHESIVE = 0.99        # spec Fig. 2
+LEDGE_MIN = 1.0                    # case above the flange where the roof is lowest
 # 12-pin vertical FFC connector, facing +X: envelope of Cirque's land pattern
 # (spec Fig. 2) and the module photo; the cable leaves its slot at X 15.7-16.4.
 PAD_CONNECTOR = (12.5, 12.6, 18.4, 21.4)
@@ -49,8 +58,6 @@ OPENING_R = STEP_R + 0.17          # through the roof for the overlay step
 COUNTERBORE_R = FLANGE_R + 0.18    # flange seat, open from below
 CARRIER_R = COUNTERBORE_R - 0.2    # carrier locates on the counterbore wall
 CARRIER_GIVE = 0.2                 # carrier prints short; foam tape takes it up
-LANDING_R, COLLAR_BASE_R, COLLAR_DROP = 24.6, 25.8, 1.2
-COUNTERSINK_R, COUNTERSINK_H = 23.6, 1.5
 BATTERY = (-9.25, -3.0, -0.5, 9.25, 30.0, 4.5)   # 401730 envelope, 0.5 mm lower
 LED_POCKET = (75.89, -1.26, 82.89, 4.74, 3.55)   # LED1 and its pads; passives are underneath
 # SW38 sits under the nice!nano on the PCB underside, slider towards the back
@@ -143,34 +150,36 @@ def roof_z(shape, x, y):
     return max(zs)
 
 
-def frustum(x, y, r0, z0, r1, z1):
-    return conical_recess(x, y, r0, r1, z0, z1)
+def overlay_levels(seat):
+    """Overlay bottom, overlay rim and pad PCB underside, from the flange-top seat."""
+    bottom = seat - FLANGE_T
+    return bottom, bottom + OVERLAY_HEIGHT, bottom + OVERLAY_POCKET - PAD_PCB_AND_ADHESIVE
 
 
-def pad_stack(rim):
+def pad_stack(seat):
     """Proxy solids for the installed touchpad, keyed by name."""
     x, y = PAD_CENTRE
-    over = rim - OVERLAY_HEIGHT
-    pcb_bottom = over - PAD_PCB
+    bottom, rim, pcb_bottom = overlay_levels(seat)
     cx0, cy0, cx1, cy1 = PAD_CONNECTOR
+    overlay = cut(fuse(cylinder(x, y, FLANGE_R, bottom, seat), cylinder(x, y, STEP_R, seat, rim)),
+                  cylinder(x, y, POCKET_R, bottom - 0.1, bottom + OVERLAY_POCKET))
     return {
-        "overlay step": cylinder(x, y, STEP_R, over + FLANGE_T, rim),
-        "overlay flange": cylinder(x, y, FLANGE_R, over, over + FLANGE_T),
-        "pad PCB": cylinder(x, y, PAD_R, pcb_bottom, over),
+        "overlay": overlay,
+        "pad PCB": cylinder(x, y, PAD_R, pcb_bottom, pcb_bottom + PAD_PCB),
         "pad components": cylinder(x, y, KEEPOUT_R, pcb_bottom - PAD_COMPONENTS, pcb_bottom),
         "pad FFC connector": box(cx0, cy0, pcb_bottom - PAD_CONNECTOR_H, cx1, cy1, pcb_bottom),
     }
 
 
-def carrier(rim):
-    """C-ring clamping the pad PCB rim (outside its component area) up to the bezel.
+def carrier(seat):
+    """C-ring pressing the overlay's underside (and so the pad) up against the ledge.
 
     Its outside runs to 0.2 mm inside the counterbore wall, which centres it.
     It prints CARRIER_GIVE short of the gap; thin foam tape on its top takes
     that up, so print-height error never lifts the board or lets the pad rattle.
     """
     x, y = PAD_CENTRE
-    top = rim - OVERLAY_HEIGHT - PAD_PCB - CARRIER_GIVE
+    top = overlay_levels(seat)[0] - CARRIER_GIVE
     ring = cut(cylinder(x, y, CARRIER_R, 1.6, top), cylinder(x, y, KEEPOUT_R + 0.3, 1.5, top + 0.1))
     # Open over the battery and the opening below the pad's front half.
     ring = cut(ring, box(-12.5, y - 30, 1.0, 12.5, y, top + 1))
@@ -185,18 +194,13 @@ def carrier(rim):
 def build_case(original):
     widened = widened_case(original)
     case = widened
-    rim = roof_z(original, *PAD_CENTRE)
-    flange_top = rim - OVERLAY_HEIGHT + FLANGE_T
     x, y = PAD_CENTRE
-    # Collar: flat landing at rim height with a chamfer down to the roof; it
-    # only shows where the 2-degree roof falls below the rim (front half).
-    case = fuse(case, fuse(cylinder(x, y, LANDING_R, rim - COLLAR_DROP, rim),
-                           frustum(x, y, COLLAR_BASE_R, rim - COLLAR_DROP, LANDING_R, rim)))
-    # Countersink blending the rim into the higher back half of the roof.
-    case = cut(case, fuse(frustum(x, y, OPENING_R, rim, COUNTERSINK_R, rim + COUNTERSINK_H),
-                          cylinder(x, y, COUNTERSINK_R, rim + COUNTERSINK_H, 20)))
-    case = cut(case, cylinder(x, y, OPENING_R, flange_top - 0.01, 20))
-    case = cut(case, cylinder(x, y, COUNTERBORE_R, -2, flange_top))
+    # Nothing is added above the roof: the overlay just passes through it. The
+    # 2-degree roof is lowest at the front of the counterbore, so the flange
+    # seat sits LEDGE_MIN below that point.
+    seat = roof_z(widened, x, y - COUNTERBORE_R) - LEDGE_MIN
+    case = cut(case, cylinder(x, y, OPENING_R, seat - 0.01, 20))
+    case = cut(case, cylinder(x, y, COUNTERBORE_R, -2, seat))
     # Battery pocket corners reach just beyond the counterbore.
     case = cut(case, rounded_prism(-11.1, -4.1, 11.1, 31.1, 1.0, -2, BATTERY[5] + 0.2))
 
@@ -228,7 +232,7 @@ def build_case(original):
     x0, y0, x1, y1, ztop = LED_POCKET
     case = cut(case, rounded_prism(x0, y0, x1, y1, 0.6, 0.0, ztop))
     assert solids(case) == 1 and BRepCheck_Analyzer(case).IsValid()
-    return widened, case, rim
+    return widened, case, seat
 
 
 def tray():
@@ -269,7 +273,7 @@ def clearance(a, b):
     return d.Value()
 
 
-def verify(original, case, plate, ring, rim):
+def verify(original, widened, case, plate, ring, seat):
     report = {"split_x_mm": SPLIT, "half_shift_from_original_mm": SHIFT}
     # Switch positions: stock PCB + 10 mm per half.
     stock = {r: s for r, s in keycaps(SOURCE_PCB, 0).items()}
@@ -287,9 +291,10 @@ def verify(original, case, plate, ring, rim):
     base.PCB = PCB
     report["minimum_switch_body_clearance_mm"] = round(base.switch_body_clearance(case), 4)
 
-    stack = pad_stack(rim)
+    stack = pad_stack(seat)
     j2 = j2_courtyard()
-    stack_conn_bottom = rim - OVERLAY_HEIGHT - PAD_PCB - PAD_CONNECTOR_H
+    bottom, rim, pcb_bottom = overlay_levels(seat)
+    stack_conn_bottom = pcb_bottom - PAD_CONNECTOR_H
     proxies = dict(stack)
     proxies.update({
         "401730 battery envelope": box(*BATTERY),
@@ -335,22 +340,28 @@ def verify(original, case, plate, ring, rim):
     assert off_board < 1e-3, off_board
     report["carrier_footprint_off_board_mm2"] = round(off_board, 4)
     assert volume(BRepAlgoAPI_Common(case, plate).Shape()) < 1e-5
-    # Overlay flange is held: case material directly above it all round.
-    over = rim - OVERLAY_HEIGHT
-    ledge = cut(cylinder(*PAD_CENTRE, COUNTERBORE_R - 0.05, over + FLANGE_T, over + FLANGE_T + 0.6),
-                cylinder(*PAD_CENTRE, OPENING_R + 0.05, over, over + 2))
+    # Overlay flange is held: at least LEDGE_MIN of case material above it all round.
+    x, y = PAD_CENTRE
+    ledge = cut(cylinder(x, y, COUNTERBORE_R - 0.05, seat, seat + LEDGE_MIN - 0.05),
+                cylinder(x, y, OPENING_R + 0.05, seat - 1, seat + 2))
     report["flange_ledge_fill_fraction"] = round(volume(BRepAlgoAPI_Common(case, ledge).Shape()) / volume(ledge), 4)
     assert report["flange_ledge_fill_fraction"] > 0.98
-    # Carrier top sits CARRIER_GIVE below the pad PCB underside (foam tape).
+    # The overlay stands proud of the 2-degree roof: most at the front of the opening.
+    proud = [round(rim - roof_z(widened, x, y + d), 2) for d in (-OPENING_R - 0.5, OPENING_R + 0.5)]
+    assert BATTERY[5] < pcb_bottom - PAD_COMPONENTS and stack_conn_bottom > 1.6
+    # Carrier top sits CARRIER_GIVE below the overlay's underside (foam tape).
     report.update({
-        "rim_z_mm": round(rim, 3),
-        "overlay_height_assumed_mm": OVERLAY_HEIGHT,
-        "flange_thickness_assumed_mm": FLANGE_T,
-        "pad_pcb_bottom_z_mm": round(over - PAD_PCB, 3),
+        "flange_seat_z_mm": round(seat, 3),
+        "ledge_min_mm": LEDGE_MIN,
+        "overlay_rim_z_mm": round(rim, 3),
+        "overlay_rim_above_roof_front_back_mm": proud,
+        "overlay_from_cirque_drawing_mm": {"height": OVERLAY_HEIGHT, "flange": FLANGE_T, "pcb_pocket": OVERLAY_POCKET},
+        "overlay_bottom_z_mm": round(bottom, 3),
+        "pad_pcb_bottom_z_mm": round(pcb_bottom, 3),
         "pad_components_assumed_max_mm": PAD_COMPONENTS,
         "battery_envelope_z_mm": [BATTERY[2], BATTERY[5]],
-        "battery_to_pad_components_mm": round(over - PAD_PCB - PAD_COMPONENTS - BATTERY[5], 3),
-        "pad_connector_bottom_z_mm": round(over - PAD_PCB - PAD_CONNECTOR_H, 3),
+        "battery_to_pad_components_mm": round(pcb_bottom - PAD_COMPONENTS - BATTERY[5], 3),
+        "pad_connector_bottom_z_mm": round(stack_conn_bottom, 3),
         "carrier_print_short_by_mm": CARRIER_GIVE,
         "carrier_radial_play_mm": round(COUNTERBORE_R - CARRIER_R, 3),
         "j2_courtyard_case_xy_mm": [round(v, 3) for v in j2],
@@ -367,10 +378,10 @@ def main():
     assert int(reader.ReadFile(str(SOURCE))) == 1
     reader.TransferRoots()
     original = reader.OneShape()
-    widened, case, rim = build_case(original)
+    widened, case, seat = build_case(original)
     plate = tray()
-    ring = carrier(rim)
-    report = verify(original, case, plate, ring, rim)
+    ring = carrier(seat)
+    report = verify(original, widened, case, plate, ring, seat)
 
     OUTPUT.mkdir(parents=True, exist_ok=True)
     VALIDATION.mkdir(parents=True, exist_ok=True)
@@ -383,14 +394,34 @@ def main():
         mesh = trimesh.load(OUTPUT / f"{stem}_{name}.stl")
         assert mesh.is_watertight and mesh.is_winding_consistent, name
         report.setdefault("stl_watertight", []).append(name)
+    report["top_max_above_roof_plane_mm"] = top_flatness(OUTPUT / f"{stem}_CASE.stl")
+    assert report["top_max_above_roof_plane_mm"] < 0.05
     (VALIDATION / "geometry.json").write_text(json.dumps(report, indent=2) + "\n")
-    preview(OUTPUT / f"{stem}_CASE.stl", OUTPUT / f"{stem}_PAD_CARRIER.stl", rim, OUTPUT / "case-preview.png")
+    preview(OUTPUT / f"{stem}_CASE.stl", OUTPUT / f"{stem}_PAD_CARRIER.stl", seat, OUTPUT / "case-preview.png")
     print(json.dumps({k: v for k, v in report.items() if k != "keycaps"}, indent=2))
     print("keycaps:", {k: v for k, v in report["keycaps"].items() if k != "positions"})
     print(f"Written to {OUTPUT}")
 
 
-def preview(case_stl, ring_stl, rim, path):
+def top_flatness(case_stl):
+    """Highest point of the case top above the plane fitted to the roof (1 mm grid)."""
+    import numpy as np
+    import trimesh
+    mesh = trimesh.load(case_stl)
+    (x0, y0, _), (x1, y1, _) = mesh.bounds
+    xs, ys = np.meshgrid(np.arange(x0 + 1, x1 - 1, 1.0), np.arange(y0 + 1, y1 - 1, 1.0))
+    pts = np.c_[xs.ravel(), ys.ravel()]
+    hits, rays, _ = mesh.ray.intersects_location(np.c_[pts, np.full(len(pts), 40.0)],
+                                                 np.tile([0.0, 0.0, -1.0], (len(pts), 1)), multiple_hits=False)
+    a = np.c_[pts[rays], np.ones(len(rays))]
+    z = hits[:, 2]
+    fit, *_ = np.linalg.lstsq(a, z, rcond=None)
+    on_roof = np.abs(z - a @ fit) < 0.3        # ignore openings and recesses
+    fit, *_ = np.linalg.lstsq(a[on_roof], z[on_roof], rcond=None)
+    return round(float((z - a @ fit).max()), 3)
+
+
+def preview(case_stl, ring_stl, seat, path):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -413,14 +444,15 @@ def preview(case_stl, ring_stl, rim, path):
         sec.plot([], [], color=colour, label=label)
     for name, solid_box, colour in (("battery", (BATTERY[1], BATTERY[2], BATTERY[4], BATTERY[5]), "#f4c430"),):
         sec.add_patch(plt.Rectangle((solid_box[0], solid_box[1]), solid_box[2] - solid_box[0], solid_box[3] - solid_box[1], color=colour, alpha=0.5, label=name))
-    over = rim - OVERLAY_HEIGHT
+    bottom, rim, pcb_bottom = overlay_levels(seat)
     y = PAD_CENTRE[1]
-    sec.add_patch(plt.Rectangle((y - PAD_R, over - PAD_PCB), 2 * PAD_R, PAD_PCB, color="#4cb391", label="pad PCB"))
-    sec.add_patch(plt.Rectangle((y - FLANGE_R, over), 2 * FLANGE_R, FLANGE_T, color="#222", alpha=0.6, label="overlay"))
-    sec.add_patch(plt.Rectangle((y - STEP_R, over + FLANGE_T), 2 * STEP_R, OVERLAY_HEIGHT - FLANGE_T, color="#222", alpha=0.6))
+    sec.add_patch(plt.Rectangle((y - PAD_R, pcb_bottom), 2 * PAD_R, PAD_PCB, color="#4cb391", label="pad PCB"))
+    for y0, y1 in ((y - FLANGE_R, y - POCKET_R), (y + POCKET_R, y + FLANGE_R)):
+        sec.add_patch(plt.Rectangle((y0, bottom), y1 - y0, FLANGE_T, color="#222", alpha=0.6))
+    sec.add_patch(plt.Rectangle((y - STEP_R, seat), 2 * STEP_R, rim - seat, color="#222", alpha=0.6, label="overlay (from Cirque drawing)"))
     sec.axhline(0, color="#2e7d32", lw=0.6); sec.axhline(1.6, color="#2e7d32", lw=0.6)
     sec.set_xlim(-25, 85); sec.set_ylim(-3, 11); sec.set_aspect("equal"); sec.legend(fontsize=8, loc="upper right")
-    sec.set_title("Section at X=0 (Y across): pad clamped between bezel ledge and carrier; battery below")
+    sec.set_title("Section at X=0 (Y across): flat roof; overlay held between the ledge and the carrier; battery below")
     sec.set_xlabel("Y (mm)")
     fig.tight_layout()
     fig.savefig(path, dpi=110)

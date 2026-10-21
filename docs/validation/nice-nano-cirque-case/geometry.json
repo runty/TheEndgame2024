@@ -194,17 +194,27 @@
   "ffc_to_notch_edge_mm": 2.35,
   "carrier_footprint_off_board_mm2": 0.0,
   "flange_ledge_fill_fraction": 1.0,
-  "rim_z_mm": 7.947,
-  "overlay_height_assumed_mm": 1.5,
-  "flange_thickness_assumed_mm": 0.6,
-  "pad_pcb_bottom_z_mm": 5.707,
+  "flange_seat_z_mm": 6.135,
+  "ledge_min_mm": 1.0,
+  "overlay_rim_z_mm": 9.535,
+  "overlay_rim_above_roof_front_back_mm": [
+    2.38,
+    0.8
+  ],
+  "overlay_from_cirque_drawing_mm": {
+    "height": 5.0,
+    "flange": 1.6,
+    "pcb_pocket": 3.0
+  },
+  "overlay_bottom_z_mm": 4.535,
+  "pad_pcb_bottom_z_mm": 6.545,
   "pad_components_assumed_max_mm": 1.0,
   "battery_envelope_z_mm": [
     -0.5,
     4.5
   ],
-  "battery_to_pad_components_mm": 0.207,
-  "pad_connector_bottom_z_mm": 1.607,
+  "battery_to_pad_components_mm": 1.045,
+  "pad_connector_bottom_z_mm": 2.445,
   "carrier_print_short_by_mm": 0.2,
   "carrier_radial_play_mm": 0.2,
   "j2_courtyard_case_xy_mm": [
@@ -214,12 +224,13 @@
     22.7
   ],
   "ffc_drop_to_j2_entry_mm": 3.35,
-  "case_volume_mm3": 67031.22,
+  "case_volume_mm3": 67080.56,
   "tray_volume_mm3": 1183.18,
-  "carrier_volume_mm3": 1848.49,
+  "carrier_volume_mm3": 1294.09,
   "stl_watertight": [
     "CASE",
     "BATTERY_TRAY",
     "PAD_CARRIER"
-  ]
+  ],
+  "top_max_above_roof_plane_mm": 0.022
 }

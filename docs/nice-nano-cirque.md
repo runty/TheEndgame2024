@@ -1,6 +1,6 @@
 # nice!nano Choc V2 + Cirque touchpad
 
-A third Endgame build: the wireless nice!nano Choc V2 board with a 40 mm **Cirque TM040040** touchpad between the thumb clusters. Each key half sits a further 8 mm outward, so the PCB is **239 mm** wide and the case **247 mm**. The case keeps the original Endgame height and sloped top. This is a **digital design**: DRC, ERC and CAD fit checks pass, but no board, case or firmware has been built or tested. **The case's touchpad bezel is provisional:** measure the curved overlay before printing it (see [Before printing the case](#before-printing-the-case)); the PCB does not depend on it.
+A third Endgame build: the wireless nice!nano Choc V2 board with a 40 mm **Cirque TM040040** touchpad between the thumb clusters. Each key half sits a further 8 mm outward, so the PCB is **239 mm** wide and the case **247 mm**. The case keeps the original Endgame height and its flat, 2°-sloped top, so it prints upside down; the touchpad stands slightly proud of it. This is a **digital design**: DRC, ERC and CAD fit checks pass, but no board, case or firmware has been built or tested. **The touchpad mount uses overlay dimensions scaled from Cirque's drawing:** measure the real overlay to confirm them (see [Before printing the case](#before-printing-the-case)); the PCB does not depend on them.
 
 ![Top view of the PCB](../001%20PCB/GERBER/NICE%20NANO%20CIRQUE/top-preview.png)
 
@@ -66,39 +66,45 @@ The underside carries a dithered black-and-white photo as white silkscreen on th
 **Fitting:**
 - **Orientation:** the pad's connector faces **+X** (towards the right-hand keys), over the notch on the right of the battery opening. Cirque's drawing and photo put the connector 12.5–18.4 mm out from the pad centre, with its slot at 15.7–16.4 mm; the notch runs to 18.9 mm (PCB X 161–168.9, Y 117–129), leaving at least 0.5 mm round the connector.
 - **Cable path:** the FFC drops straight down through the notch at about PCB X 166, bends 90° under the board and runs about 4 mm to J2's latch (X 170.25); it goes 2.8 mm into J2's housing.
-- **Assembly order:** with the case upside down, seat the pad in the bezel and plug the FFC into the pad. Slide the carrier ring on around the cable (its C-opening lets it pass), lower the board onto it, then plug the cable into J2, which faces up with nothing in the way of its latch.
+- **Assembly order:** with the case upside down, drop the pad (in its overlay) into the opening from below and plug the FFC into the pad. Slide the carrier ring on around the cable (its C-opening lets it pass), lower the board onto it, then plug the cable into J2, which faces up with nothing in the way of its latch.
 - **Cable:** 12 conductors, 0.5 mm pitch, 0.3 mm thick, about **13–15 mm** long; the exact length depends on the overlay (see below), so check it with a paper strip on the assembled stack. Off-the-shelf 12-way jumpers start at about 30 mm, which leaves too much slack to fold under the board, so order a short custom FFC or FPC. Stiffeners: at the pad end no longer than its insertion depth plus about 1 mm (about 4 mm in total), so it doesn't force an S-bend; at the J2 end 4–6 mm, with at least 3.0 mm of exposed contacts. Contact side: J2 is bottom-contact, so it touches the conductors on the face that points +X while the cable hangs down. Cirque's drawing puts the pad connector's pin 1 on the outer (+X) side, which needs a **same-side (Type A)** cable. **Check the contact side on your pad's connector before ordering the cable**; if its contacts are on the inner side, use Type B.
-- **Clamping:** the overlay flange sits under a ledge in the case's flat bezel. The printed C-ring stands on the PCB around the battery and presses the pad's PCB edge up into the bezel, outside its component area. Its outside is 46.1 mm across, 0.2 mm inside the counterbore wall, so the wall centres it. It is open over the battery and steps back 0.3 mm from the notch, so it stands only on the board. It prints **0.2 mm short** on purpose, to be taken up with thin foam tape. Its height follows the assumed overlay, so re-derive it once the overlay is measured (below).
+- **Clamping:** the overlay's flange sits in a counterbore under a ledge at least 1 mm thick; the overlay's cup passes up through the roof and stands proud of it. The printed C-ring stands on the PCB around the battery and presses the overlay's underside up against the ledge (the pad's PCB is glued inside the overlay). Its outside is 46.1 mm across, 0.2 mm inside the counterbore wall, so the wall centres it. It is open over the battery and steps back 0.3 mm from the notch, so it stands only on the board. It prints **0.2 mm short** on purpose, to be taken up with thin foam tape. Its height depends on the overlay's flange thickness, so check that when you measure the overlay (below).
 
-**Cross-section at the pad centre as currently modelled** (Z from the PCB bottom; based on the assumed overlay, see below):
+**Cross-section at the pad centre** (Z from the PCB bottom; overlay dimensions from Cirque's drawing, see below):
 
 | Layer | Z (mm) |
 | --- | --- |
 | Battery envelope (lowered 0.5 mm into the tray) | −0.5 – 4.5 |
-| Pad components (≤ 1.0 mm assumed) | 4.71 – 5.71 |
-| Pad PCB | 5.71 – 6.45 |
-| Curved overlay rim (1.5 mm high assumed) | 7.95 |
+| Carrier ring (prints 0.2 mm short) | 1.6 – 4.34 |
+| Overlay underside / flange top (under the ledge) | 4.54 / 6.14 |
+| Pad components (≤ 1.0 mm assumed), 1.05 mm above the battery | 5.55 – 6.55 |
+| Pad PCB, inside the overlay's pocket | 6.55 – 7.29 |
+| Overlay rim | 9.54 |
+| Case roof at the opening: front / centre / back | 7.16 / 7.93 / 8.71 |
 
-The case roof slopes 2° front to back. The bezel is a flat landing at the rim's height: a chamfered collar of up to about 0.8 mm rises at the front, and a countersink blends the rim into the higher roof at the back.
+The roof is the original case's single plane, sloping 2° up towards the back, with nothing raised above it. The overlay is level, so its rim stands about 2.4 mm proud at the front of the opening and 0.8 mm at the back; its concave centre is about 0.5 mm above the roof.
 
 **Before the first power-up**, with the cable fitted, check continuity: pad VDD (its connector pin 12) to J2 pin 1, and pad GND (pin 11) to J2 pin 2. A reversed or wrong-type cable would put 3.3 V on the pad's SCK line.
 
 ### Before printing the case
 
-**Measure the curved overlay first.** The case assumes a 1.5 mm-tall overlay with a 0.6 mm flange and the pad's PCB directly below the flange. Scaled from Cirque's overlay drawing (spec Fig. 7), the real part looks like a cup: about 5.0 mm from the flange bottom to the rim, a flange about 1.6 mm thick, and the pad's PCB inside a pocket about 3 mm deep, so its back sits about 2 mm above the flange bottom. If that is right, the case as printed would leave the pad about 2.5 mm proud of the bezel, with the carrier bearing on the overlay rather than the pad's PCB. **The PCB is fine either way:** with the pad lowered flush, its connector drops into the notch, which has room for it. The battery would need to sit about 0.5 mm lower, which the tray allows.
+**Measure the curved overlay to confirm the case.** The touchpad mount uses dimensions scaled from Cirque's overlay drawing (spec Fig. 7): a cup about 5.0 mm from the flange bottom to the rim, a flange about 1.6 mm thick, and the pad's PCB glued inside a pocket about 3 mm deep. The case itself depends little on them: the flange seat is set by the roof (1 mm of case above the flange at its thinnest), so a different overlay height only changes how far the pad stands proud. The carrier's height follows the flange thickness, and the pad's components need to stay above the battery. **The PCB is fine either way:** if the pad sits lower, its connector drops into the notch, which has room for it.
 
 On a real pad with its overlay fitted, measure:
 - the overlay's height (flange bottom to rim top), its flange thickness and the depth of its pocket;
 - the tallest back-side component other than the connector (the case assumes 1.0 mm);
 - the connector's position: it must sit within 12.5–18.4 mm of the pad centre, and within about ±5.5 mm of the centre line.
 
-Then update `OVERLAY_HEIGHT`, `FLANGE_T`, `PAD_COMPONENTS` and the pad stack in [`tools/build_nice_nano_cirque_case.py`](../tools/build_nice_nano_cirque_case.py), re-derive the bezel, carrier and battery heights, and rebuild the case.
+If they differ, update `OVERLAY_HEIGHT`, `FLANGE_T`, `OVERLAY_POCKET` and `PAD_COMPONENTS` in [`tools/build_nice_nano_cirque_case.py`](../tools/build_nice_nano_cirque_case.py) and rebuild; usually only the carrier needs reprinting.
+
+**Printing:** print the case upside down, on its top face. The top is tilted 2° to the case's base, so use the slicer's "lay on face" (Bambu Studio: *Lay on face*, then click the top surface) rather than just flipping it.
 
 ## Case and fit
 
 | Feature | Design |
 | --- | --- |
 | Width | Original case split at X = ±7 mm (inside the solid waist) and each half moved 10 mm; every key opening matches the original's shape. |
+| Top | The original's single flat plane (2° slope), with nothing above it, so the case prints upside down. Same height as the original. |
 | Keycaps | Each nominal 17.5 × 16.5 mm cap keeps at least the clearance the original case gives it on the original PCB (0.704 mm minimum). Switch bodies clear by 1.6 mm. |
 | Pad margin | 4.3 mm from the 46.13 mm overlay flange to the nearest keycap. |
 | Status LED | Moved to the right thumb gap, midway between SW27 and SW37 on the line through their centres (case X 79.4, Y 1.7). Its capacitor and resistors are on the PCB underside, so the case pocket covers just the LED and its pads (7 × 6 mm, 0.3 mm past the pads), open to Z 3.55. |
@@ -121,7 +127,7 @@ The pad runs from the nice!nano's switched VCC, the only 3.3 V pin, shared with 
 - **Third independent review** (of the second round's changes): no board changes needed. It found that the CPL gave bottom-side parts KiCad's raw rotation, which would have turned 32 of the 36 diodes round at JLCPCB; the exporter now writes 180° minus the angle, and places each part at its pad centre (J2 had been 1.4 mm off). It also found the overlay discrepancy above, and that the cable needs to be about 13–15 mm rather than 15–20 mm.
 - **PCB:** KiCad 10.0.6 DRC, run after refilling the zones with the project's rules (0.2 mm copper to edge, 0.25 mm to holes), has 0 errors, 0 unconnected items and 0 schematic-parity issues ([report](validation/nice-nano-cirque-pcb/drc.json)). Its warnings are the 37 sockets and SW38 whose paste was removed on purpose, and LED1's outline touching the top-side ring artwork. ERC has no errors; its one warning is J2's embedded symbol ([report](validation/nice-nano-cirque-pcb/erc.json)). Vias stay at least 0.3 mm from every solder pad.
 - **Gerbers:** [`tools/verify_cirque_gerbers.py`](../tools/verify_cirque_gerbers.py) checks the exported ZIP itself: copper is 0.2 mm from the outline and cutouts on both layers (within KiCad's 0.005 mm arc tolerance), no paste covers a hole, no silkscreen lies in a pad opening and no silkscreen fragment is under 0.1 mm ([report](validation/nice-nano-cirque-pcb/gerber-checks.json)).
-- **Case:** valid single solids with watertight STLs. The board outline (grown by 0.3 mm) clears the case everywhere. The case, tray and carrier don't overlap each other or the proxies for the battery, pad, overlay, pad connector, FFC path, J2, nice!nano, USB, LED and its pads, and power switch. The pad connector clears the notch edges by 0.5 mm and the cable by 2.35 mm; the carrier stands entirely on board material.
+- **Case:** valid single solids with watertight STLs. The board outline (grown by 0.3 mm) clears the case everywhere. The case, tray and carrier don't overlap each other or the proxies for the battery, pad, overlay, pad connector, FFC path, J2, nice!nano, USB, LED and its pads, and power switch. The pad connector clears the notch edges by 0.5 mm and the cable by 2.35 mm; the carrier stands entirely on board material. The top is flat: nothing stands more than 0.03 mm (mesh tolerance) above the roof plane, on the plain and the LED-logo case alike.
 - **Firmware:** both UF2s build at the pinned ZMK revision.
 - **Not tested:** physical fit, the FFC path and cable type, touchpad behaviour, JLCPCB assembly and battery life.
 
