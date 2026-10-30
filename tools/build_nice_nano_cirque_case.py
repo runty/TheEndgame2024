@@ -66,6 +66,17 @@ LED_POCKET = (75.89, -1.26, 82.89, 4.74, 3.55)   # LED1 and its pads; passives a
 SW38_BODY = (-3.35, 72.7, -1.4, 3.35, 75.3, 0.0)
 SW38_SLIDER = (-1.4, 75.3, -1.4, -0.1, 76.99, 0.0)
 CENTRAL_MOUNTS = [(-9.804941, -14.168516), (9.804965, -14.170142)]
+# The tray's back end hooks over the battery opening's back edge (Y 31): a
+# riser through the 1 mm gap behind the battery, then a lip resting on the
+# board's top face. Fit it before the board goes into the case: lift the hook
+# through the opening with the tray HOOK_SLIDE towards the front, slide it back,
+# then the front screws stop it sliding out again.
+OPENING_BACK_Y = 31.0
+HOOK_HALF_W = 6.0
+HOOK_RISER = (30.2, 30.8)          # 0.2 mm to the battery envelope and to the edge
+HOOK_LIP = 4.0                     # overlap on the board's top face
+HOOK_LIP_GAP, HOOK_LIP_T = 0.2, 1.0
+HOOK_SLIDE = HOOK_LIP + 0.2       # lip end clears the opening edge by 0.2 mm
 PCB_POCKET_CLEARANCE = 0.4   # case pocket around the PCB outline
 PCB_MIN_CLEARANCE = 0.3      # checked between PCB outline and case
 
@@ -187,6 +198,11 @@ def carrier(seat):
     # the pad's connector and cable drop through) by 0.3 mm.
     for hole in pcb_board()[1]:
         ring = cut(ring, polygon_prism(hole.buffer(0.3, join_style=2).simplify(0.02), 1.0, top + 1))
+    # Slot under the back of the ring for the tray hook's lip (0.4 mm round it,
+    # 0.2 mm above it); the ring bridges over the slot.
+    lip_top = 1.6 + HOOK_LIP_GAP + HOOK_LIP_T
+    ring = cut(ring, box(-HOOK_HALF_W - 0.4, HOOK_RISER[0], 1.0,
+                         HOOK_HALF_W + 0.4, OPENING_BACK_Y + HOOK_LIP + 0.4, lip_top + 0.2))
     assert solids(ring) == 1 and BRepCheck_Analyzer(ring).IsValid()
     return ring
 
@@ -235,8 +251,17 @@ def build_case(original):
     return widened, case, seat
 
 
+def hook():
+    """The tray's back hook: riser plus the lip over the board's top face."""
+    lip_z = 1.6 + HOOK_LIP_GAP
+    riser = box(-HOOK_HALF_W, HOOK_RISER[0], -1.0, HOOK_HALF_W, HOOK_RISER[1], lip_z + HOOK_LIP_T)
+    lip = box(-HOOK_HALF_W, HOOK_RISER[0], lip_z, HOOK_HALF_W, OPENING_BACK_Y + HOOK_LIP, lip_z + HOOK_LIP_T)
+    return fuse(riser, lip)
+
+
 def tray():
     plate = rounded_prism(-12.0, -5.0, 12.0, 32.0, 1.5, -1.5, -0.5)
+    plate = fuse(plate, hook())
     for x, y in CENTRAL_MOUNTS:
         # Ears stop 0.3 mm short of the case's inner front wall at Y=-18.19.
         plate = fuse(plate, rounded_prism(x - 4.1, -17.9, x + 4.1, -4.0, 3.5, -1.8, 0.0))
@@ -340,6 +365,30 @@ def verify(original, widened, case, plate, ring, seat):
     assert off_board < 1e-3, off_board
     report["carrier_footprint_off_board_mm2"] = round(off_board, 4)
     assert volume(BRepAlgoAPI_Common(case, plate).Shape()) < 1e-5
+    # Tray hook: clear of the board itself, the carrier and the case, and able
+    # to pass up through the opening when the tray is HOOK_SLIDE further forward.
+    board_solid = polygon_prism(outer, 0.0, 1.6)
+    for hole in cutouts:
+        board_solid = cut(board_solid, polygon_prism(hole, -0.1, 1.7))
+    assert volume(BRepAlgoAPI_Common(plate, board_solid).Shape()) < 1e-5, "tray meets the PCB"
+    assert volume(BRepAlgoAPI_Common(plate, ring).Shape()) < 1e-5, "tray meets the carrier"
+    opening = next(c for c in cutouts if c.contains(sbox(-1, 0, 1, 1)))
+    lip_top = 1.6 + HOOK_LIP_GAP + HOOK_LIP_T
+    sliding = sbox(-HOOK_HALF_W, HOOK_RISER[0] - HOOK_SLIDE, HOOK_HALF_W, OPENING_BACK_Y + HOOK_LIP - HOOK_SLIDE)
+    assert sliding.within(opening), "hook cannot pass up through the opening"
+    report["tray_hook"] = {
+        "lip_overlap_on_board_mm": HOOK_LIP,
+        "lip_above_board_mm": HOOK_LIP_GAP,
+        "lip_thickness_mm": HOOK_LIP_T,
+        "riser_thickness_mm": round(HOOK_RISER[1] - HOOK_RISER[0], 3),
+        "riser_to_battery_envelope_mm": round(HOOK_RISER[0] - BATTERY[4], 3),
+        "riser_to_opening_edge_mm": round(OPENING_BACK_Y - HOOK_RISER[1], 3),
+        "width_mm": 2 * HOOK_HALF_W,
+        "insert_slide_mm": round(HOOK_SLIDE, 3),
+        "insert_clearance_to_opening_mm": round(opening.exterior.distance(sliding), 3),
+        "lip_to_carrier_mm": round(clearance(plate, ring), 3),
+        "lip_top_z_mm": round(lip_top, 3),
+    }
     # Overlay flange is held: at least LEDGE_MIN of case material above it all round.
     x, y = PAD_CENTRE
     ledge = cut(cylinder(x, y, COUNTERBORE_R - 0.05, seat, seat + LEDGE_MIN - 0.05),
@@ -438,7 +487,8 @@ def preview(case_stl, ring_stl, seat, path):
     top.add_patch(plt.Rectangle((LED_POCKET[0] + 0.5, LED_POCKET[1] + 1.5), 5, 5, color="#ff8c1a"))
     top.set_xlim(-125, 125); top.set_ylim(-24, 82); top.set_aspect("equal")
     top.set_title("nice!nano + Cirque case: top view (pad overlay dark, LED orange)")
-    for mesh, colour, label in ((case, "#555", "case"), (ring, "#2a9d8f", "pad carrier")):
+    plate = trimesh.load(str(case_stl).replace("_CASE.stl", "_BATTERY_TRAY.stl"))
+    for mesh, colour, label in ((case, "#555", "case"), (ring, "#2a9d8f", "pad carrier"), (plate, "#3a0ca3", "battery tray")):
         for a, b in trimesh.intersections.mesh_plane(mesh, [1, 0, 0], [0, 0, 0]):
             sec.plot([a[1], b[1]], [a[2], b[2]], color=colour, lw=1.2)
         sec.plot([], [], color=colour, label=label)
