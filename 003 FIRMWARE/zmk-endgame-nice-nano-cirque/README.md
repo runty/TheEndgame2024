@@ -86,7 +86,7 @@ glidepoint: trackpad@2a {
 ```
 
 - `sensitivity = "1x"` is the most sensitive ADC setting on this driver. Pointer
-  speed comes from `zip_xy_scaler 3 1` instead; Y is inverted so up is up.
+  speed comes from `zip_xy_scaler 3 1` instead. X is inverted (`INPUT_TRANSFORM_X_INVERT`, no Y inversion): the pad sits rotated 180° from its own axes, and on the assembled board both axes came out reversed with cornecirque's Y-only inversion.
 - Tap to click is on (`primary-tap-enable`).
 - Holding **Raise** (right inner thumb) turns the pad into a scroll surface,
   scaled with `zip_xy_scaler 1 20`.

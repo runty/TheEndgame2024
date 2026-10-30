@@ -101,8 +101,11 @@
     glidepoint_listener {
         compatible = "zmk,input-listener";
         device = <&glidepoint>;
+        /* The pad is mounted rotated 180 degrees from the Pinnacle's own
+         * axes: on the assembled board, X and Y both came out reversed with
+         * the Y-only inversion used on cornecirque. */
         input-processors
-            = <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>
+            = <&zip_xy_transform INPUT_TRANSFORM_X_INVERT>
             , <&zip_xy_scaler 3 1>
             ;
 
