@@ -1,6 +1,6 @@
 # Endgame — RP2040-Zero Choc V2, nice!nano Choc V2 and nice!nano + Cirque
 
-A 36-key [Endgame](https://github.com/OldMan6955/TheEndgame2024) repository with three builds. Both PCBs take Kailh Choc V2 (and Choc V1) hot-swap switches. Use the files for one build together; the PCBs, cases and firmware are not interchangeable.
+A 36-key [Endgame](https://github.com/OldMan6955/TheEndgame2024) repository with three builds. All three PCBs take Kailh Choc V2 (and Choc V1) hot-swap switches. Use the files for one build together; the PCBs, cases and firmware are not interchangeable.
 
 | Build | Hardware and battery | PCB and matching case | Firmware and build notes |
 | --- | --- | --- | --- |
